@@ -1,0 +1,27 @@
+<div class="container">
+  <div class="question">
+    {{ campaign?.verificationQuestion }}
+  </div>
+
+  <div class="answers">
+    <mat-grid-list class="answers" cols="1" rowHeight="fit" gutterSize="10px">
+      <!-- <ng-container *ngFor="let item of answers"> -->
+      <mat-grid-tile *ngFor="let item of answers">
+        <button mat-flat-button class="my-class answerButtton" (click)="onAnswer(item)">
+          <span class="answerText">{{ item }}</span>
+        </button>
+      </mat-grid-tile>
+
+      <!-- <mat-grid-tile class="answerButtton" (click)="onAnswer(item)" *ngFor="let item of answers">
+          <span class="answerText">{{ item }}</span>
+        </mat-grid-tile> -->
+      <!-- </ng-container> -->
+    </mat-grid-list>
+  </div>
+
+  <!-- <div class="answers">
+    <div class="answerButton" *ngFor="let item of answers">
+      <div class="answerButton">{{ item }}</div>
+    </div>
+  </div> -->
+</div>
