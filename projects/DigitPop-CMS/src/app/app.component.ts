@@ -73,7 +73,7 @@ export class AppComponent {
   openLoginDialog(): void {
 
     const dialogRef = this.dialog.open(LoginComponent, {
-      width: '250px',
+      width: '250px', height: "350px"
     });
 
     dialogRef.afterClosed().subscribe(() => {
