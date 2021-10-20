@@ -30,7 +30,8 @@ export class AppComponent {
   showSpinner: boolean;
   currentUser:any;
   currentRole:any;
-  isNotLandingpage: any;
+  isLogin: any;
+  isCMS: any;
   @ViewChild(HomeComponent) child:HomeComponent;
   constructor(
     public spinnerService: SpinnerService,
@@ -52,14 +53,17 @@ export class AppComponent {
     };
   }
   ngDoCheck(){
-    this.isNotLandingpage = true
+    this.isLogin = true
+    this.isCMS = false
     this.currentUser= localStorage.getItem("currentuser");
     this.currentRole= localStorage.getItem("currentrole");
     
-    if (this.router.url == "/") {
-      this.isNotLandingpage = false
+    if (!this.currentRole) {
+      this.isLogin = false
     } 
-
+    if (this.currentRole == "Business") {
+      this.isCMS = true
+    }
 
     // if(this.currentRole=="admin"||this.currentRole=="Business"){
     //   this.router.navigate(['/cms/dashboard']);

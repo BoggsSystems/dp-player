@@ -147,9 +147,6 @@ export class SignupComponent implements OnInit {
   //   this.dialogRef.close();
   // }
   callBillsby(){
-    window['billsbyData'] = {
-      email: "fake@eamil.net"
-    };
   // this.dialogRef.close();
   this.homeComp.clicktrial();
   }

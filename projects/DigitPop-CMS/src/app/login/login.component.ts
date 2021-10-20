@@ -121,7 +121,7 @@ export class LoginComponent implements OnInit {
           //   }
           // );
 
-
+          localStorage.setItem("currentrole",'Business');
           this.dialogRef.close();
           this.router.navigate(['/cms/dashboard']);
 
