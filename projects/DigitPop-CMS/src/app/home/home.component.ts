@@ -92,6 +92,13 @@ export class HomeComponent implements OnInit, OnDestroy {
     // window['billsbyData'] = {
     //   email: "fake@eamil.net"
     // };
+    var playerUrl = environment.playerUrl;
+    console.log("Player URL is : " + playerUrl);
+
+    var apiUrl = environment.apiUrl;
+    console.log("API URL is : " + apiUrl);
+
+
     this.location = location;
     //this.iFrameSrc = `${environment.playerUrl}/ad/5aaad85b76f2c80400431c3c/embedded/true`;
     this.iFrameSrc = `${environment.playerUrl}/ad/60518dfbe73b860004205e72`;
@@ -347,7 +354,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
   }
   clicktrial(){
-   
+
     let element: HTMLElement = document.getElementById("checkout") as HTMLElement;
     element.click();
     console.log("Trial clicked");
