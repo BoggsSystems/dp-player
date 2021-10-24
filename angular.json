@@ -133,7 +133,7 @@
           },
           "configurations": {
             "production": {
-              "devServerTarget": "DigitPop-CMS:serve:production"
+              "devServerTarget": "DigitPop-CMS:serve:staging"
             }
           }
         }
