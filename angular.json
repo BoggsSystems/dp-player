@@ -81,8 +81,8 @@
             "browserTarget": "DigitPop-CMS:build"
           },
           "configurations": {
-            "production": {
-              "browserTarget": "DigitPop-CMS:build:production"
+            "staging": {
+              "browserTarget": "DigitPop-CMS:build:staging"
             }
           }
         },
