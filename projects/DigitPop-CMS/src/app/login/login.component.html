@@ -1,5 +1,10 @@
-<div mat-dialog-content style="overflow: auto, width: auto height:250px">
+<div mat-dialog-content class="login-modal">
   <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <div class="logo">
+      <svg viewBox="0 0 120 40">
+        <use xlink:href="assets/img/app_assets.svg#logo"></use>
+      </svg>
+    </div>
     <div class="form-group">
       <div>
         <mat-radio-group
