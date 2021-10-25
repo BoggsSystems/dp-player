@@ -89,6 +89,7 @@ export class LoginComponent implements OnInit {
       .subscribe(
         (res) => {
           if(res){
+            localStorage.setItem("currentrole",'customer');
             this.dialogRef.close();
             this.router.navigate(['/xchane/dashboard']);
           } else {

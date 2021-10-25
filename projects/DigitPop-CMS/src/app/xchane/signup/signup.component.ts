@@ -112,6 +112,7 @@ export class SignupComponent implements OnInit {
         (res) => {
           console.log("createXchaneUser result : " + JSON.stringify(res) );
           if(res.user){
+            localStorage.setItem("currentrole",'customer');
             this.dialogRef.close();
             console.log(res);
             this.router.navigate(['/xchane/dashboard']);
