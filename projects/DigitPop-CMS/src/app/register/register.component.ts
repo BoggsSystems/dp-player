@@ -51,7 +51,6 @@ export class RegisterComponent implements OnInit {
     user.email = this.billsbyUserInfo.email
     user.cid = this.cid;
     user.sid = this.sid;
-    debugger
     user.password = localStorage.getItem('toSignUpBusinessUserPassword');
 
     this.authService.createUser(user).subscribe(

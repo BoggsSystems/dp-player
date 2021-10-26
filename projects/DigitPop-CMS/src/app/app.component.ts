@@ -44,22 +44,26 @@ export class AppComponent {
     // );
   }
   ngOnInit(){
-    this.currentRole= localStorage.getItem("currentrole");
-    if(this.currentRole=="admin"||this.currentRole=="Business"){
-      this.router.navigate(['/cms/dashboard']);
-    };
-    if(this.currentRole=="consumer"){
-      this.router.navigate(['/xchane/dashboard']);
-    };
+    // this.currentRole= localStorage.getItem("currentrole");
+    // if(this.currentRole=="admin"||this.currentRole=="Business"){
+    //   this.router.navigate(['/cms/dashboard']);
+    // };
+    // if(this.currentRole=="consumer"){
+    //   this.router.navigate(['/xchane/dashboard']);
+    // };
+
+    if(localStorage.getItem("currentrole")){
+      localStorage.removeItem("currentrole");
+    }
   }
   ngDoCheck(){
-    this.isLogin = true
+    this.isLogin = false
     this.isCMS = false
     this.currentUser= localStorage.getItem("currentuser");
     this.currentRole= localStorage.getItem("currentrole");
     
-    if (!this.currentRole) {
-      this.isLogin = false
+    if (this.currentRole) {
+      this.isLogin = true
     } 
     if (this.currentRole == "Business") {
       this.isCMS = true

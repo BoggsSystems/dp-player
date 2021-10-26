@@ -1,8 +1,6 @@
 <div class="container bgimg">
   <form class="form" [formGroup]="form" (ngSubmit)="submit()">
-    <span class="header">
-      Congrats, you're almost there. Last step, create a password.
-    </span>
+    <span class="header"> Please wait while we create your account. </span>
 
     <!-- <div class="form-group password">
       <label class="labelStyle" for="password">Password</label>
@@ -51,12 +49,12 @@
       </div>
     </div>  -->
   </form>
-  <button
+  <!-- <button
     class="submitButton mat-raised-button"
     type="button"
     [disabled]="!form.valid"
     (click)="submit()"
   >
     Submit
-  </button>
+  </button> -->
 </div>
