@@ -27,6 +27,8 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   redemptionpopupDialogRef: MatDialogRef<RedemptionpopupComponent>;
   failurepopupDialogRef: MatDialogRef<FailurepopupComponent>;
   categories: any;
+  userCategories: any;
+  showvideos: boolean;
   error = '';
 
   constructor(
@@ -37,7 +39,9 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     private dialog: MatDialog
   ) {
     console.log('In dashboard constructor');
+    this.showvideos = true;
     this.getCategories();
+    this.getUserCategories();
     //console.log("The current user role is : " + this.authService.currentUser.role);
 
     // if (this.authService.currentUser.role === 'admin') {
@@ -79,10 +83,73 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     //this.shepherdService.start();
   }
 
+  public onToggleCategory(category: any) {
+    console.log('TOGGLE CATEGORY!!!');
+
+    this.authService
+      .toggleXchaneUserCategory(category, this.authService.currentUserValue)
+      .subscribe(
+        (res:any) => {
+
+          if (res.msg == 'remove') {
+            alert('Category Removed');
+          } else {
+            alert('Category Added');
+          }
+          console.log('TOGGLE category success');
+          console.log(res);
+          this.getUserCategories();
+        },
+        (error: any) => {
+          this.failurepopupDialogRef = this.dialog.open(FailurepopupComponent, {
+            autoFocus: true,
+            hasBackdrop: false,
+            closeOnNavigation: true,
+          });
+
+          return observableThrowError(error);
+        }
+      );
+  }
+
+  public onDeleteCategory(category: any) {
+    this.authService
+      .removeXchaneUserCategory(category, this.authService.currentUserValue)
+      .subscribe(
+        (res) => {
+          console.log(res);
+        },
+        (error: any) => {
+          this.failurepopupDialogRef = this.dialog.open(FailurepopupComponent, {
+            autoFocus: true,
+            hasBackdrop: false,
+            closeOnNavigation: true,
+          });
+
+          return observableThrowError(error);
+        }
+      );
+  }
+
   getCategories() {
     this.categoryService.getCategories().subscribe(
       (res: any) => {
-        this.categories = res.filter((i: { active: boolean; }) => i.active == true);
+        this.categories = res.filter(
+          (i: { active: boolean }) => i.active == true
+        );
+      },
+      (err: { ToString: () => string }) => {
+        console.log('Error retrieving categories : ' + err.ToString());
+      }
+    );
+  }
+
+  getUserCategories() {
+    this.categoryService.getUserCategories().subscribe(
+      (res: any) => {
+        this.userCategories = res.filter(
+          (i: { active: boolean }) => i.active == true
+        );
       },
       (err: { ToString: () => string }) => {
         console.log('Error retrieving categories : ' + err.ToString());
@@ -92,7 +159,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
   private refreshUser() {
     this.authService
-      .getXchaneUser(this.authService.currentUserValue._id)
+      .getCurrentXchaneUser()
       .subscribe(
         (data2) => {
           let use = new XchaneUser();
@@ -132,6 +199,11 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     // );
   }
 
+  categoryVideoSwitch() {
+    this.showvideos = !this.showvideos;
+  }
+
+
   public onClickMe(rewarder: string) {
     let redemption = new Redemption();
     redemption.rewarder = rewarder;
@@ -165,6 +237,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     this.welcome();
+
   }
 
   welcome() {
@@ -174,7 +247,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   }
 
   openWelcomeDialog(): void {
-
     const dialogRef = this.dialog.open(WelcomeComponent, {
       width: '100%',
       height: '90%',
@@ -183,12 +255,18 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     dialogRef.afterClosed().subscribe(() => {
       console.log('The dialog was closed');
 
-      console.log("Calling welcome on auth service")
+      console.log('Calling welcome on auth service');
       this.authService.welcome().subscribe(
         (res) => {
-          console.log("Auth service welcome call returned with res : " + JSON.stringify(res))
+          console.log(
+            'Auth service welcome call returned with res : ' +
+              JSON.stringify(res)
+          );
           this.authService.currentUserValue.welcomed = true;
-          console.log("Set current user welcome : " + this.authService.currentUserValue.welcomed);
+          console.log(
+            'Set current user welcome : ' +
+              this.authService.currentUserValue.welcomed
+          );
         },
         (error) => {
           this.error = error;
@@ -202,8 +280,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
     // Load component custom script
     this.loadScript('../../assets/js/app.main.scripts.js');
-
-
   }
 
   receiveMessage(event: any) {

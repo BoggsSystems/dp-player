@@ -45,6 +45,7 @@ export class LoginComponent implements OnInit {
       return;
     }
 
+    console.log('CALLING login Xchane User!!');
     this.authService
       .loginXchaneUser(this.f.email.value, this.f.password.value)
       .pipe(first())

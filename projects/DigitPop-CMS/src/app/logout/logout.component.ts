@@ -23,15 +23,19 @@ export class LogoutComponent implements OnInit {
     public router:Router
   ) {
   }
+
   ngOnInit(){
 
   }
+
   logout(){
     localStorage.removeItem("currentuser");
+    localStorage.removeItem("XchaneCurrentUser");
     localStorage.removeItem("currentrole");
     this.router.navigate(['/']);
     this.dialogRef.close();
   }
+
   close(){
     this.dialogRef.close();
   }

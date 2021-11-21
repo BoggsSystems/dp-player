@@ -1,7 +1,8 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { XchaneUser } from '../models/xchane.user';
 import { environment } from 'projects/DigitPop-CMS/src/environments/environment';
+import { HTTP_XCHANE_AUTH } from 'projects/DigitPop-CMS/src/app/app.module';
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' }),

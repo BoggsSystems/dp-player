@@ -10,9 +10,7 @@
             <p class="muted">
               Welcome to DigitPop! The Dashboard is where you launch the
               shoppable video ads to earn points for gift cards for your
-              favorite Video, Music and News. The media provider that you're
-              earning points towards is selected in the settings page. Tap on
-              'Next Video' button below to get started.
+              favorite Video, Music and News in the Reward Gallery
             </p>
           </div>
           <div id="dashboard_points">
@@ -34,16 +32,57 @@
 
       <!-- Videos -->
       <div id="body_section_tiles_vid">
-        <h1>Videos</h1>
+        <h1 *ngIf="showvideos == true">Videos</h1>
+
+        <h1 *ngIf="showvideos == false">Categories</h1>
+        <span
+          >Manage your categories  <mat-slide-toggle
+            class="example-margin"
+            (change)="categoryVideoSwitch()"
+          >
+          </mat-slide-toggle
+        ></span>
+
+        <!-- Category Section  -->
         <div
           fxLayout="row wrap"
           fxLayout.xs="column"
           fxLayoutAlign="space-around center"
           fxLayoutGap="25px"
+          *ngIf="showvideos == false"
         >
           <mat-card
             class="card-styling"
             *ngFor="let category of categories"
+            fxFlex="calc(33%-25px)"
+            fxFlex.sm="calc(50%-25px)"
+            (click)="onToggleCategory(category)"
+          >
+            <mat-card-header>
+              <mat-card-title>{{ category.name }}</mat-card-title>
+              <mat-card-subtitle>{{ category.description }}</mat-card-subtitle>
+            </mat-card-header>
+            <!-- <img
+              mat-card-image
+              src="https://res.cloudinary.com/boggssystems/image/upload/v1544297674/AsSeenOnTv_jtjp1e.png"
+            /> -->
+            <mat-card-content>
+              <p>
+                {{ category.name }}
+              </p>
+            </mat-card-content>
+          </mat-card>
+        </div>
+        <div
+          fxLayout="row wrap"
+          fxLayout.xs="column"
+          fxLayoutAlign="space-around center"
+          fxLayoutGap="25px"
+          *ngIf="showvideos == true"
+        >
+          <mat-card
+            class="card-styling"
+            *ngFor="let category of userCategories"
             fxFlex="calc(33%-25px)"
             fxFlex.sm="calc(50%-25px)"
             (click)="onLaunchVideo(category)"

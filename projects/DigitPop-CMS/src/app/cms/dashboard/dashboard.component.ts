@@ -26,6 +26,7 @@ import { ProjectsHelpComponent } from '../help/projects/projects-help.component'
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 import { Campaign } from '../../shared/models/campaign';
 
+
 @Component({
   selector: 'DigitPop-dashboard',
   templateUrl: './dashboard.component.html',
