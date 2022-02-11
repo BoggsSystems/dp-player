@@ -62,7 +62,6 @@ export class VideoComponent implements OnInit, AfterViewInit {
   preview = false;
   params: Params;
   pgIndex: any;
-  test = false;
 
   constructor(
     private router: Router,
@@ -197,26 +196,6 @@ export class VideoComponent implements OnInit, AfterViewInit {
     );
   }
 
-  testMultipleProductGroups() {
-    // for (let i = 0; i < 10; i++) {
-    //   var test = this.ad.productGroupTimeLine[0].products[0];
-    //   test.description =
-    //     'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin felis nulla, pellentesque id justo pharetra, mollis sollicitudin lorem. Pellentesque auctor arcu mi, non mattis risus luctus in. Nunc vitae hendrerit urna. Nullam lacus turpis, lacinia ac fringilla vitae, tempus quis sapien. Proin in bibendum lorem. Phasellus eget consequat odio. Vivamus malesuada dui iaculis odio luctus fermentum sed nec nulla. Phasellus eu mattis ante, et condimentum dui. Quisque semper, leo vitae laoreet porttitor, urna lacus sollicitudin nulla, eget ornare libero neque non lacus.Aenean placerat quam nec odio placerat, id condimentum ex ultrices. Fusce molestie dui quis nulla dignissim dignissim. Maecenas quis sollicitudin dui. Maecenas molestie a odio id placerat. Maecenas euismod nunc nisl, ut viverra felis fermentum vel. Duis quis vestibulum ligula. Vivamus posuere nec libero id laoreet. Ut rutrum fermentum sem, ac condimentum felis tempus quis. Curabitur nisi ex, blandit ac congue ac, mollis eu dolor. Nullam elit sapien, fermentum at ullamcorper eu, consectetur id tellus. Phasellus a egestas tellus. Suspendisse dapibus felis vel erat dictum tincidunt.';
-    //   this.currentProductGroup.products.push(test);
-    // }
-
-    for (let i = 0; i < 10; i++) {
-      var pg = new ProductGroup();
-
-      pg = this.ad.productGroupTimeLine[0];
-      pg.title = 'PG ' + i;
-      pg.time = i * 4;
-      this.ad.productGroupTimeLine.push(pg);
-    }
-
-    this.test = true;
-  }
-
   onStartVideo() {
     var targetWindow = window.parent;
     targetWindow.postMessage('start', `${environment.homeUrl}`);
@@ -234,36 +213,12 @@ export class VideoComponent implements OnInit, AfterViewInit {
         }
       );
 
-      // if (this.engagementId != null) {
-      //   this.adService
-      //     .increaseProjectViewCount(this.adId, this.engagementId)
-      //     .subscribe(
-      //       (res: any) => {
-      //         console.log(res);
-      //       },
-      //       (err: any) => {
-      //         console.log('Error increasing project view count');
-      //       }
-      //     );
-      // } else {
-      //   this.adService.increaseProjectViewCount(this.adId, null).subscribe(
-      //     (res) => {
-      //       console.log(res);
-      //     },
-      //     (err) => {
-      //       console.log('Error increasing project view count');
-      //     }
-      //   );
-      // }
     }
 
-    //const numbers = timer(1000);
-    //numbers.subscribe((x) => {
     this.showThumbnail = false;
     this.setSize();
     this.showVideo = true;
     this.videoPlayer.nativeElement.play();
-    //});
   }
 
   disableLogic() {
@@ -322,7 +277,6 @@ export class VideoComponent implements OnInit, AfterViewInit {
 
   onExit() {
     var targetWindow = window.parent;
-    //var url = environment.homeUrl;
     this.showThumbnail = true;
     this.showCanvas = false;
 
@@ -527,41 +481,6 @@ export class VideoComponent implements OnInit, AfterViewInit {
     );
   }
 
-  // drawCanvas() {
-  //   var w = window.innerWidth;
-  //   var h = window.innerHeight;
-
-  //   var isW = w >= h * 1.7778;
-
-  //   var vw = isW ? w : Math.round(h * 1.7778);
-  //   var vh = isW ? Math.round(w * 0.5625) : h;
-  //   var vol = Math.round((w - vw) / 2);
-  //   var vot = Math.round((h - vh) / 2);
-
-  //   // this.videoPlayer.nativeElement.width = vw;
-  //   // this.videoPlayer.nativeElement.height = vh;
-
-  //   this.canvas.nativeElement.width = vw;
-  //   this.canvas.nativeElement.height = vh;
-  //   var ratio =
-  //     this.videoPlayer.nativeElement.videoWidth /
-  //     this.videoPlayer.nativeElement.videoHeight;
-
-  //   // this.canvas.nativeElement.width = this.videoPlayer.nativeElement.width;
-  //   // this.canvas.nativeElement.height = this.videoPlayer.nativeElement.height;
-  //   this.canvas.nativeElement.style.setProperty('left', vol + 'px');
-  //   this.canvas.nativeElement.style.setProperty('top', vot + 'px');
-
-  //   var ctx = this.canvas.nativeElement.getContext('2d');
-  //   ctx.filter = 'blur(20px) brightness(50%)';
-  //   ctx.drawImage(
-  //     this.videoPlayer.nativeElement,
-  //     (vw - this.canvas.nativeElement.height * ratio) / 2,
-  //     vot,
-  //     this.canvas.nativeElement.height * ratio,
-  //     this.canvas.nativeElement.height
-  //   );
-  // }
 
   getProductGroupFromTime(time: any) {
     if (this.ad.productGroupTimeLine.length == 1) {
@@ -596,13 +515,6 @@ export class VideoComponent implements OnInit, AfterViewInit {
   }
 
   openDialog(): void {
-    // const dialogConfig = new MatDialogConfig();
-
-    // dialogConfig.hasBackdrop = true;
-    // dialogConfig.position = {
-    //   top: '0',
-    //   left: '0',
-    // };
 
     const dialogRef = this.dialog.open(ImageCarouselComponent, {
       hasBackdrop: true,

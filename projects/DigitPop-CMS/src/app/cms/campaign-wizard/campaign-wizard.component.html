@@ -231,22 +231,6 @@
       </form>
     </mat-step>
 
-    <mat-step [stepControl]="campaignFormGroup">
-      <form [formGroup]="campaignFormGroup">
-        <ng-template matStepLabel>Verification Wrong Answer 4</ng-template>
-        <div>
-          <mat-form-field>
-            <mat-label>Wrong Answer 4</mat-label>
-            <input
-              matInput
-              formControlName="verificationWrongAnswer4"
-              placeholder="Enter answer here"
-              required
-            />
-          </mat-form-field>
-        </div>
-      </form>
-    </mat-step>
 
     <mat-step>
       <ng-template matStepLabel>Done</ng-template>
