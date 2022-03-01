@@ -12,6 +12,12 @@ export class CampaignService {
     });
   }
 
+  getCampaign(campaign: Campaign) {
+    return this.httpClient.get(
+      `${environment.apiUrl}/api/campaigns/` + campaign._id + `/true`
+    );
+  }
+
   updateCampaign(campaign: Campaign) {
     return this.httpClient.put<any>(
       `${environment.apiUrl}/api/campaigns/` + campaign._id,

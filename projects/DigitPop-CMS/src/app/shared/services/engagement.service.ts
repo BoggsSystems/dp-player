@@ -26,6 +26,19 @@ export class EngagementService {
     //return this.http.post('/api/engagement/', xchaneUser, httpOptions);
   }
 
+  createEngagementFromLast(xchaneUser: XchaneUser) {
+    var x = `${environment.apiUrl}`;
+    console.log(x);
+
+    return this.http.post<any>(
+      `${environment.apiUrl}/api/engagement/repeat`,
+      { xchaneUser },
+      httpOptions
+    );
+
+    //return this.http.post('/api/engagement/', xchaneUser, httpOptions);
+  }
+
   getEngagement(engagementId: string) {
     return this.http.get('/api/engagement/' + engagementId);
   }

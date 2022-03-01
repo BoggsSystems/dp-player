@@ -25,7 +25,7 @@ import { WelcomeComponent } from '../help/welcome/welcome.component';
 import { ProjectsHelpComponent } from '../help/projects/projects-help.component';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 import { Campaign } from '../../shared/models/campaign';
-
+import { OkDialogComponent } from '../ok-dialog/ok-dialog.component';
 
 @Component({
   selector: 'DigitPop-dashboard',
@@ -287,32 +287,93 @@ export class DashboardComponent implements OnInit {
   }
 
   updateCampaignFunc(element: Campaign, e: any) {
-    const confirmDialog = this.dialog.open(ConfirmDialogComponent, {
-      data: {
-        title: 'Change Status',
-        message: 'Are you sure you want to change the status of the campaign?',
-      },
-    });
+    // Retrieve the campaign
+    this.campaignService.getCampaign(element).subscribe(
+      (res) => {
+        var campaign = res as Campaign;
 
-    confirmDialog.afterClosed().subscribe((result) => {
-      if (result === true) {
-        element.active = !element.active;
-        this.campaignService.updateCampaign(element).subscribe(
-          (res) => {
-            console.log(res);
+        if (!campaign.project.active) {
+          campaign.active = false;
+          e.source.checked = false;
+
+          const confirmDialog = this.dialog.open(OkDialogComponent, {
+            data: {
+              title: 'Project Inactive',
+              message:
+                'The project for this campaign is inactive.  Activate the project before activiating the campaign.',
+            },
+          });
+
+          return;
+        }
+
+        const confirmDialog = this.dialog.open(ConfirmDialogComponent, {
+          data: {
+            title: 'Change Status',
+            message:
+              'Are you sure you want to change the status of the campaign?',
           },
-          (error) => {
-            console.log(error);
+        });
+
+        confirmDialog.afterClosed().subscribe((result) => {
+          if (result === true) {
+            console.log('Element project : ' + element.project);
+
+            element.active = !element.active;
+            this.campaignService.updateCampaign(element).subscribe(
+              (res) => {
+                console.log(res);
+              },
+              (error) => {
+                console.log(error);
+              }
+            );
+          } else {
+            e.source.checked = element.active;
+            console.log(
+              'toggle should not change if I click the cancel button'
+            );
           }
-        );
-      } else {
-        e.source.checked = element.active;
-        console.log('toggle should not change if I click the cancel button');
+        });
+      },
+      (error) => {
+        console.log(error);
+        return;
       }
-    });
+    );
   }
 
   updateFunc(element: Project, e: any) {
+    if (element.active) {
+      this.projectService.getCampaignsForProject(element).subscribe(
+        (res) => {
+          if (Object.keys(res).length > 0) {
+            e.source.checked = true;
+
+            const confirmDialog = this.dialog.open(OkDialogComponent, {
+              data: {
+                title: 'Active Campaigns',
+                message:
+                  'There is at least one active campaign using this project. Deactivate the campaign(s) before deactivating this project.',
+              },
+            });
+
+            return;
+          } else {
+            this.updateProjectSubFunc(element, e);
+          }
+        },
+        (error) => {
+          console.log(error);
+          return;
+        }
+      );
+    } else {
+      this.updateProjectSubFunc(element, e);
+    }
+  }
+
+  updateProjectSubFunc(element: Project, e: any) {
     const confirmDialog = this.dialog.open(ConfirmDialogComponent, {
       data: {
         title: 'Change Status',

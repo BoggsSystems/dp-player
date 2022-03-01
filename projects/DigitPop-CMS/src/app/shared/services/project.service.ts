@@ -93,4 +93,15 @@ export class ProjectService {
       `${environment.apiUrl}/api/projects?activeOnly=true&category=` + category
     );
   }
+
+  getCampaignsForProject(project : Project) {
+    return this.httpClient.put<any>(
+      `${environment.apiUrl}/api/projects/` +
+        project._id +
+        '/getCampaignsForProject',
+      {
+        project
+      }
+    );
+  }
 }

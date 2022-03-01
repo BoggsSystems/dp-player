@@ -233,7 +233,7 @@
   right: 0;
   bottom: 100%;
   display: flex;
-  background-color: rgba(16, 16, 16, 0.9);
+  background-color: transparent;
   z-index: 9999999999;
   justify-content: center;
   align-items: center;
@@ -264,19 +264,19 @@
   bottom: 100%;
   overflow: hidden;
   opacity: 0;
-  transition: opacity 0.5s 0s, bottom 0s 0.5s;
+  transition: opacity 0.25s 0s, bottom 0s 0.25s;
 }
 #main_anim.open {
   bottom: 0;
   overflow: unset;
   opacity: 1;
-  transition: bottom 0s, opacity 1s;
+  transition: bottom 0s, opacity 0.5s;
 }
 #main_anim.open #main_anim_bubble {
-  animation: bubble-main 4s step-end 1s forwards 1;
+  animation: bubble-main 2s step-end 0.5s forwards 1;
 }
 #main_anim.open #main_anim_score {
-  animation: bubble-score 4s ease 1s forwards 1;
+  animation: bubble-score 2s ease 0.5s forwards 1;
 }
 
 @keyframes bubble-main {

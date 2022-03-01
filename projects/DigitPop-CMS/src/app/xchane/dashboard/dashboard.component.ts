@@ -15,6 +15,7 @@ import { AnswerDialogComponent } from '../answer-dialog/answer-dialog.component'
 import { ConfirmDialogComponent } from '../../cms/confirm-dialog/confirm-dialog.component';
 import { CategoryService } from '../../shared/services/category.service';
 import { WelcomeComponent } from '../help/welcome/welcome.component';
+import { OkDialogComponent } from '../../cms/ok-dialog/ok-dialog.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -51,20 +52,23 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
   // Score Bubble Animation
   scoreBubbleIsOpen = false;
+  canToggle = false;
   showAdmin = false;
 
   public scoreBubbleToggle() {
-    this.scoreBubbleIsOpen = !this.scoreBubbleIsOpen;
+    if (this.canToggle) {
+      this.scoreBubbleIsOpen = !this.scoreBubbleIsOpen;
 
-    if (this.scoreBubbleIsOpen) {
-      const scoreBubbleTimer = timer(5000);
-      scoreBubbleTimer.subscribe((x: any) => {
-        this.scoreBubbleToggle();
-      });
-    } else {
-      // NEED ANYTHING HERE?? ===================
-      // If it was closed, remove the timer
-      //clearTimeout(this.scoreBubbleTimer);
+      if (this.scoreBubbleIsOpen) {
+        const scoreBubbleTimer = timer(2000);
+        scoreBubbleTimer.subscribe((x: any) => {
+          this.scoreBubbleIsOpen = !this.scoreBubbleIsOpen;
+        });
+      } else {
+        // NEED ANYTHING HERE?? ===================
+        // If it was closed, remove the timer
+        //clearTimeout(this.scoreBubbleTimer);
+      }
     }
   }
 
@@ -89,12 +93,21 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     this.authService
       .toggleXchaneUserCategory(category, this.authService.currentUserValue)
       .subscribe(
-        (res:any) => {
-
+        (res: any) => {
           if (res.msg == 'remove') {
-            alert('Category Removed');
+            const confirmDialog = this.dialog.open(OkDialogComponent, {
+              data: {
+                title: 'Category Removed',
+                message: 'Category Removed',
+              },
+            });
           } else {
-            alert('Category Added');
+            const confirmDialog = this.dialog.open(OkDialogComponent, {
+              data: {
+                title: 'Category Added',
+                message: 'Category Added',
+              },
+            });
           }
           console.log('TOGGLE category success');
           console.log(res);
@@ -158,24 +171,22 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   }
 
   private refreshUser() {
-    this.authService
-      .getCurrentXchaneUser()
-      .subscribe(
-        (data2) => {
-          let use = new XchaneUser();
-          use = data2 as XchaneUser;
-          this.authService.storeUser(use);
-        },
-        (error: any) => {
-          this.failurepopupDialogRef = this.dialog.open(FailurepopupComponent, {
-            autoFocus: true,
-            hasBackdrop: false,
-            closeOnNavigation: true,
-          });
+    this.authService.getCurrentXchaneUser().subscribe(
+      (data2) => {
+        let use = new XchaneUser();
+        use = data2 as XchaneUser;
+        this.authService.storeUser(use);
+      },
+      (error: any) => {
+        this.failurepopupDialogRef = this.dialog.open(FailurepopupComponent, {
+          autoFocus: true,
+          hasBackdrop: false,
+          closeOnNavigation: true,
+        });
 
-          return observableThrowError(error);
-        }
-      );
+        return observableThrowError(error);
+      }
+    );
 
     // this.authService.getCurrentXchaneUser().subscribe(
     //   (data2: XchaneUser) => {
@@ -202,7 +213,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   categoryVideoSwitch() {
     this.showvideos = !this.showvideos;
   }
-
 
   public onClickMe(rewarder: string) {
     let redemption = new Redemption();
@@ -236,13 +246,13 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
+    console.log('In after view init, calling welcome.');
     this.welcome();
-
   }
 
   welcome() {
     if (!this.authService.currentUserValue.welcomed) {
-      //this.openWelcomeDialog();
+      this.openWelcomeDialog();
     }
   }
 
@@ -293,7 +303,10 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       this.popupDialogRef.close();
 
       if (event.data.correct) {
+        this.canToggle = true;
         this.scoreBubbleToggle();
+        this.canToggle = false;
+
         this.refreshUser();
       } else {
         const confirmDialog = this.dialog.open(AnswerDialogComponent, {
@@ -307,12 +320,37 @@ export class DashboardComponent implements OnInit, AfterViewInit {
           confirmDialog.close();
 
           if (result === true) {
-            // Find a way to launch the previous video
-            // this.onLaunchVideo();
+            this.retry();
           }
         });
       }
     }
+  }
+
+  retry() {
+    this.engagementService
+      .createEngagementFromLast(this.authService.currentUserValue)
+      .subscribe((data: any) => {
+        this.iFrameSrc =
+          `${environment.playerUrl}/ad/` +
+          data.project +
+          '/engagement/' +
+          data._id +
+          '/campaign/' +
+          data.campaign;
+
+        // Store current campaign?  May need if there is a retry
+
+        this.popupDialogRef = this.dialog.open(PlayerComponent, {
+          autoFocus: true,
+          hasBackdrop: true,
+          closeOnNavigation: false,
+        });
+        this.popupDialogRef.componentInstance.iFrameSrc = this.iFrameSrc;
+
+        console.log('iFrameSrc :' + this.iFrameSrc);
+        return true;
+      });
   }
 
   onLaunchVideo(category: any) {
@@ -342,7 +380,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
           return true;
         },
         (error: any) => {
-          const confirmDialog = this.dialog.open(ConfirmDialogComponent, {
+          const confirmDialog = this.dialog.open(OkDialogComponent, {
             data: {
               title: 'No ads currently available',
               message:
