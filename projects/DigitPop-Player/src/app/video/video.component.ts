@@ -56,6 +56,7 @@ export class VideoComponent implements OnInit, AfterViewInit {
   adReady = false;
   showThumbnail = false;
   showCanvas = false;
+  showQuizButton = false;
   showBackToGroup = false;
   disablePrevious = true;
   disableNext = true;
@@ -388,15 +389,30 @@ export class VideoComponent implements OnInit, AfterViewInit {
   }
 
   onEnded() {
-    if (this.params['engagementId'] != null && this.params['campaignId']) {
-      const navigationExtras: NavigationExtras = {
-        state: { campaignId: this.campaignId, engagementId: this.engagementId },
-      };
 
-      this.router.navigate(['/quiz'], navigationExtras);
+    console.log("In onEnded");
+
+    if (this.params['engagementId'] != null && this.params['campaignId']) {
+
+      console.log("Setting Show Quiz Button ");
+      this.showQuizButton = true;
+      this.onShowProduct();
     } else {
+
+      console.log("NOT Setting Show Quiz Button ");
       this.onShowProduct();
     }
+  }
+
+  onQuizButtonPressed() {
+
+    this.showQuizButton = false;
+    const navigationExtras: NavigationExtras = {
+      state: { campaignId: this.campaignId, engagementId: this.engagementId },
+    };
+
+     this.router.navigate(['/quiz'], navigationExtras);
+
   }
 
   onResumeVideo() {
@@ -461,16 +477,7 @@ export class VideoComponent implements OnInit, AfterViewInit {
     } else {
       ctx.filter = 'blur(20px) brightness(50%)';
     }
-    //ctx.globalAlpha = 0.2;
 
-    // if (this.platform.IOS) {
-    //   console.log('Effect : brightness(25%)');
-    //   ctx.filter = 'brightness(25%)';
-    // } else {
-    //   console.log('Effect : blur(20px) brightness(50%)');
-    //   ctx.filter = 'brightness(25%)';
-    //   //ctx.filter = 'blur(20px) brightness(50%)';
-    // }
 
     ctx.drawImage(
       this.videoPlayer.nativeElement,

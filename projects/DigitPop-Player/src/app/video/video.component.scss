@@ -1,8 +1,4 @@
 @media only screen and (max-width: 550px) {
-  // .button_start_grid {
-  //   grid-column: 2/3;
-  //   grid-row: 2/3;
-  // }
 
   .navelements {
     display: grid;
@@ -62,7 +58,7 @@
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
-    word-wrap:break-word
+    word-wrap: break-word;
   }
 
   .productImageMain {
@@ -1060,7 +1056,6 @@
     display: table-cell;
     vertical-align: middle;
   }
-
 }
 
 @media only screen and (min-width: 1367px) {
@@ -1240,7 +1235,6 @@
     display: table-cell;
     vertical-align: middle;
   }
-
 }
 
 @media only screen and (max-height: 412px) and (max-width: 550px) {
@@ -1340,6 +1334,11 @@
   top: -38px;
   left: 10px;
   transform: scale(1.5, 1.5);
+}
+
+.button_quizbutton_grid {
+  grid-column: 39/40;
+  grid-row: 1/2;
 }
 
 .button_locate_grid {
@@ -1508,6 +1507,11 @@
   color: white;
 }
 
+.button_go_to_quiz_grid {
+  grid-column: 2/3;
+  grid-row: 1/2;
+}
+
 .button_resume_grid {
   grid-column: 2/3;
   grid-row: 1/2;
@@ -1599,4 +1603,18 @@
   -webkit-transform: translate(-50%, -50%);
   -moz-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
+}
+
+#quizButton {
+  animation: quizScaleAnimation 5s ease-in-out infinite alternate;
+  -webkit-animation: quizScaleAnimation 5s ease-in-out infinite alternate;
+}
+
+@keyframes quizScaleAnimation {
+  0% {
+      transform: scale(1.0);
+  }
+  100% {
+      transform: scale(1.5);
+  }
 }
