@@ -111,6 +111,8 @@ export class DashboardComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   @ViewChild(MatSort) sort: MatSort;
+  @ViewChild('campaignsorter') campaignsorter: MatSort;
+
 
   openWelcomeDialog(): void {
     const dialogRef = this.dialog.open(WelcomeComponent, {
@@ -150,77 +152,70 @@ export class DashboardComponent implements OnInit {
     //console.log("Billsby URL : " + `${environment.billsbyUrl}`);
 
     this.campaignService
-      .getMyCampaigns()
-      .pipe(first())
-      .subscribe(
-        (campaigns) => {
-          this.campaignsDataSource = new MatTableDataSource<Campaign>(
-            campaigns
-          );
+    .getMyCampaigns()
+    .pipe(first())
+    .subscribe(
+        (campaigns: any) => {
+          this.campaignsDataSource = new MatTableDataSource<Campaign>(campaigns);
+          this.campaignsDataSource.sortingDataAccessor = ( item:any, property: any ) => {
+            switch (property) {
+              case 'name':
+                return item.name;
+              case 'project':
+                return item.project.name;
+              case'completionCount':
+                return item.stats.completionCount;
+              case 'engagementCount':
+                return item.stats.engagementCount;
+              case 'impressionCount':
+                return item.stats.impressionCount;
+              case 'budgetAmount':
+                return item.budgetAmount;
+              case 'spentAmount':
+                return item.spentAmount;
+              case 'startDate':
+                return item.startDate;
+              case 'audienceId':
+                return item.audienceId;
+
+              default:
+                return item[property];
+            }
+          }
+          this.campaignsDataSource.sort = this.campaignsorter;
         },
         (error) => {
           this.error = error;
         }
       );
 
-    // this.projectService
-    // .getMyProjects()
-    // .pipe(first())
-    // .subscribe(
+    this.projectService
+      .getMyProjects()
+      .subscribe(
+        (res:any) => {
+          this.dataSource = new MatTableDataSource(res);
+          this.dataSource.paginator = this.paginator;
+          this.dataSource.sortingDataAccessor = (item: any, property: any) => {
+            switch (property) {
+              case 'watchCount':
+                return item.stats.videoWatchCount;
+              case 'pauseCount':
+                return item.stats.videoPauseCount;
+              case 'clickCount':
+                return item.stats.videoClickCount;
+              case 'buyNowCount':
+                return item.stats.buyNowClickCount;
 
-    this.projectService.getProjects$().subscribe(
-      (res: any) => {
-        this.dataSource = new MatTableDataSource(res);
-        this.dataSource.paginator = this.paginator;
-        this.dataSource.sortingDataAccessor = (item: any, property: any) => {
-          switch (property) {
-            case 'watchCount':
-              return item.stats.videoWatchCount;
-            case 'pauseCount':
-              return item.stats.videoPauseCount;
-            case 'clickCount':
-              return item.stats.videoClickCount;
-            case 'buyNowCount':
-              return item.stats.buyNowClickCount;
-
-            default:
-              return item[property];
-          }
-        };
-        this.dataSource.sort = this.sort;
-      },
-      (error) => {
-        this.error = error;
-      }
-    );
-
-    // this.projectService
-    //   .getMyProjects()
-    //   .subscribe(
-    //     (res:any) => {
-    //       this.dataSource = new MatTableDataSource(res);
-    //       this.dataSource.paginator = this.paginator;
-    //       this.dataSource.sortingDataAccessor = (item: any, property: any) => {
-    //         switch (property) {
-    //           case 'watchCount':
-    //             return item.stats.videoWatchCount;
-    //           case 'pauseCount':
-    //             return item.stats.videoPauseCount;
-    //           case 'clickCount':
-    //             return item.stats.clickCount;
-    //           case 'buyNowCount':
-    //             return item.stats.buyNowClickCount;
-
-    //           default:
-    //             return item[property];
-    //         }
-    //       };
-    //       this.dataSource.sort = this.sort;
-    //     },
-    //     (error) => {
-    //       this.error = error;
-    //     }
-    //   );
+              default:
+                return item[property];
+            }
+          };
+          this.dataSource.sort = this.sort;
+        },
+        (error) => {
+          this.error = error;
+        }
+      );
 
     this.welcome();
   }
