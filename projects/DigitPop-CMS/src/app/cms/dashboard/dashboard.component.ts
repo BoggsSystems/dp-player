@@ -179,7 +179,7 @@ export class DashboardComponent implements OnInit {
             case 'pauseCount':
               return item.stats.videoPauseCount;
             case 'clickCount':
-              return item.stats.clickCount;
+              return item.stats.videoClickCount;
             case 'buyNowCount':
               return item.stats.buyNowClickCount;
 
