@@ -401,7 +401,7 @@
       <mat-label>Filter</mat-label>
       <input
         matInput
-        (keyup)="applyFilter($event)"
+        (keyup)="applyCampaignsFilter($event)"
         placeholder="Ex. Mia"
         #input
       />
@@ -409,65 +409,68 @@
 
     <table
       mat-table
+      multiTemplateDataRows
       [dataSource]="campaignsDataSource"
+      matSort
+      #campaignsorter='matSort'
       class="mat-elevation-z8"
     >
       <!-- Name Column -->
       <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef>Name</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
         <td mat-cell *matCellDef="let element">{{ element.name }}</td>
       </ng-container>
 
       <ng-container matColumnDef="project">
-        <th mat-header-cell *matHeaderCellDef>Project</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Project</th>
         <td mat-cell *matCellDef="let element">{{ element.project.name }}</td>
       </ng-container>
 
       <ng-container matColumnDef="completionCount">
-        <th class="text-align-right" mat-header-cell *matHeaderCellDef> <span matTooltip="The number times an ad has been run the full length and any gamification has been fulfilled."> Completions </span> </th>
+        <th class="text-align-right" mat-header-cell *matHeaderCellDef mat-sort-header> <span matTooltip="The number times an ad has been run the full length and any gamification has been fulfilled."> Completions </span> </th>
         <td class="text-align-right" mat-cell *matCellDef="let element"> {{element.stats.completionCount}} </td>
       </ng-container>
 
       <ng-container matColumnDef="engagementCount">
-        <th class="text-align-right" mat-header-cell *matHeaderCellDef> <span matTooltip="The number times an ad has been run the full length and any gamification has been fulfilled."> Engagements </span> </th>
-        <td class="text-align-right" mat-cell *matCellDef="let element"> {{element.stats.engagementCount}} </td>
+        <th class="text-align-right" mat-header-cell *matHeaderCellDef mat-sort-header> <span matTooltip="The number times an ad has been run the full length and any gamification has been fulfilled."> Engagements </span> </th>
+        <td class="text-align-right" mat-cell *matCellDef="let element"> {{ element.stats.engagementCount }} </td>
       </ng-container>
 
       <ng-container matColumnDef="impressionCount">
-        <th class="text-align-right" mat-header-cell *matHeaderCellDef><span matTooltip="Campaign Impressions.  Measured by how many times an ad has been initiated."> Impressions </span> </th>
+        <th class="text-align-right" mat-header-cell *matHeaderCellDef mat-sort-header><span matTooltip="Campaign Impressions.  Measured by how many times an ad has been initiated."> Impressions </span> </th>
         <td class="text-align-right" mat-cell *matCellDef="let element"> {{element.stats.impressionCount}} </td>
       </ng-container>
 
       <ng-container matColumnDef="budgetAmount">
-        <th mat-header-cell *matHeaderCellDef>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
           <span matTooltip="Daily budget of campaign."> Budget </span>
         </th>
         <td mat-cell *matCellDef="let element">{{ element.budgetAmount }}</td>
       </ng-container>
 
       <ng-container matColumnDef="spentAmount">
-        <th mat-header-cell *matHeaderCellDef>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
           <span matTooltip="Total Cost of Campaign"> Total Spend </span>
         </th>
         <td mat-cell *matCellDef="let element">{{ element.spentAmount }}</td>
       </ng-container>
 
       <ng-container matColumnDef="startDate">
-        <th mat-header-cell *matHeaderCellDef>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
           <span matTooltip="Start Date"> Start Date </span>
         </th>
         <td mat-cell *matCellDef="let element">{{ element.startDate }}</td>
       </ng-container>
 
       <ng-container matColumnDef="audienceId">
-        <th mat-header-cell *matHeaderCellDef>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
           <span matTooltip="Audience of Campaign"> Audience </span>
         </th>
         <td mat-cell *matCellDef="let element">{{ element.audienceId }}</td>
       </ng-container>
 
       <ng-container matColumnDef="active">
-        <th mat-header-cell *matHeaderCellDef>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
           <span matTooltip="Status of campaign. Active/Inactive.">
             Active
           </span>
