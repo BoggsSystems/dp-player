@@ -1,0 +1,67 @@
+table {
+    width: 100%;
+}
+
+.thumbnail {
+    position: relative;
+    width: 50px;
+    height: 50px;
+    overflow: hidden;
+}
+
+.thumbnail img {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    height: 100%;
+    width: auto;
+    -webkit-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
+
+.thumbnail img.portrait {
+    width: 100%;
+    height: auto;
+}
+
+.mat-header-cell {
+    padding: 0px 20px 0px 20px;
+}
+
+.mat-cell {
+    padding: 0px 20px 0px 20px;
+}
+
+tr.example-productGroup-detail-row {
+    height: 0;
+}
+
+.example-productGroup-element-detail {
+    overflow: hidden;
+    display: flex;
+}
+
+.inner-table {
+    width: 100%;
+}
+
+.inner-table mat-form-field {
+    margin-top: 15px;
+    width: 100%;
+}
+
+
+// Extended Section
+table {
+    width: 100%;
+}
+
+.inner-table {
+    width: 100%;
+}
+
+.inner-table mat-form-field {
+    margin-top: 15px;
+    width: 100%;
+}
