@@ -6,7 +6,7 @@
   font-family: "Roboto Condensed", sans-serif;
 }
 #main_cont {
-  width: 100%;
+  /* width: 100%; */
   max-width: 1170px;
   margin: 0 auto;
   height: 100%;
