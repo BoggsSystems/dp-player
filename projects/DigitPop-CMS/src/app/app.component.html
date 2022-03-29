@@ -39,7 +39,7 @@
 <mat-sidenav-container fxFlexFill class="mobile-container">
   <mat-sidenav #sidenav fxLayout="column">
       <div fxLayout="column">
-          <span (click)="sidenav.toggle()" href="javascript:void(0)" mat-button>X</span>
+          <span fxLayoutAlign="end end" class="close-menu" (click)="sidenav.toggle()" href="javascript:void(0)" mat-button>    </span>
           <div *ngIf="!isCMS && isLogin && isEligible" fxShow="true">
               <div class="page-nav" *ngFor="let item of navSections | keyvalue">
                   <a mat-button href="javascript:void(0)" (click)="scrollToSection(item.key)">{{ item.value }}</a>
