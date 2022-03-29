@@ -16,7 +16,7 @@
   </div>
   <span fxFlex></span>
 
-  <div *ngIf="!isCMS && isLogin && isEligible" fxShow="true" fxHide.lt-sm="true">
+  <div *ngIf="!isCMS && isLogin && isEligible" fxShow="true" fxHide.lt-sm="true" fxLayout="row">
       <div class="page-nav" *ngFor="let item of navSections | keyvalue">
           <a mat-button href="javascript:void(0)" (click)="scrollToSection(item.key)">{{ item.value }}</a>
       </div>
