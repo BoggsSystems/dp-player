@@ -166,6 +166,7 @@ export class DashboardComponent implements OnInit {
     .getMyProjects()
     .subscribe(
       (res:any) => {
+        this.modifyThumbnailUrl(res);
         this.dataSource = new MatTableDataSource(res);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sortingDataAccessor = (item: any, property: any) => {
@@ -230,6 +231,24 @@ export class DashboardComponent implements OnInit {
           this.error = error;
         }
       );
+  }
+
+  modifyThumbnailUrl(response: any) {
+    response.forEach((project: any) => {
+      if('thumbnail' in project) {
+        let url = project['thumbnail']['url'],
+          queryTerm = 'upload/',
+          queryLength = queryTerm.length,
+          uploadsIndex = url.indexOf(queryTerm),
+          paramsIndex = uploadsIndex + queryLength,
+          imgHeight = 50,
+          imgWidth = 50,
+          params = `c_fill,h_${imgHeight},w_${imgWidth}/`,
+          resizedUrl = url.substr(0, paramsIndex) + params + url.substr(paramsIndex);
+
+        project['thumbnail']['url'] = resizedUrl;
+      }
+    });
   }
 
   projectsHelp() {
