@@ -27,6 +27,9 @@ import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.compone
 import { Campaign } from '../../shared/models/campaign';
 import { OkDialogComponent } from '../ok-dialog/ok-dialog.component';
 
+interface CachedPages {
+  [key: string]: any;
+}
 @Component({
   selector: 'DigitPop-dashboard',
   templateUrl: './dashboard.component.html',
@@ -108,9 +111,10 @@ export class DashboardComponent implements OnInit {
     this.width = 150;
   }
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
+  @ViewChild('campaignpaginator') campaignpaginator: MatPaginator;
 
-  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatSort, {static: true}) sort: MatSort;
   @ViewChild('campaignsorter') campaignsorter: MatSort;
 
 
@@ -149,14 +153,52 @@ export class DashboardComponent implements OnInit {
   }
 
   ngOnInit() {
-    //console.log("Billsby URL : " + `${environment.billsbyUrl}`);
+    this.welcome();
+  }
 
+  ngAfterViewInit() {
+    this.getProjects();
+    this.getCampaigns();
+  }
+
+  getProjects() {
+    this.projectService
+    .getMyProjects()
+    .subscribe(
+      (res:any) => {
+        this.dataSource = new MatTableDataSource(res);
+        this.dataSource.paginator = this.paginator;
+        this.dataSource.sortingDataAccessor = (item: any, property: any) => {
+          switch (property) {
+            case 'watchCount':
+              return item.stats.videoWatchCount;
+            case 'pauseCount':
+              return item.stats.videoPauseCount;
+            case 'clickCount':
+              return item.stats.videoClickCount;
+            case 'buyNowCount':
+              return item.stats.buyNowClickCount;
+
+            default:
+              return item[property];
+          }
+        };
+        this.dataSource.sort = this.sort;
+      },
+      (error) => {
+        this.error = error;
+      }
+    );
+  }
+
+  getCampaigns() {
     this.campaignService
     .getMyCampaigns()
     .pipe(first())
     .subscribe(
         (campaigns: any) => {
           this.campaignsDataSource = new MatTableDataSource<Campaign>(campaigns);
+          this.campaignsDataSource.paginator = this.campaignpaginator;
           this.campaignsDataSource.sortingDataAccessor = ( item:any, property: any ) => {
             switch (property) {
               case 'name':
@@ -188,36 +230,6 @@ export class DashboardComponent implements OnInit {
           this.error = error;
         }
       );
-
-    this.projectService
-      .getMyProjects()
-      .subscribe(
-        (res:any) => {
-          this.dataSource = new MatTableDataSource(res);
-          this.dataSource.paginator = this.paginator;
-          this.dataSource.sortingDataAccessor = (item: any, property: any) => {
-            switch (property) {
-              case 'watchCount':
-                return item.stats.videoWatchCount;
-              case 'pauseCount':
-                return item.stats.videoPauseCount;
-              case 'clickCount':
-                return item.stats.videoClickCount;
-              case 'buyNowCount':
-                return item.stats.buyNowClickCount;
-
-              default:
-                return item[property];
-            }
-          };
-          this.dataSource.sort = this.sort;
-        },
-        (error) => {
-          this.error = error;
-        }
-      );
-
-    this.welcome();
   }
 
   projectsHelp() {
