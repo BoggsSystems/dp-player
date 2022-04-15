@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { map, shareReplay } from 'rxjs/operators';
+import { map, publishReplay, refCount, shareReplay } from 'rxjs/operators';
 import { Project } from '../models/project';
 import { environment } from 'projects/DigitPop-CMS/src/environments/environment';
 import { Observable } from 'rxjs';
@@ -70,16 +70,7 @@ export class ProjectService {
   getMyProjects() {
     return this.httpClient
       .get(`${environment.apiUrl}/api/projects/myprojects`)
-      .pipe(shareReplay({ refCount: true, bufferSize: 1 }));
-
-    // return this.httpClient
-    //   .get<any>(`${environment.apiUrl}/api/projects/myprojects`)
-    //   .pipe(
-    //     shareReplay({refCount: true, bufferSize: 1}),
-    //     map((res) => {
-    //       return res;
-    //     })
-    //   );
+      .pipe(publishReplay(1), refCount());
   }
 
   getPublishedProjects() {

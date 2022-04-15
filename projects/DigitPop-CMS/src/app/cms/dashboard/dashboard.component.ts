@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, Directive, ElementRef } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Breakpoints, BreakpointObserver } from '@angular/cdk/layout';
 import { map, shareReplay, first } from 'rxjs/operators';
@@ -27,9 +27,6 @@ import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.compone
 import { Campaign } from '../../shared/models/campaign';
 import { OkDialogComponent } from '../ok-dialog/ok-dialog.component';
 
-interface CachedPages {
-  [key: string]: any;
-}
 @Component({
   selector: 'DigitPop-dashboard',
   templateUrl: './dashboard.component.html',
@@ -111,10 +108,10 @@ export class DashboardComponent implements OnInit {
     this.width = 150;
   }
 
-  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild('campaignpaginator') campaignpaginator: MatPaginator;
 
-  @ViewChild(MatSort, {static: true}) sort: MatSort;
+  @ViewChild(MatSort, { static: true }) sort: MatSort;
   @ViewChild('campaignsorter') campaignsorter: MatSort;
 
 
@@ -161,81 +158,105 @@ export class DashboardComponent implements OnInit {
     this.getCampaigns();
   }
 
-  getProjects() {
-    this.projectService
-    .getMyProjects()
-    .subscribe(
-      (res:any) => {
-        this.modifyThumbnailUrl(res);
-        this.dataSource = new MatTableDataSource(res);
-        this.dataSource.paginator = this.paginator;
-        this.dataSource.sortingDataAccessor = (item: any, property: any) => {
-          switch (property) {
-            case 'watchCount':
-              return item.stats.videoWatchCount;
-            case 'pauseCount':
-              return item.stats.videoPauseCount;
-            case 'clickCount':
-              return item.stats.videoClickCount;
-            case 'buyNowCount':
-              return item.stats.buyNowClickCount;
+  checkIfCached() {
 
-            default:
-              return item[property];
+  }
+
+  getProjects() {
+    if (sessionStorage.getItem('myprojects') !== null) {
+      const cachedResponse: any = sessionStorage.getItem('myprojects');
+      this.renderProjects(JSON.parse(cachedResponse));
+    } else {
+      this.projectService
+        .getMyProjects()
+        .subscribe(
+          (res: any) => {
+            this.modifyThumbnailUrl(res);
+            sessionStorage.setItem('myprojects', JSON.stringify(res));
+            this.renderProjects(res);
+          },
+          (error) => {
+            this.error = error;
           }
-        };
-        this.dataSource.sort = this.sort;
-      },
-      (error) => {
-        this.error = error;
+        );
+    }
+  }
+
+  renderProjects(projects: any) {
+    this.dataSource = new MatTableDataSource(projects);
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+    this.dataSource.sortingDataAccessor = (item: any, property: any) => {
+      switch (property) {
+        case 'watchCount':
+          return item.stats.videoWatchCount;
+        case 'pauseCount':
+          return item.stats.videoPauseCount;
+        case 'clickCount':
+          return item.stats.videoClickCount;
+        case 'buyNowCount':
+          return item.stats.buyNowClickCount;
+
+        default:
+          return item[property];
       }
-    );
+    };
   }
 
   getCampaigns() {
-    this.campaignService
-    .getMyCampaigns()
-    .pipe(first())
-    .subscribe(
-        (campaigns: any) => {
-          this.campaignsDataSource = new MatTableDataSource<Campaign>(campaigns);
-          this.campaignsDataSource.paginator = this.campaignpaginator;
-          this.campaignsDataSource.sortingDataAccessor = ( item:any, property: any ) => {
-            switch (property) {
-              case 'name':
-                return item.name;
-              case 'project':
-                return item.project.name;
-              case'completionCount':
-                return item.stats.completionCount;
-              case 'engagementCount':
-                return item.stats.engagementCount;
-              case 'impressionCount':
-                return item.stats.impressionCount;
-              case 'budgetAmount':
-                return item.budgetAmount;
-              case 'spentAmount':
-                return item.spentAmount;
-              case 'startDate':
-                return item.startDate;
-              case 'audienceId':
-                return item.audienceId;
-
-              default:
-                return item[property];
-            }
+    if (sessionStorage.getItem('mycampaigns') !== null) {
+      const cachedResponse: any = sessionStorage.getItem('mycampaigns');
+      this.renderCampaigns(JSON.parse(cachedResponse));
+    } else {
+      this.campaignService
+        .getMyCampaigns()
+        .pipe(first())
+        .subscribe(
+          (campaigns: any) => {
+            sessionStorage.setItem('mycampaigns', JSON.stringify(campaigns));
+            this.renderCampaigns(campaigns);
+          },
+          (error) => {
+            this.error = error;
           }
-          this.campaignsDataSource.sort = this.campaignsorter;
-        },
-        (error) => {
-          this.error = error;
-        }
-      );
+        );
+    }
+  }
+
+  renderCampaigns(campaigns: any) {
+    this.campaignsDataSource = new MatTableDataSource<Campaign>(campaigns);
+    this.campaignsDataSource.paginator = this.campaignpaginator;
+    this.campaignsDataSource.sortingDataAccessor = (item: any, property: any) => {
+      switch (property) {
+        case 'name':
+          return item.name;
+        case 'project':
+          return item.project.name;
+        case 'completionCount':
+          return item.stats.completionCount;
+        case 'engagementCount':
+          return item.stats.engagementCount;
+        case 'impressionCount':
+          return item.stats.impressionCount;
+        case 'budgetAmount':
+          return item.budgetAmount;
+        case 'spentAmount':
+          return item.spentAmount;
+        case 'startDate':
+          return item.startDate;
+        case 'audienceId':
+          return item.audienceId;
+
+        default:
+          return item[property];
+      }
+    }
+    this.campaignsDataSource.sort = this.campaignsorter;
   }
 
   modifyThumbnailUrl(response: any) {
     response.forEach((project: any) => {
-      if('thumbnail' in project) {
+      if ('thumbnail' in project) {
         let url = project['thumbnail']['url'],
           queryTerm = 'upload/',
           queryLength = queryTerm.length,
