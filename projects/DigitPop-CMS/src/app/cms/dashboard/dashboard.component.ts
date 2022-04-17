@@ -28,7 +28,7 @@ import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.compone
 import { Campaign } from '../../shared/models/campaign';
 import { OkDialogComponent } from '../ok-dialog/ok-dialog.component';
 
-interface CachedNestedData {
+interface TablesSettings {
   [key: string]: any;
 }
 
@@ -99,6 +99,10 @@ export class DashboardComponent implements OnInit {
   expandedElement: Project | null;
   expandedProductGroupElement: ProductGroup | null;
   color: ThemePalette = 'primary';
+  projectsPage: number = 0;
+  projectsPageSize: number = 5;
+  campaignsPage: number = 0;
+  campaignsPageSize: number = 5;
 
   constructor(
     private route: ActivatedRoute,
@@ -157,12 +161,26 @@ export class DashboardComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.getTablesSetting();
     this.welcome();
   }
 
   ngAfterViewInit() {
     this.getProjects();
     this.getCampaigns();
+  }
+
+  getTablesSetting() {
+    if (sessionStorage.getItem('projectsTable') !== null) {
+      let settings = sessionStorage.getItem('projectsTable');
+      this.projectsPage = +JSON.parse(settings).page;
+      this.projectsPageSize = +JSON.parse(settings).pageSize;
+    }
+    if (sessionStorage.getItem('campaignsTable') !== null) {
+      let settings = sessionStorage.getItem('campaignsTable');
+      this.campaignsPage = +JSON.parse(settings).page;
+      this.campaignsPageSize = +JSON.parse(settings).pageSize;
+    }
   }
 
   getProjects() {
@@ -208,10 +226,35 @@ export class DashboardComponent implements OnInit {
     )
   }
 
-  onTableChange(event: any) {
-    let page: number = event.pageIndex,
-      pageSize: number = event.pageSize;
-    this.populateProjects(page, pageSize);
+  onTableChange(event: any, source: string) {
+    if (source === 'projects') {
+      let ProjectsTable: TablesSettings = {};
+
+      if (this.projectsPage != event.pageIndex) {
+        this.projectsPage = event.pageIndex;
+      }
+
+      if (this.projectsPageSize != event.pageSize) {
+        this.projectsPageSize = event.pageSize;
+      }
+
+      this.populateProjects(this.projectsPage, this.projectsPageSize);
+      Object.assign(ProjectsTable, {'page': this.projectsPage, 'pageSize': this.projectsPageSize});
+      sessionStorage.setItem('projectsTable', JSON.stringify(ProjectsTable));
+    } else if(source === 'campaigns') {
+      let CampaignsTable: TablesSettings = {};
+
+      if (this.campaignsPage != event.pageIndex) {
+        this.campaignsPage = event.pageIndex;
+      }
+
+      if (this.campaignsPageSize != event.pageSize) {
+        this.campaignsPageSize = event.pageSize;
+      }
+
+      Object.assign(CampaignsTable, {'page': this.campaignsPage, 'pageSize': this.campaignsPageSize});
+      sessionStorage.setItem('campaignsTable', JSON.stringify(CampaignsTable));
+    }
   }
 
   renderProjects(projects: any) {
@@ -233,103 +276,6 @@ export class DashboardComponent implements OnInit {
           return item[property];
       }
     };
-  }
-
-  getProudctGroupData(data: any) {
-    let i: number = 0,
-      projects: Project[] = [];
-
-    data.forEach((project: any) => {
-      if(project.productGroupTimeLine) {
-        ++i;
-        projects.push(project);
-      }
-    });
-
-    for(let index =0; index < i; index++) {
-      let groupsCount: number = projects[index].productGroupTimeLine.length;
-      if(groupsCount > 0) {
-        console.log(index);
-        console.log(projects[index].productGroupTimeLine);
-      }
-    }
-    // console.log(i);
-    // i = projects.length;
-    // console.log('the projects');
-    // console.log(typeof projects[1]);
-    // projects.forEach((pro: any) => {
-    //   if(pro.productGroupTimeLine) {
-    //     console.log(i);
-    //   }
-    // })
-    // if(projects[i][productGroupTimeLine])
-    // if (projects[1].productGroupTimeLine?.lenght > 0) {
-    //   console.log('yes?');
-    // }
-    this.productGroupService
-    .getProductGroup(projects[0].productGroupTimeLine[0])
-    .subscribe(
-      (res: any) => {
-        console.log(res);
-      }
-    )
-    // console.log({projects});
-    // projects.forEach((project: any) => {
-      // let projectId: any = project._id;
-        //   if (projectId in this.cachedData$
-    //     || ('nestedtable' in sessionStorage
-    //       && JSON.parse(sessionStorage.getItem('nestedtable'))[projectId]
-    //     )
-    //   ) {
-    //     let data: any = this.cachedData$[projectId];
-    //     let ses: any = sessionStorage.getItem('nestedtable');
-    //     console.log('cached');
-    //     console.log(JSON.parse(ses)[projectId]);
-
-    //   if (project.productGroupTimeLine) {
-    //     project.productGroupTimeLine.forEach((groupId: String) => {
-    //       console.log('in grouptimeline', groupId);
-    //     })
-    //   }
-    // });
-    // projects.forEach((project: any) => {
-
-    // if (project.productGroupTimeLine) {
-    //   console.log(project.productGroupTimeLine);
-    //   project.productGroupTimeLine.forEach((groupId: String) => {
-    //     console.log(groupId);
-    //     this.productGroupService
-    //       .getProductGroup(groupId)
-    //       .subscribe(
-    //         (res) => {
-    //           console.log(res);
-    //         }
-    //       )
-    // this.ProductGroupService
-    //   .getProductGroup(groupId)
-    //   .subscribe(
-    //     (res: any) => {
-    //       // this.nestedDataSource.push(res);
-    //       // console.log(projectId);
-    //       // Object.assign(this.cachedData$, { [projectId]: this.nestedDataSource });
-    //       // sessionStorage.setItem('nestedtable', JSON.stringify(this.cachedData$));
-    //     }
-    //   );
-    // });
-    // }
-    // console.log(this.cachedData$);
-    //   if (projectId in this.cachedData$
-    //     || ('nestedtable' in sessionStorage
-    //       && JSON.parse(sessionStorage.getItem('nestedtable'))[projectId]
-    //     )
-    //   ) {
-    //     let data: any = this.cachedData$[projectId];
-    //     let ses: any = sessionStorage.getItem('nestedtable');
-    //     console.log('cached');
-    //     console.log(JSON.parse(ses)[projectId]);
-    //   } else {
-
-    //   }
   }
 
   getCampaigns() {

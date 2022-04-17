@@ -164,7 +164,7 @@
       <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
     </table>
 
-    <mat-paginator #paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons (page)="onTableChange($event)"></mat-paginator>
+    <mat-paginator #paginator [pageIndex]="projectsPage" [pageSize]="projectsPageSize"  [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons (page)="onTableChange($event, 'projects')"></mat-paginator>
   </div>
 
   <div class="campaignsToolbar">
@@ -279,6 +279,6 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumns2"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns2"></tr>
     </table>
-    <mat-paginator #campaignpaginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+    <mat-paginator #campaignpaginator [pageIndex]="campaignsPage" [pageSize]="campaignsPageSize" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons (page)="onTableChange($event, 'campaigns')"></mat-paginator>
   </div>
 </div>

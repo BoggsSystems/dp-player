@@ -39,11 +39,4 @@ export class ProductGroupService {
       `${environment.apiUrl}/api/productGroups/` + productGroup._id
     );
   }
-
-  getProductGroup(groupId: any) {
-    console.log('is');
-    return this.httpClient
-    .get(`${environment.apiUrl}/api/productGroups/${groupId}`)
-    .pipe(publishReplay(1), refCount());
-  }
 }
