@@ -73,6 +73,12 @@ export class ProjectService {
       .pipe(publishReplay(1), refCount());
   }
 
+  populateMyProject(page: number, pageSize: number) {
+    return this.httpClient
+    .get(`${environment.apiUrl}/api/projects/populateproject?page=${page}&pageSize=${pageSize}`)
+    .pipe(publishReplay(1), refCount());
+  }
+
   getPublishedProjects() {
     return this.httpClient.get(
       `${environment.apiUrl}/api/projects?activeOnly=true`

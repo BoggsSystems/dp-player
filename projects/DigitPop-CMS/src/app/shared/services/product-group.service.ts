@@ -4,6 +4,7 @@ import { ProductGroup } from '../models/productGroup';
 import { Project } from '../models/project';
 import * as _ from 'lodash';
 import { environment } from 'projects/DigitPop-CMS/src/environments/environment';
+import { publishReplay, refCount } from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
 export class ProductGroupService {
@@ -37,5 +38,12 @@ export class ProductGroupService {
     return this.httpClient.delete<any>(
       `${environment.apiUrl}/api/productGroups/` + productGroup._id
     );
+  }
+
+  getProductGroup(groupId: any) {
+    console.log('is');
+    return this.httpClient
+    .get(`${environment.apiUrl}/api/productGroups/${groupId}`)
+    .pipe(publishReplay(1), refCount());
   }
 }

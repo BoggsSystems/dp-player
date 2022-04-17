@@ -20,12 +20,17 @@ import { ProductGroup } from '../../shared/models/productGroup';
 import { BillsbyService } from '../../shared/services/billsby.service';
 import { CampaignService } from '../../shared/services/campaign.service';
 import { ProjectService } from '../../shared/services/project.service';
+import { ProductGroupService } from '../../shared/services/product-group.service';
 import { AuthenticationService } from '../../shared/services/auth-service.service';
 import { WelcomeComponent } from '../help/welcome/welcome.component';
 import { ProjectsHelpComponent } from '../help/projects/projects-help.component';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 import { Campaign } from '../../shared/models/campaign';
 import { OkDialogComponent } from '../ok-dialog/ok-dialog.component';
+
+interface CachedNestedData {
+  [key: string]: any;
+}
 
 @Component({
   selector: 'DigitPop-dashboard',
@@ -86,6 +91,7 @@ export class DashboardComponent implements OnInit {
   ];
   dataSource: any;
   campaignsDataSource: any;
+  nestedDataSource: String[] = [];
   error = '';
   cid: any;
   width: any;
@@ -100,9 +106,10 @@ export class DashboardComponent implements OnInit {
     private campaignService: CampaignService,
     private breakpointObserver: BreakpointObserver,
     private projectService: ProjectService,
+    private productGroupService: ProductGroupService,
     private authService: AuthenticationService,
     private router: Router,
-    public dialog: MatDialog
+    public dialog: MatDialog,
   ) {
     this.height = 25;
     this.width = 150;
@@ -158,14 +165,11 @@ export class DashboardComponent implements OnInit {
     this.getCampaigns();
   }
 
-  checkIfCached() {
-
-  }
-
   getProjects() {
     if (sessionStorage.getItem('myprojects') !== null) {
-      const cachedResponse: any = sessionStorage.getItem('myprojects');
-      this.renderProjects(JSON.parse(cachedResponse));
+      const cachedResponse: any = sessionStorage.getItem('myprojects'),
+        data = JSON.parse(cachedResponse);
+      this.renderProjects(data);
     } else {
       this.projectService
         .getMyProjects()
@@ -174,12 +178,40 @@ export class DashboardComponent implements OnInit {
             this.modifyThumbnailUrl(res);
             sessionStorage.setItem('myprojects', JSON.stringify(res));
             this.renderProjects(res);
+            this.populateProjects();
           },
           (error) => {
             this.error = error;
           }
         );
     }
+  }
+
+  populateProjects(page: number = 0, pageSize: number = 5) {
+    this.projectService
+    .populateMyProject(page, pageSize)
+    .subscribe(
+      (res: any) => {
+        this.modifyThumbnailUrl(res);
+        let numberOfProjects: number = res.length,
+          currentTable:any = sessionStorage.getItem('myprojects'),
+          data: any = JSON.parse(currentTable),
+          startIndex: number = page * pageSize,
+          iterator: number = 0;
+        for(let i: number = startIndex; i < numberOfProjects+startIndex; i++) {
+          data[i] = res[iterator];
+          ++iterator;
+        }
+        sessionStorage.setItem('myprojects', JSON.stringify(data));
+        this.renderProjects(data);
+      }
+    )
+  }
+
+  onTableChange(event: any) {
+    let page: number = event.pageIndex,
+      pageSize: number = event.pageSize;
+    this.populateProjects(page, pageSize);
   }
 
   renderProjects(projects: any) {
@@ -201,6 +233,103 @@ export class DashboardComponent implements OnInit {
           return item[property];
       }
     };
+  }
+
+  getProudctGroupData(data: any) {
+    let i: number = 0,
+      projects: Project[] = [];
+
+    data.forEach((project: any) => {
+      if(project.productGroupTimeLine) {
+        ++i;
+        projects.push(project);
+      }
+    });
+
+    for(let index =0; index < i; index++) {
+      let groupsCount: number = projects[index].productGroupTimeLine.length;
+      if(groupsCount > 0) {
+        console.log(index);
+        console.log(projects[index].productGroupTimeLine);
+      }
+    }
+    // console.log(i);
+    // i = projects.length;
+    // console.log('the projects');
+    // console.log(typeof projects[1]);
+    // projects.forEach((pro: any) => {
+    //   if(pro.productGroupTimeLine) {
+    //     console.log(i);
+    //   }
+    // })
+    // if(projects[i][productGroupTimeLine])
+    // if (projects[1].productGroupTimeLine?.lenght > 0) {
+    //   console.log('yes?');
+    // }
+    this.productGroupService
+    .getProductGroup(projects[0].productGroupTimeLine[0])
+    .subscribe(
+      (res: any) => {
+        console.log(res);
+      }
+    )
+    // console.log({projects});
+    // projects.forEach((project: any) => {
+      // let projectId: any = project._id;
+        //   if (projectId in this.cachedData$
+    //     || ('nestedtable' in sessionStorage
+    //       && JSON.parse(sessionStorage.getItem('nestedtable'))[projectId]
+    //     )
+    //   ) {
+    //     let data: any = this.cachedData$[projectId];
+    //     let ses: any = sessionStorage.getItem('nestedtable');
+    //     console.log('cached');
+    //     console.log(JSON.parse(ses)[projectId]);
+
+    //   if (project.productGroupTimeLine) {
+    //     project.productGroupTimeLine.forEach((groupId: String) => {
+    //       console.log('in grouptimeline', groupId);
+    //     })
+    //   }
+    // });
+    // projects.forEach((project: any) => {
+
+    // if (project.productGroupTimeLine) {
+    //   console.log(project.productGroupTimeLine);
+    //   project.productGroupTimeLine.forEach((groupId: String) => {
+    //     console.log(groupId);
+    //     this.productGroupService
+    //       .getProductGroup(groupId)
+    //       .subscribe(
+    //         (res) => {
+    //           console.log(res);
+    //         }
+    //       )
+    // this.ProductGroupService
+    //   .getProductGroup(groupId)
+    //   .subscribe(
+    //     (res: any) => {
+    //       // this.nestedDataSource.push(res);
+    //       // console.log(projectId);
+    //       // Object.assign(this.cachedData$, { [projectId]: this.nestedDataSource });
+    //       // sessionStorage.setItem('nestedtable', JSON.stringify(this.cachedData$));
+    //     }
+    //   );
+    // });
+    // }
+    // console.log(this.cachedData$);
+    //   if (projectId in this.cachedData$
+    //     || ('nestedtable' in sessionStorage
+    //       && JSON.parse(sessionStorage.getItem('nestedtable'))[projectId]
+    //     )
+    //   ) {
+    //     let data: any = this.cachedData$[projectId];
+    //     let ses: any = sessionStorage.getItem('nestedtable');
+    //     console.log('cached');
+    //     console.log(JSON.parse(ses)[projectId]);
+    //   } else {
+
+    //   }
   }
 
   getCampaigns() {
