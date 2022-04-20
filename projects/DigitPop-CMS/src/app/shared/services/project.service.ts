@@ -73,9 +73,15 @@ export class ProjectService {
       .pipe(publishReplay(1), refCount());
   }
 
-  populateMyProject(page: number, pageSize: number) {
+  populateMyProject(page: number, pageSize: number, sorted: boolean = false, sortby: string = '', sortdir: string = '') {
+    let reqUrl: string;
+    if(sorted) {
+      reqUrl = `${environment.apiUrl}/api/projects/populateproject?page=${page}&pageSize=${pageSize}&sortby=${sortby}&sortdir=${sortdir}`;
+    } else {
+      reqUrl = `${environment.apiUrl}/api/projects/populateproject?page=${page}&pageSize=${pageSize}`;
+    }
     return this.httpClient
-    .get(`${environment.apiUrl}/api/projects/populateproject?page=${page}&pageSize=${pageSize}`)
+    .get(reqUrl)
     .pipe(publishReplay(1), refCount());
   }
 

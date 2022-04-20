@@ -23,7 +23,7 @@
       <input matInput (keyup)="applyFilter($event)" placeholder="Ex. Mia" #input />
     </mat-form-field>
 
-    <table mat-table multiTemplateDataRows [dataSource]="dataSource" matSort class="mat-elevation-z8">
+    <table mat-table multiTemplateDataRows [dataSource]="dataSource" matSort class="mat-elevation-z8" (matSortChange)="onTableSort($event)">
       <!--- Note that these columns can be defined in any order.
           The actual rendered columns are set as a property on the row definition" -->
 

@@ -32,6 +32,10 @@ interface TablesSettings {
   [key: string]: any;
 }
 
+interface SortSettings {
+  [key: string]: any;
+}
+
 @Component({
   selector: 'DigitPop-dashboard',
   templateUrl: './dashboard.component.html',
@@ -196,7 +200,10 @@ export class DashboardComponent implements OnInit {
             this.modifyThumbnailUrl(res);
             sessionStorage.setItem('myprojects', JSON.stringify(res));
             this.renderProjects(res);
+            let numberOfPages: number = res.length / 5;
             this.populateProjects();
+            // for(let i = 0; i < numberOfPages; i++) {
+            // }
           },
           (error) => {
             this.error = error;
@@ -205,25 +212,47 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  populateProjects(page: number = 0, pageSize: number = 5) {
-    this.projectService
-    .populateMyProject(page, pageSize)
-    .subscribe(
-      (res: any) => {
-        this.modifyThumbnailUrl(res);
-        let numberOfProjects: number = res.length,
-          currentTable:any = sessionStorage.getItem('myprojects'),
-          data: any = JSON.parse(currentTable),
-          startIndex: number = page * pageSize,
-          iterator: number = 0;
-        for(let i: number = startIndex; i < numberOfProjects+startIndex; i++) {
-          data[i] = res[iterator];
-          ++iterator;
+  populateProjects(page: number = 0, pageSize: number = 5, sorted: boolean = false, sortedby: string = '', sortdir: string='') {
+    if (sorted) {
+      this.projectService
+      .populateMyProject(page, pageSize, sorted, sortedby, sortdir)
+      .subscribe(
+        (res: any) => {
+          this.modifyThumbnailUrl(res);
+          let numberOfProjects: number = res.length,
+            currentTable:any = sessionStorage.getItem('myprojects'),
+            data: any = JSON.parse(currentTable),
+            startIndex: number = page * pageSize,
+            iterator: number = 0;
+          for(let i: number = startIndex; i < numberOfProjects+startIndex; i++) {
+            data[i] = res[iterator];
+            ++iterator;
+          }
+          sessionStorage.setItem('myprojects', JSON.stringify(data));
+          this.renderProjects(data);
         }
-        sessionStorage.setItem('myprojects', JSON.stringify(data));
-        this.renderProjects(data);
-      }
-    )
+      )
+    } else {
+      this.projectService
+      .populateMyProject(page, pageSize)
+      .subscribe(
+        (res: any) => {
+          this.modifyThumbnailUrl(res);
+          let numberOfProjects: number = res.length,
+            currentTable:any = sessionStorage.getItem('myprojects'),
+            data: any = JSON.parse(currentTable),
+            startIndex: number = page * pageSize,
+            iterator: number = 0;
+          for(let i: number = startIndex; i < numberOfProjects+startIndex; i++) {
+            data[i] = res[iterator];
+            ++iterator;
+          }
+          sessionStorage.setItem('myprojects', JSON.stringify(data));
+          this.renderProjects(data);
+        }
+      )
+    }
+
   }
 
   onTableChange(event: any, source: string) {
@@ -238,7 +267,12 @@ export class DashboardComponent implements OnInit {
         this.projectsPageSize = event.pageSize;
       }
 
-      this.populateProjects(this.projectsPage, this.projectsPageSize);
+      if(sessionStorage.getItem('sortsettings')) {
+        let settings = JSON.parse(sessionStorage.getItem('sortsettings'));
+        this.populateProjects(this.projectsPage, this.projectsPageSize, true, settings.active, settings.direction);
+      } else {
+        this.populateProjects(this.projectsPage, this.projectsPageSize);
+      }
       Object.assign(ProjectsTable, {'page': this.projectsPage, 'pageSize': this.projectsPageSize});
       sessionStorage.setItem('projectsTable', JSON.stringify(ProjectsTable));
     } else if(source === 'campaigns') {
@@ -254,6 +288,33 @@ export class DashboardComponent implements OnInit {
 
       Object.assign(CampaignsTable, {'page': this.campaignsPage, 'pageSize': this.campaignsPageSize});
       sessionStorage.setItem('campaignsTable', JSON.stringify(CampaignsTable));
+    }
+  }
+
+  onTableSort(event: Event) {
+    let e = (event as SortSettings),
+      sortBy: string = '',
+      sortedData: any = this.dataSource.sortData(this.dataSource.data, this.dataSource.sort);
+    sortBy = this.getSortBase(e.active);
+    e.active = sortBy;
+    sessionStorage.setItem('sortsettings', JSON.stringify(e));
+    sessionStorage.setItem('myprojects', JSON.stringify(sortedData));
+    this.populateProjects(0, 5, true, sortBy, e.direction);
+  }
+
+  getSortBase(tableValue: string) {
+    switch (tableValue) {
+      case 'watchCount':
+        return 'stats.videoWatchCount';
+      case 'pauseCount':
+        return 'stats.videoPauseCount';
+      case 'clickCount':
+        return 'stats.videoClickCount';
+      case 'buyNowCount':
+        return 'stats.buyNowClickCount';
+
+      default:
+        return tableValue;
     }
   }
 
@@ -370,8 +431,11 @@ export class DashboardComponent implements OnInit {
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
+    let data: any = filterValue.trim().toLowerCase(),
+      cachedProjects: any = JSON.parse(sessionStorage.getItem('cachedResults'));
+    console.log(cachedProjects);
     this.dataSource.filter = filterValue.trim().toLowerCase();
-
+    sessionStorage.setItem('cachedResults', JSON.stringify(this.dataSource.filteredData));
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
     }
