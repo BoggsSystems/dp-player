@@ -30,7 +30,11 @@ export class LoginComponent implements OnInit {
     private authenticationService: AuthenticationService,
     private xchaneAuthenticationService: XchaneAuthenticationService,
     private billsbyService: BillsbyService
+    
+
   ) {
+    if (this.authenticationService.currentUserValue) { 
+      this.router.navigate(['/']);}
     this.validRole = Role.Consumer;
     // redirect to home if already logged in
     // if (this.authenticationService.currentUserValue) {
@@ -55,7 +59,7 @@ export class LoginComponent implements OnInit {
       email: ['', Validators.required],
       password: ['', Validators.required],
     });
-
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
 
     // get return url from route parameters or default to '/'
     // if (this.authenticationService.currentUserValue) {

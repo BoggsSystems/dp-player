@@ -10,6 +10,8 @@ import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './login/login.component';
 import { LogoutComponent } from './logout/logout.component';
 import { SignupComponent } from './xchane/signup/signup.component';
+import { ProjectWizardYoutubePopup } from './cms/project-wizard/popup/youtube-popup.component';
+
 @Component({
     selector: 'DigitPop-root',
     templateUrl: './app.component.html',
@@ -32,6 +34,8 @@ export class AppComponent {
     currentRole: any;
     isLogin: any;
     isCMS: any;
+    isProjectWizard: any;
+    isCampaignsWizard: any;
     navSections: Object;
     isEligible: boolean;
     sectionsKeys: any;
@@ -65,6 +69,8 @@ export class AppComponent {
     ngDoCheck() {
         this.isLogin = false
         this.isCMS = false
+        this.isProjectWizard = false;
+        this.isCampaignsWizard = false;
         this.currentUser = localStorage.getItem("currentuser");
         this.currentRole = localStorage.getItem("currentrole");
 
@@ -73,6 +79,12 @@ export class AppComponent {
         }
         if (this.currentRole == "Business") {
             this.isCMS = true
+        }
+        if(this.router.url.indexOf('project-wizard') > -1 ) {
+            this.isProjectWizard = true;
+        }
+        if(this.router.url.indexOf('campaign-wizard') > -1) {
+            this.isCampaignsWizard = true;
         }
 
         // if(this.currentRole=="admin"||this.currentRole=="Business"){
@@ -140,10 +152,23 @@ export class AppComponent {
         // }
     }
 
-    account() {
-        //this.router.navigate(['/account']);
+    openYoutubeDialog(): void {
+        const dialogRef = this.dialog.open(ProjectWizardYoutubePopup, {
+          width: '100%',
+          height: '90%',
+        });
+      }
 
-        this.router.navigate(['/xchane/landing']);
+    wizardPopup() {
+        this.openYoutubeDialog();
+    }
+
+
+    projects(){
+        this.router.navigate(['/cms/project-wizard']);
+    }
+    compaigns(){
+        this.router.navigate(['/cms/campaign-wizard']);
     }
 
     getSections() {

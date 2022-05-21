@@ -1,7 +1,7 @@
 import { Component, OnInit, AfterViewInit, ViewChild, Directive, ElementRef } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Breakpoints, BreakpointObserver } from '@angular/cdk/layout';
-import { map, shareReplay, first } from 'rxjs/operators';
+import { map, shareReplay, first, switchMap } from 'rxjs/operators';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -33,6 +33,10 @@ interface TablesSettings {
 }
 
 interface SortSettings {
+  [key: string]: any;
+}
+
+interface requestArguments {
   [key: string]: any;
 }
 
@@ -107,6 +111,9 @@ export class DashboardComponent implements OnInit {
   projectsPageSize: number = 5;
   campaignsPage: number = 0;
   campaignsPageSize: number = 5;
+  isFiltered: boolean = false;
+  filterValue: String = '';
+  // isSorted: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -188,7 +195,7 @@ export class DashboardComponent implements OnInit {
   }
 
   getProjects() {
-    if (sessionStorage.getItem('myprojects') !== null) {
+    if (sessionStorage.getItem('myprojects') !== null ) {
       const cachedResponse: any = sessionStorage.getItem('myprojects'),
         data = JSON.parse(cachedResponse);
       this.renderProjects(data);
@@ -202,8 +209,6 @@ export class DashboardComponent implements OnInit {
             this.renderProjects(res);
             let numberOfPages: number = res.length / 5;
             this.populateProjects();
-            // for(let i = 0; i < numberOfPages; i++) {
-            // }
           },
           (error) => {
             this.error = error;
@@ -212,47 +217,47 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  populateProjects(page: number = 0, pageSize: number = 5, sorted: boolean = false, sortedby: string = '', sortdir: string='') {
-    if (sorted) {
-      this.projectService
-      .populateMyProject(page, pageSize, sorted, sortedby, sortdir)
-      .subscribe(
-        (res: any) => {
-          this.modifyThumbnailUrl(res);
-          let numberOfProjects: number = res.length,
-            currentTable:any = sessionStorage.getItem('myprojects'),
-            data: any = JSON.parse(currentTable),
-            startIndex: number = page * pageSize,
-            iterator: number = 0;
-          for(let i: number = startIndex; i < numberOfProjects+startIndex; i++) {
-            data[i] = res[iterator];
-            ++iterator;
-          }
-          sessionStorage.setItem('myprojects', JSON.stringify(data));
-          this.renderProjects(data);
-        }
-      )
-    } else {
-      this.projectService
-      .populateMyProject(page, pageSize)
-      .subscribe(
-        (res: any) => {
-          this.modifyThumbnailUrl(res);
-          let numberOfProjects: number = res.length,
-            currentTable:any = sessionStorage.getItem('myprojects'),
-            data: any = JSON.parse(currentTable),
-            startIndex: number = page * pageSize,
-            iterator: number = 0;
-          for(let i: number = startIndex; i < numberOfProjects+startIndex; i++) {
-            data[i] = res[iterator];
-            ++iterator;
-          }
-          sessionStorage.setItem('myprojects', JSON.stringify(data));
-          this.renderProjects(data);
-        }
-      )
-    }
+  populateProjects(
+    page        : number  = 0
+    , pageSize  : number  = 5
+    , sorted    : boolean = false
+    , sortedby  : string  = ''
+    , sortdir   : string  =''
+  ) {
+    let args: requestArguments = {};
+    args.page = page;
+    args.pageSize = pageSize;
 
+    if (sorted) {
+      args.sorted = sorted;
+      args.sortby = sortedby;
+      args.sortdir = sortdir;
+    };
+    if(this.filterValue) {
+      args.filter = this.filterValue;
+    };
+    this.projectService
+      .populateMyProject(args)
+      .subscribe(
+        (res: any) => {
+          this.modifyThumbnailUrl(res);
+          let numberOfProjects: number = res.length,
+            currentTable:any = this.isFiltered && this.filterValue !== '' ? sessionStorage.getItem('cachedresults') : sessionStorage.getItem('myprojects'),
+            data: any = JSON.parse(currentTable),
+            startIndex: number = page * pageSize,
+            iterator: number = 0;
+          for(let i: number = startIndex; i < numberOfProjects+startIndex; i++) {
+            data[i] = res[iterator];
+            ++iterator;
+          }
+          if(this.isFiltered && this.filterValue !== '') {
+            sessionStorage.setItem('cachedresults', JSON.stringify(data));
+          } else {
+            sessionStorage.setItem('myprojects', JSON.stringify(data));
+          }
+          this.renderProjects(data);
+        }
+      )
   }
 
   onTableChange(event: any, source: string) {
@@ -298,8 +303,12 @@ export class DashboardComponent implements OnInit {
     sortBy = this.getSortBase(e.active);
     e.active = sortBy;
     sessionStorage.setItem('sortsettings', JSON.stringify(e));
-    sessionStorage.setItem('myprojects', JSON.stringify(sortedData));
-    this.populateProjects(0, 5, true, sortBy, e.direction);
+    if ( this.filterValue == '' ) {
+      sessionStorage.setItem('myprojects', JSON.stringify(sortedData));
+    } else {
+      sessionStorage.setItem('cachedresults', JSON.stringify(sortedData));
+    }
+    this.populateProjects(undefined, undefined, true, sortBy, e.direction);
   }
 
   getSortBase(tableValue: string) {
@@ -431,14 +440,17 @@ export class DashboardComponent implements OnInit {
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
+
     let data: any = filterValue.trim().toLowerCase(),
       cachedProjects: any = JSON.parse(sessionStorage.getItem('cachedResults'));
-    console.log(cachedProjects);
     this.dataSource.filter = filterValue.trim().toLowerCase();
-    sessionStorage.setItem('cachedResults', JSON.stringify(this.dataSource.filteredData));
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
-    }
+    };
+    this.isFiltered = true;
+    this.filterValue = filterValue;
+    sessionStorage.setItem('cachedresults', JSON.stringify(this.dataSource.filteredData));
+    this.populateProjects(undefined, undefined, false, undefined, undefined);
   }
 
   applyCampaignsFilter(event: Event) {

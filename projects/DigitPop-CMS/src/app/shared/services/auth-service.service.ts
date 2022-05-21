@@ -1,11 +1,12 @@
 import { Injectable, Inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { map, catchError, shareReplay } from 'rxjs/operators';
 import { User } from '../models/user';
 import { XchaneUser } from '../models/xchane.user';
 import { environment } from 'projects/DigitPop-CMS/src/environments/environment';
 import { HTTP_CMS_AUTH } from '../../app.module';
+import { tap } from 'lodash';
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
@@ -32,6 +33,15 @@ export class AuthenticationService {
       `${environment.apiUrl}/api/users/` +
         this.currentUserValue._id +
         '/welcome',
+      { id: this.currentUserValue._id }
+    );
+  }
+
+  projectWizardPopup() {
+    return this.http.put<any>(
+      `${environment.apiUrl}/api/users/` +
+        this.currentUserValue._id +
+        '/projectWizardPopup',
       { id: this.currentUserValue._id }
     );
   }

@@ -73,13 +73,48 @@ export class ProjectService {
       .pipe(publishReplay(1), refCount());
   }
 
-  populateMyProject(page: number, pageSize: number, sorted: boolean = false, sortby: string = '', sortdir: string = '') {
-    let reqUrl: string;
-    if(sorted) {
-      reqUrl = `${environment.apiUrl}/api/projects/populateproject?page=${page}&pageSize=${pageSize}&sortby=${sortby}&sortdir=${sortdir}`;
-    } else {
-      reqUrl = `${environment.apiUrl}/api/projects/populateproject?page=${page}&pageSize=${pageSize}`;
+  populateMyProject(args: any = {}) {
+    let page: number  = 0,
+    pageSize: number  = 5,
+    sorted  : boolean = false,
+    sortby  : string  = '',
+    sortdir : string  = '',
+    filter  : string  = '';
+
+    for (let key in args ) {
+      switch(key) {
+        case 'page':
+          page = args[key];
+          break;
+        case 'pageSize':
+          pageSize = args[key];
+          break;
+        case 'sorted':
+          sorted = args[key];
+          break;
+        case 'sortby':
+          sortby = args[key];
+          break
+        case 'sortdir':
+          sortdir = args[key];
+          break;
+        case 'filter':
+          filter = args[key];
+          break;
+      }
     }
+
+    let reqUrl: string;
+    reqUrl = `${environment.apiUrl}/api/projects/populateproject?page=${page}&pageSize=${pageSize}`;
+
+    if(sorted) {
+      reqUrl += `&sortby=${sortby}&sortdir=${sortdir}`;
+    }
+
+    if(filter) {
+      reqUrl += `&filter=${filter}`;
+    }
+
     return this.httpClient
     .get(reqUrl)
     .pipe(publishReplay(1), refCount());

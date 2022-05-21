@@ -35,10 +35,6 @@
     margin-left: 10px;
 }
 
-// .main_logo {
-//   z-index: 9999;
-// }
-
 .spinner {
     z-index: 9999;
     position: absolute;
@@ -72,9 +68,13 @@ mat-sidenav {
 
 .page-nav a {
     width: 100%;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    font-size: 18px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.page-nav a:hover {
+    color: #ff216a;
+    font-weight: 700;
 }
 
 .close-menu::after {
