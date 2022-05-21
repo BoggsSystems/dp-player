@@ -178,11 +178,9 @@ export class ProjectWizardComponent implements OnInit {
 
       this.authService.projectWizardPopup().subscribe(
         (res) => {
-          console.log('di');
           this.authService.currentUserValue.projectWizardPopup = true;
         },
         (error) => {
-          console.log('bi');
           this.error = error;
         }
       );

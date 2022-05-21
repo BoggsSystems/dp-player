@@ -1,7 +1,7 @@
 main.landing,
 .video-players {
     display        : flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items    : center;
 }
 
@@ -21,7 +21,7 @@ main.landing {
 }
 
 .video-players {
-    width     : 100%;
+    min-width : 100%;
     column-gap: 50px;
     row-gap   : 50px;
     flex-wrap : wrap;
