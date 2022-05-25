@@ -4,8 +4,8 @@
 
 export const environment = {
   production: false,
-  apiUrl:"http://3.127.68.38:9000",
-  playerUrl:"http://3.127.68.38:4201",
+  apiUrl:"http://3.124.214.87:9000",
+  playerUrl:"http://3.124.214.87:4201",
   cloudinaryUrl:"https://api.cloudinary.com/v1_1/",
   //currect billsby
   //billsbyUrl:"https://public.billsby.com/api/v1/rest/core/digitpop",

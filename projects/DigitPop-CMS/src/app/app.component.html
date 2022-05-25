@@ -28,6 +28,7 @@
         <a mat-button *ngIf="!isLogin" (click)="openLoginDialog()">Login</a>
         <a mat-button *ngIf="isLogin" (click)="openLogout()">Logout</a>
         <a mat-button *ngIf="!isLogin" (click)="openSignup()">Sign Up</a>
+        <a mat-button *ngIf="isLogin && isCMS" routerLink="/dashboard" (click)="account()"><mat-icon>account_circle</mat-icon></a>
     </div>
 
     <div *ngIf="isLogin && isEligible" fxShow="true" fxHide.gt-xs="true">

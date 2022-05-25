@@ -214,4 +214,7 @@ export class AppComponent {
         let targetSection = document.querySelector('#' + sectionId);
         targetSection.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
     }
+    account() {
+        this.router.navigate(['/xchane/landing']);
+      }
 }
