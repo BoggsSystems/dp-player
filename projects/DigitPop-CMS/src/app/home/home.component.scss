@@ -38,7 +38,8 @@ main.landing {
 
 .video-iframe h1 {
     font-family  : 'Fraunces', serif;
-    margin-bottom: 50px;
+    min-height   : 82px;
+    margin-bottom: 20px;
 }
 
 .video-iframe h1::before {

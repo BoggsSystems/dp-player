@@ -215,6 +215,6 @@ export class AppComponent {
         targetSection.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
     }
     account() {
-        this.router.navigate(['/xchane/landing']);
+        this.router.navigate(['/cms/account']);
       }
 }
