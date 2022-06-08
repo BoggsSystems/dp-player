@@ -7,12 +7,12 @@
     </div>
 
     <span fxFlex></span>
-    <div *ngIf="isCMS && isLogin  && !isProjectWizard && !isCampaignsWizard" fxShow="true" fxHide.lt-sm="true" fxLayout="row">
+    <div *ngIf="isCMS && isLogin  && !isProjectWizard && !isCampaignsWizard && !isAccountPage" fxShow="true" fxHide.lt-sm="true" fxLayout="row">
         <div class="page-nav" *ngFor="let item of navSections | keyvalue">
             <a mat-button href="javascript:void(0)" (click)="scrollToSection(item.key)">{{ item.value }}</a>
         </div>
     </div>
-    <div *ngIf="isCMS && isLogin  && isProjectWizard " fxShow="true" fxHide.lt-sm="true" fxLayout="row">
+    <div *ngIf="isCMS && isLogin  && excludeCustomNav" fxShow="true" fxHide.lt-sm="true" fxLayout="row">
         <div class="page-nav">
             <a mat-button  href="#" routerLink="/cms/dashboard" routerLinkActive="active">Dashboard</a>
         </div>
@@ -45,13 +45,13 @@
         <div fxLayout="column">
             <span fxLayoutAlign="end end" class="close-menu" (click)="sidenav.toggle()" href="javascript:void(0)"
                 mat-button> </span>
-            <div *ngIf="isCMS && isLogin && !isProjectWizard && !isCampaignsWizard" fxShow="true">
+            <div *ngIf="isCMS && isLogin && !isProjectWizard && !isCampaignsWizard && !isAccountPage" fxShow="true">
                 <div class="page-nav" *ngFor="let item of navSections | keyvalue">
                     <a mat-button href="javascript:void(0)" (click)="scrollToSection(item.key)">{{ item.value }}</a>
                 </div>
             </div>
 
-            <div *ngIf="isCMS && isLogin && isProjectWizard" fxShow="true">
+            <div *ngIf="isCMS && isLogin && excludeCustomNav" fxShow="true">
                 <div class="page-nav">
                     <a mat-button href="#" routerLink="/cms/dashboard" routerLinkActive="active">Dashbaord</a>
                 </div>

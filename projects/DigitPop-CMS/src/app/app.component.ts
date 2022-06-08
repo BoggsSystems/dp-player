@@ -36,6 +36,8 @@ export class AppComponent {
     isCMS: any;
     isProjectWizard: any;
     isCampaignsWizard: any;
+    isAccountPage: any;
+    excludeCustomNav: any;
     navSections: Object;
     isEligible: boolean;
     sectionsKeys: any;
@@ -71,6 +73,8 @@ export class AppComponent {
         this.isCMS = false
         this.isProjectWizard = false;
         this.isCampaignsWizard = false;
+        this.isAccountPage = false;
+        this.excludeCustomNav = false;
         this.currentUser = localStorage.getItem("currentuser");
         this.currentRole = localStorage.getItem("currentrole");
 
@@ -85,6 +89,13 @@ export class AppComponent {
         }
         if(this.router.url.indexOf('campaign-wizard') > -1) {
             this.isCampaignsWizard = true;
+        }
+        if (this.router.url.indexOf('account') > -1) {
+            this.isAccountPage = true;
+        }
+
+        if (this.isProjectWizard || this.isCampaignsWizard || this.isAccountPage) {
+            this.excludeCustomNav = true;
         }
 
         // if(this.currentRole=="admin"||this.currentRole=="Business"){
