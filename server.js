@@ -20,12 +20,22 @@ console.log("Allow CORS");
 // app.use(allowCrossDomain);
 
 // Serve only the static files form the dist directory
-app.use(express.static(__dirname + "/dist/DigitPop-CMS"));
+if (process.env.currentApp == 'CMS') {
+  app.use(express.static(__dirname + "/dist/DigitPop-CMS"));
 
-app.get("/*", function (req, res) {
-  res.sendFile(path.join(__dirname + "/dist/DigitPop-CMS/index.html"));
+  app.get("/*", function (req, res) {
+    res.sendFile(path.join(__dirname + "/dist/DigitPop-CMS/index.html"));
 
-});
+  });
 
-// Start the app by listening on the default Heroku port
-app.listen(process.env.PORT || 4200);
+  // Start the app by listening on the default Heroku port
+  app.listen(process.env.PORT || 4200);
+} else if(process.env.currentApp == 'PLAYER') {
+  app.use(express.static(__dirname + "/dist/DigitPop-Player"));
+  app.get("/*", function (req, res) {
+    res.sendFile(path.join(__dirname + "/dist/DigitPop-Player/index.html"));
+  });
+
+  // Start the app by listening on the default Heroku port
+  app.listen(process.env.PORT || 8080);
+}
