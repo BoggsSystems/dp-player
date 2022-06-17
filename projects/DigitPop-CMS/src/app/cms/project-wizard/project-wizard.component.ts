@@ -30,6 +30,8 @@ import { PreviewComponent } from '../preview/preview.component';
 import { AuthenticationService } from '../../shared/services/auth-service.service';
 import { WelcomeComponent } from '../help/welcome/welcome.component';
 import { ProjectWizardYoutubePopup } from './popup/youtube-popup.component';
+import { Clipboard } from '@angular/cdk/clipboard';
+
 
 @Component({
   selector: 'DigitPop-project-wizard',
@@ -60,6 +62,7 @@ export class ProjectWizardComponent implements OnInit {
     private productService: ProductService,
     private router: Router,
     private authService: AuthenticationService,
+    private clipboard: Clipboard,
   ) {
     // Logic to determine if we're editing an existing project or creating a new one
     var nav = this.router.getCurrentNavigation();
@@ -1052,7 +1055,8 @@ export class ProjectWizardComponent implements OnInit {
     const dialogRef = this.dialog.open(PreviewComponent, dialogConfig);
   }
 
-  onCopyToClipboard() {
+  onCopyToClipboard(el: HTMLDivElement) {
+    this.clipboard.copy(el.innerText);
     this.copyClipboardText = 'Copied';
   }
 

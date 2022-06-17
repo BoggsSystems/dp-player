@@ -505,16 +505,20 @@
         </button>
       <iframe id="done-video" width="560" height="315" src="https://www.youtube.com/embed/4dqllOPwY4I" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
       <p>Video URL is : https://digitpop-player.herokuapp.com/ad/{{ project._id }}</p>
-
-      <input type="hidden" />
-      <mat-icon
-        class="your-icon-class"
-        [matTooltip]="copyClipboardText"
-        matTooltipPosition="above"
-        (click)="onCopyToClipboard()"
-        on-focusout="onResetCopyToClipboardText()"
-        >content_copy</mat-icon
-      >
+      <div id="iframe-snippet">
+        <code #elementContentToCopy>
+          <span><</span>iframe width="560" height="315" src="https://18.195.23.143:4201/ad/{{ project._id }}"><span><</span>/iframe<span>></span>
+        </code>
+        <input type="hidden" />
+        <mat-icon
+          class="your-icon-class"
+          [matTooltip]="copyClipboardText"
+          matTooltipPosition="above"
+          (click)="onCopyToClipboard(elementContentToCopy)"
+          on-focusout="onResetCopyToClipboardText()"
+          >content_copy</mat-icon
+        >
+      </div>
 
       <!-- <button type="button" mat-raised-button (click)="onSubmitProject()")>
       Submit Project
