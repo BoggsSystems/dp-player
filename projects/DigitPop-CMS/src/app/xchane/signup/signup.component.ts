@@ -120,15 +120,7 @@ export class SignupComponent implements OnInit {
             this.dialogRef.close();
           }
 
-          // if(user.role=="admin"||user.role=="Business"){
-            // console.log(user.role);
-            // this.router.navigate(['/cms/dashboard']);
-          // };
 
-          // if(user.role=="consumer"){
-          //   this.router.navigate(['/xchane/dashboard']);
-          //   console.log(user.role);
-          // };
         },
         (err) => {
           console.log('Update error : ' + err.toString());

@@ -5,7 +5,7 @@
       <!-- Intro -->
       <div id="body_section_intro" class="body_section">
         <div class="body_content">
-          <div>
+          <div id="dashboard">
             <h1>Dashboard</h1>
             <p class="muted">
               Welcome to DigitPop! The Dashboard is where you launch the
@@ -13,7 +13,7 @@
               favorite Video, Music and News in the Reward Gallery
             </p>
           </div>
-          <div id="dashboard_points">
+          <div id="dashboard_points" data-nav="Points">
             <h1>
               Points
               <span style="color: white">{{
@@ -31,7 +31,7 @@
       </div>
 
       <!-- Videos -->
-      <div id="body_section_tiles_vid">
+      <div id="body_section_tiles_vid" data-nav="Videos">
         <h1 *ngIf="showvideos == true">Videos</h1>
 
         <h1 *ngIf="showvideos == false">Categories</h1>
@@ -225,7 +225,7 @@
 				</div>
 				-->
 
-      <div id="body_section_tiles_rwd">
+      <div id="body_section_tiles_rwd"data-nav="Rewards">
         <h1>Reward Gallery</h1>
         <div class="tile_main">
           <div class="tile_item" (click)="onClickMe('sling')">

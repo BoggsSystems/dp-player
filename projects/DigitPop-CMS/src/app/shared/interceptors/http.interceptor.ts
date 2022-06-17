@@ -14,7 +14,7 @@ export class CustomHttpInterceptor implements HttpInterceptor {
 
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
-        this.spinnerService.show();
+        // this.spinnerService.show();
 
         return next
             .handle(req)

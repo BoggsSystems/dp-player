@@ -51,8 +51,6 @@ export class AuthenticationService {
             console.log('Set current user in local storage');
             this.currentUserSubject.next(res.user);
           }
-
-          console.log('Returning result user');
           return res.user;
         })
       );

@@ -24,8 +24,8 @@ export class BillsbyService {
 
   getSubscriptionDetails() {
     return this.httpClient.get(
-      `${environment.billsbyUrl}/subscriptions/` +
-        this.authService.currentUserValue._id
+      `${environment.billsbyUrl}/subscriptions/` + '4EDK89XEW7'
+        // this.authService.currentUserValue._id
     );
   }
 
