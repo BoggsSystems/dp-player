@@ -97,13 +97,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     private userService: UserService
   ) {
     window['billsbyData'] = {
-      email: "fake@eamil.net",
-      customFields: [
-        {
-        customFieldId: 'password',
-        value: "[11111]"
-        }
-      ]
+
     };
     var playerUrl = environment.playerUrl;
     console.log("Player URL is : " + playerUrl);
