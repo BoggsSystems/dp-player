@@ -4,6 +4,7 @@ import { ProductGroup } from '../models/productGroup';
 import { Project } from '../models/project';
 import * as _ from 'lodash';
 import { environment } from 'projects/DigitPop-CMS/src/environments/environment';
+import { publishReplay, refCount } from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
 export class ProductGroupService {

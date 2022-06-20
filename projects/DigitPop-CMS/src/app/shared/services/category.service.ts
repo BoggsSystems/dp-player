@@ -8,16 +8,23 @@ import { HTTP_XCHANE_AUTH } from '../../app.module';
 @Injectable({ providedIn: 'root' })
 export class CategoryService {
   categoryList$: Observable<Object>;
+  userCategoryList$: Observable<Object>;
 
   constructor(@Inject(HTTP_XCHANE_AUTH) private httpClient: HttpClient) {}
 
   getCategories() {
     if (!this.categoryList$) {
       this.categoryList$ = this.httpClient
-        .get(`${environment.apiUrl}/api/categories`)
-        .pipe(shareReplay(1));
-    }
+        .get(`${environment.apiUrl}/api/categories`);
+        }
     return this.categoryList$;
   }
 
+  getUserCategories() {
+    if (!this.userCategoryList$) {
+      this.userCategoryList$ = this.httpClient
+        .get(`${environment.apiUrl}/api/categories/user`);
+         }
+    return this.userCategoryList$;
+  }
 }

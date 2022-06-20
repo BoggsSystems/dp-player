@@ -58,7 +58,9 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { BillsbyInterceptor } from './services/billsby.interceptor';
 import { ErrorInterceptor } from '../shared/interceptors/error.interceptor';
 import { CustomHttpInterceptor } from '../shared/interceptors/http.interceptor';
-
+import { OkDialogComponent } from './ok-dialog/ok-dialog.component';
+import { NestedProducts } from './dashboard/nested-tables/products.component';
+import { NestedCampaigns } from './dashboard/nested-tables/campaigns.component';
 
 const routes: Routes = [
   {
@@ -131,6 +133,7 @@ const routes: Routes = [
     AccountComponent,
     CampaignsComponent,
     ConfirmDialogComponent,
+    OkDialogComponent,
     PreviewComponent,
     ProjectWizardComponent,
     PreviewHelpComponent,
@@ -145,7 +148,9 @@ const routes: Routes = [
     VideoHelpComponent,
     WelcomeComponent,
     CampaignWizardComponent,
-    CampaignTitleComponent
+    CampaignTitleComponent,
+    NestedProducts,
+    NestedCampaigns,
   ],
   exports: [RouterModule],
   providers: [

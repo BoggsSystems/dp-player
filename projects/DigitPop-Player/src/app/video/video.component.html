@@ -38,6 +38,15 @@
           Resume
         </div>
 
+        <div id="quizButton"
+          *ngIf="showQuizButton == true"
+          class="quizScaleAnimation button_quizbutton_grid button_base"
+          (click)="onQuizButtonPressed()"
+        >
+          <div></div>
+          Go To QUIZ
+        </div>
+
         <div
           *ngIf="viewState == 'ProductGroup'"
           class="button_locate_grid button_base button_locate"

@@ -15,6 +15,7 @@ import { AnswerDialogComponent } from '../answer-dialog/answer-dialog.component'
 import { ConfirmDialogComponent } from '../../cms/confirm-dialog/confirm-dialog.component';
 import { CategoryService } from '../../shared/services/category.service';
 import { WelcomeComponent } from '../help/welcome/welcome.component';
+import { OkDialogComponent } from '../../cms/ok-dialog/ok-dialog.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -27,6 +28,8 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   redemptionpopupDialogRef: MatDialogRef<RedemptionpopupComponent>;
   failurepopupDialogRef: MatDialogRef<FailurepopupComponent>;
   categories: any;
+  userCategories: any;
+  showvideos: boolean;
   error = '';
 
   constructor(
@@ -37,7 +40,9 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     private dialog: MatDialog
   ) {
     console.log('In dashboard constructor');
+    this.showvideos = true;
     this.getCategories();
+    this.getUserCategories();
     //console.log("The current user role is : " + this.authService.currentUser.role);
 
     // if (this.authService.currentUser.role === 'admin') {
@@ -47,20 +52,23 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
   // Score Bubble Animation
   scoreBubbleIsOpen = false;
+  canToggle = false;
   showAdmin = false;
 
   public scoreBubbleToggle() {
-    this.scoreBubbleIsOpen = !this.scoreBubbleIsOpen;
+    if (this.canToggle) {
+      this.scoreBubbleIsOpen = !this.scoreBubbleIsOpen;
 
-    if (this.scoreBubbleIsOpen) {
-      const scoreBubbleTimer = timer(5000);
-      scoreBubbleTimer.subscribe((x: any) => {
-        this.scoreBubbleToggle();
-      });
-    } else {
-      // NEED ANYTHING HERE?? ===================
-      // If it was closed, remove the timer
-      //clearTimeout(this.scoreBubbleTimer);
+      if (this.scoreBubbleIsOpen) {
+        const scoreBubbleTimer = timer(2000);
+        scoreBubbleTimer.subscribe((x: any) => {
+          this.scoreBubbleIsOpen = !this.scoreBubbleIsOpen;
+        });
+      } else {
+        // NEED ANYTHING HERE?? ===================
+        // If it was closed, remove the timer
+        //clearTimeout(this.scoreBubbleTimer);
+      }
     }
   }
 
@@ -79,25 +87,31 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     //this.shepherdService.start();
   }
 
-  getCategories() {
-    this.categoryService.getCategories().subscribe(
-      (res: any) => {
-        this.categories = res.filter((i: { active: boolean; }) => i.active == true);
-      },
-      (err: { ToString: () => string }) => {
-        console.log('Error retrieving categories : ' + err.ToString());
-      }
-    );
-  }
+  public onToggleCategory(category: any) {
+    console.log('TOGGLE CATEGORY!!!');
 
-  private refreshUser() {
     this.authService
-      .getXchaneUser(this.authService.currentUserValue._id)
+      .toggleXchaneUserCategory(category, this.authService.currentUserValue)
       .subscribe(
-        (data2) => {
-          let use = new XchaneUser();
-          use = data2 as XchaneUser;
-          this.authService.storeUser(use);
+        (res: any) => {
+          if (res.msg == 'remove') {
+            const confirmDialog = this.dialog.open(OkDialogComponent, {
+              data: {
+                title: 'Category Removed',
+                message: 'Category Removed',
+              },
+            });
+          } else {
+            const confirmDialog = this.dialog.open(OkDialogComponent, {
+              data: {
+                title: 'Category Added',
+                message: 'Category Added',
+              },
+            });
+          }
+          console.log('TOGGLE category success');
+          console.log(res);
+          this.getUserCategories();
         },
         (error: any) => {
           this.failurepopupDialogRef = this.dialog.open(FailurepopupComponent, {
@@ -109,6 +123,70 @@ export class DashboardComponent implements OnInit, AfterViewInit {
           return observableThrowError(error);
         }
       );
+  }
+
+  public onDeleteCategory(category: any) {
+    this.authService
+      .removeXchaneUserCategory(category, this.authService.currentUserValue)
+      .subscribe(
+        (res) => {
+          console.log(res);
+        },
+        (error: any) => {
+          this.failurepopupDialogRef = this.dialog.open(FailurepopupComponent, {
+            autoFocus: true,
+            hasBackdrop: false,
+            closeOnNavigation: true,
+          });
+
+          return observableThrowError(error);
+        }
+      );
+  }
+
+  getCategories() {
+    this.categoryService.getCategories().subscribe(
+      (res: any) => {
+        this.categories = res.filter(
+          (i: { active: boolean }) => i.active == true
+        );
+      },
+      (err: { ToString: () => string }) => {
+        console.log('Error retrieving categories : ' + err.ToString());
+      }
+    );
+  }
+
+  getUserCategories() {
+    this.categoryService.getUserCategories().subscribe(
+      (res: any) => {
+        this.userCategories = res.filter(
+          (i: { active: boolean }) => i.active == true
+        );
+      },
+      (err: { ToString: () => string }) => {
+        console.log('Error retrieving categories : ' + err.ToString());
+      }
+    );
+  }
+
+  private refreshUser() {
+    this.authService.getCurrentXchaneUser().subscribe(
+      (data2) => {
+        let use = new XchaneUser();
+        use = data2 as XchaneUser;
+        this.authService.storeUser(use);
+      },
+      (error: any) => {
+        this.failurepopupDialogRef = this.dialog.open(FailurepopupComponent, {
+          autoFocus: true,
+          hasBackdrop: false,
+          closeOnNavigation: true,
+        });
+
+        return observableThrowError(error);
+      }
+    );
 
     // this.authService.getCurrentXchaneUser().subscribe(
     //   (data2: XchaneUser) => {
@@ -130,6 +208,10 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     //     return observableThrowError(error);
     //   }
     // );
+  }
+
+  categoryVideoSwitch() {
+    this.showvideos = !this.showvideos;
   }
 
   public onClickMe(rewarder: string) {
@@ -164,17 +246,17 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
+    console.log('In after view init, calling welcome.');
     this.welcome();
   }
 
   welcome() {
     if (!this.authService.currentUserValue.welcomed) {
-      //this.openWelcomeDialog();
+      this.openWelcomeDialog();
     }
   }
 
   openWelcomeDialog(): void {
-
     const dialogRef = this.dialog.open(WelcomeComponent, {
       width: '100%',
       height: '90%',
@@ -183,12 +265,18 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     dialogRef.afterClosed().subscribe(() => {
       console.log('The dialog was closed');
 
-      console.log("Calling welcome on auth service")
+      console.log('Calling welcome on auth service');
       this.authService.welcome().subscribe(
         (res) => {
-          console.log("Auth service welcome call returned with res : " + JSON.stringify(res))
+          console.log(
+            'Auth service welcome call returned with res : ' +
+              JSON.stringify(res)
+          );
           this.authService.currentUserValue.welcomed = true;
-          console.log("Set current user welcome : " + this.authService.currentUserValue.welcomed);
+          console.log(
+            'Set current user welcome : ' +
+              this.authService.currentUserValue.welcomed
+          );
         },
         (error) => {
           this.error = error;
@@ -202,8 +290,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
     // Load component custom script
     this.loadScript('../../assets/js/app.main.scripts.js');
-
-
   }
 
   receiveMessage(event: any) {
@@ -217,7 +303,10 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       this.popupDialogRef.close();
 
       if (event.data.correct) {
+        this.canToggle = true;
         this.scoreBubbleToggle();
+        this.canToggle = false;
+
         this.refreshUser();
       } else {
         const confirmDialog = this.dialog.open(AnswerDialogComponent, {
@@ -231,12 +320,37 @@ export class DashboardComponent implements OnInit, AfterViewInit {
           confirmDialog.close();
 
           if (result === true) {
-            // Find a way to launch the previous video
-            // this.onLaunchVideo();
+            this.retry();
           }
         });
       }
     }
+  }
+
+  retry() {
+    this.engagementService
+      .createEngagementFromLast(this.authService.currentUserValue)
+      .subscribe((data: any) => {
+        this.iFrameSrc =
+          `${environment.playerUrl}/ad/` +
+          data.project +
+          '/engagement/' +
+          data._id +
+          '/campaign/' +
+          data.campaign;
+
+        // Store current campaign?  May need if there is a retry
+
+        this.popupDialogRef = this.dialog.open(PlayerComponent, {
+          autoFocus: true,
+          hasBackdrop: true,
+          closeOnNavigation: false,
+        });
+        this.popupDialogRef.componentInstance.iFrameSrc = this.iFrameSrc;
+
+        console.log('iFrameSrc :' + this.iFrameSrc);
+        return true;
+      });
   }
 
   onLaunchVideo(category: any) {
@@ -266,7 +380,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
           return true;
         },
         (error: any) => {
-          const confirmDialog = this.dialog.open(ConfirmDialogComponent, {
+          const confirmDialog = this.dialog.open(OkDialogComponent, {
             data: {
               title: 'No ads currently available',
               message:

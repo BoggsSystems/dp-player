@@ -30,7 +30,11 @@ export class LoginComponent implements OnInit {
     private authenticationService: AuthenticationService,
     private xchaneAuthenticationService: XchaneAuthenticationService,
     private billsbyService: BillsbyService
+    
+
   ) {
+    if (this.authenticationService.currentUserValue) { 
+      this.router.navigate(['/']);}
     this.validRole = Role.Consumer;
     // redirect to home if already logged in
     // if (this.authenticationService.currentUserValue) {
@@ -55,7 +59,7 @@ export class LoginComponent implements OnInit {
       email: ['', Validators.required],
       password: ['', Validators.required],
     });
-
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
 
     // get return url from route parameters or default to '/'
     // if (this.authenticationService.currentUserValue) {
@@ -89,6 +93,7 @@ export class LoginComponent implements OnInit {
       .subscribe(
         (res) => {
           if(res){
+            localStorage.setItem("currentrole",'customer');
             this.dialogRef.close();
             this.router.navigate(['/xchane/dashboard']);
           } else {
@@ -121,7 +126,7 @@ export class LoginComponent implements OnInit {
           //   }
           // );
 
-
+          localStorage.setItem("currentrole",'Business');
           this.dialogRef.close();
           this.router.navigate(['/cms/dashboard']);
 

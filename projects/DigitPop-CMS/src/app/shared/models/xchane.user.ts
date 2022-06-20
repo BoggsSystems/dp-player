@@ -8,5 +8,5 @@ export class XchaneUser {
     welcomed: boolean;
     approved: boolean;
     referrerCode: string;
-    token?: string;
+    token?: any;
 }

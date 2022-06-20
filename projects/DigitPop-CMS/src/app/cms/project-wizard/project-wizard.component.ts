@@ -27,6 +27,11 @@ import { ProductGroupsHelpComponent } from '../help/product-groups/product-group
 import { ThumbnailHelpComponent } from '../help/thumbnail/thumbnail-help.component';
 import { PreviewHelpComponent } from '../help/preview/preview-help.component';
 import { PreviewComponent } from '../preview/preview.component';
+import { AuthenticationService } from '../../shared/services/auth-service.service';
+import { WelcomeComponent } from '../help/welcome/welcome.component';
+import { ProjectWizardYoutubePopup } from './popup/youtube-popup.component';
+import { Clipboard } from '@angular/cdk/clipboard';
+
 
 @Component({
   selector: 'DigitPop-project-wizard',
@@ -46,6 +51,7 @@ export class ProjectWizardComponent implements OnInit {
   params: Params;
   editFlag = false;
   copyClipboardText = 'Copy to clipboard';
+  error = '';
 
   constructor(
     private videoService: VideoService,
@@ -54,7 +60,9 @@ export class ProjectWizardComponent implements OnInit {
     private productGroupService: ProductGroupService,
     private dialog: MatDialog,
     private productService: ProductService,
-    private router: Router
+    private router: Router,
+    private authService: AuthenticationService,
+    private clipboard: Clipboard,
   ) {
     // Logic to determine if we're editing an existing project or creating a new one
     var nav = this.router.getCurrentNavigation();
@@ -160,7 +168,30 @@ export class ProjectWizardComponent implements OnInit {
     });
   }
 
+  openYoutubeDialog(): void {
+    const dialogRef = this.dialog.open(ProjectWizardYoutubePopup, {
+      width: '100%',
+      height: '90%',
+    });
+  }
+
+  wizardPopup() {
+    if (!this.authService.currentUserValue.projectWizardPopup) {
+      this.openYoutubeDialog();
+
+      this.authService.projectWizardPopup().subscribe(
+        (res) => {
+          this.authService.currentUserValue.projectWizardPopup = true;
+        },
+        (error) => {
+          this.error = error;
+        }
+      );
+    }
+  }
+
   ngOnInit() {
+    this.wizardPopup();
     this.projectFormGroup = new FormGroup({
       title: new FormControl('', {
         validators: [Validators.required, Validators.maxLength(100)],
@@ -1024,7 +1055,8 @@ export class ProjectWizardComponent implements OnInit {
     const dialogRef = this.dialog.open(PreviewComponent, dialogConfig);
   }
 
-  onCopyToClipboard() {
+  onCopyToClipboard(el: HTMLDivElement) {
+    this.clipboard.copy(el.innerText);
     this.copyClipboardText = 'Copied';
   }
 

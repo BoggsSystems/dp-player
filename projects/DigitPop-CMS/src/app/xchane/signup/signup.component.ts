@@ -112,6 +112,7 @@ export class SignupComponent implements OnInit {
         (res) => {
           console.log("createXchaneUser result : " + JSON.stringify(res) );
           if(res.user){
+            localStorage.setItem("currentrole",'customer');
             this.dialogRef.close();
             console.log(res);
             this.router.navigate(['/xchane/dashboard']);
@@ -119,15 +120,7 @@ export class SignupComponent implements OnInit {
             this.dialogRef.close();
           }
 
-          // if(user.role=="admin"||user.role=="Business"){
-            // console.log(user.role);
-            // this.router.navigate(['/cms/dashboard']);
-          // };
 
-          // if(user.role=="consumer"){
-          //   this.router.navigate(['/xchane/dashboard']);
-          //   console.log(user.role);
-          // };
         },
         (err) => {
           console.log('Update error : ' + err.toString());
@@ -147,9 +140,6 @@ export class SignupComponent implements OnInit {
   //   this.dialogRef.close();
   // }
   callBillsby(){
-    window['billsbyData'] = {
-      email: "fake@eamil.net"
-    };
   // this.dialogRef.close();
   this.homeComp.clicktrial();
   }

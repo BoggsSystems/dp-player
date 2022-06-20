@@ -1,7 +1,7 @@
-import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, Directive, ElementRef } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Breakpoints, BreakpointObserver } from '@angular/cdk/layout';
-import { map, shareReplay, first } from 'rxjs/operators';
+import { map, shareReplay, first, switchMap } from 'rxjs/operators';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -20,11 +20,25 @@ import { ProductGroup } from '../../shared/models/productGroup';
 import { BillsbyService } from '../../shared/services/billsby.service';
 import { CampaignService } from '../../shared/services/campaign.service';
 import { ProjectService } from '../../shared/services/project.service';
+import { ProductGroupService } from '../../shared/services/product-group.service';
 import { AuthenticationService } from '../../shared/services/auth-service.service';
 import { WelcomeComponent } from '../help/welcome/welcome.component';
 import { ProjectsHelpComponent } from '../help/projects/projects-help.component';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 import { Campaign } from '../../shared/models/campaign';
+import { OkDialogComponent } from '../ok-dialog/ok-dialog.component';
+
+interface TablesSettings {
+  [key: string]: any;
+}
+
+interface SortSettings {
+  [key: string]: any;
+}
+
+interface requestArguments {
+  [key: string]: any;
+}
 
 @Component({
   selector: 'DigitPop-dashboard',
@@ -85,6 +99,7 @@ export class DashboardComponent implements OnInit {
   ];
   dataSource: any;
   campaignsDataSource: any;
+  nestedDataSource: String[] = [];
   error = '';
   cid: any;
   width: any;
@@ -92,6 +107,13 @@ export class DashboardComponent implements OnInit {
   expandedElement: Project | null;
   expandedProductGroupElement: ProductGroup | null;
   color: ThemePalette = 'primary';
+  projectsPage: number = 0;
+  projectsPageSize: number = 5;
+  campaignsPage: number = 0;
+  campaignsPageSize: number = 5;
+  isFiltered: boolean = false;
+  filterValue: String = '';
+  // isSorted: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -99,17 +121,21 @@ export class DashboardComponent implements OnInit {
     private campaignService: CampaignService,
     private breakpointObserver: BreakpointObserver,
     private projectService: ProjectService,
+    private productGroupService: ProductGroupService,
     private authService: AuthenticationService,
     private router: Router,
-    public dialog: MatDialog
+    public dialog: MatDialog,
   ) {
     this.height = 25;
     this.width = 150;
   }
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
+  @ViewChild('campaignpaginator') campaignpaginator: MatPaginator;
 
-  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatSort, { static: true }) sort: MatSort;
+  @ViewChild('campaignsorter') campaignsorter: MatSort;
+
 
   openWelcomeDialog(): void {
     const dialogRef = this.dialog.open(WelcomeComponent, {
@@ -146,82 +172,249 @@ export class DashboardComponent implements OnInit {
   }
 
   ngOnInit() {
-    //console.log("Billsby URL : " + `${environment.billsbyUrl}`);
-
-    this.campaignService
-      .getMyCampaigns()
-      .pipe(first())
-      .subscribe(
-        (campaigns) => {
-          this.campaignsDataSource = new MatTableDataSource<Campaign>(
-            campaigns
-          );
-        },
-        (error) => {
-          this.error = error;
-        }
-      );
-
-    // this.projectService
-    // .getMyProjects()
-    // .pipe(first())
-    // .subscribe(
-
-    this.projectService.getProjects$().subscribe(
-      (res: any) => {
-        this.dataSource = new MatTableDataSource(res);
-        this.dataSource.paginator = this.paginator;
-        this.dataSource.sortingDataAccessor = (item: any, property: any) => {
-          switch (property) {
-            case 'watchCount':
-              return item.stats.videoWatchCount;
-            case 'pauseCount':
-              return item.stats.videoPauseCount;
-            case 'clickCount':
-              return item.stats.clickCount;
-            case 'buyNowCount':
-              return item.stats.buyNowClickCount;
-
-            default:
-              return item[property];
-          }
-        };
-        this.dataSource.sort = this.sort;
-      },
-      (error) => {
-        this.error = error;
-      }
-    );
-
-    // this.projectService
-    //   .getMyProjects()
-    //   .subscribe(
-    //     (res:any) => {
-    //       this.dataSource = new MatTableDataSource(res);
-    //       this.dataSource.paginator = this.paginator;
-    //       this.dataSource.sortingDataAccessor = (item: any, property: any) => {
-    //         switch (property) {
-    //           case 'watchCount':
-    //             return item.stats.videoWatchCount;
-    //           case 'pauseCount':
-    //             return item.stats.videoPauseCount;
-    //           case 'clickCount':
-    //             return item.stats.clickCount;
-    //           case 'buyNowCount':
-    //             return item.stats.buyNowClickCount;
-
-    //           default:
-    //             return item[property];
-    //         }
-    //       };
-    //       this.dataSource.sort = this.sort;
-    //     },
-    //     (error) => {
-    //       this.error = error;
-    //     }
-    //   );
-
+    this.getTablesSetting();
     this.welcome();
+  }
+
+  ngAfterViewInit() {
+    this.getProjects();
+    this.getCampaigns();
+  }
+
+  getTablesSetting() {
+    if (sessionStorage.getItem('projectsTable') !== null) {
+      let settings = sessionStorage.getItem('projectsTable');
+      this.projectsPage = +JSON.parse(settings).page;
+      this.projectsPageSize = +JSON.parse(settings).pageSize;
+    }
+    if (sessionStorage.getItem('campaignsTable') !== null) {
+      let settings = sessionStorage.getItem('campaignsTable');
+      this.campaignsPage = +JSON.parse(settings).page;
+      this.campaignsPageSize = +JSON.parse(settings).pageSize;
+    }
+  }
+
+  getProjects() {
+    if (sessionStorage.getItem('myprojects') !== null ) {
+      const cachedResponse: any = sessionStorage.getItem('myprojects'),
+        data = JSON.parse(cachedResponse);
+      this.renderProjects(data);
+    } else {
+      this.projectService
+        .getMyProjects()
+        .subscribe(
+          (res: any) => {
+            this.modifyThumbnailUrl(res);
+            sessionStorage.setItem('myprojects', JSON.stringify(res));
+            this.renderProjects(res);
+            let numberOfPages: number = res.length / 5;
+            this.populateProjects();
+          },
+          (error) => {
+            this.error = error;
+          }
+        );
+    }
+  }
+
+  populateProjects(
+    page        : number  = 0
+    , pageSize  : number  = 5
+    , sorted    : boolean = false
+    , sortedby  : string  = ''
+    , sortdir   : string  =''
+  ) {
+    let args: requestArguments = {};
+    args.page = page;
+    args.pageSize = pageSize;
+
+    if (sorted) {
+      args.sorted = sorted;
+      args.sortby = sortedby;
+      args.sortdir = sortdir;
+    };
+    if(this.filterValue) {
+      args.filter = this.filterValue;
+    };
+    this.projectService
+      .populateMyProject(args)
+      .subscribe(
+        (res: any) => {
+          this.modifyThumbnailUrl(res);
+          let numberOfProjects: number = res.length,
+            currentTable:any = this.isFiltered && this.filterValue !== '' ? sessionStorage.getItem('cachedresults') : sessionStorage.getItem('myprojects'),
+            data: any = JSON.parse(currentTable),
+            startIndex: number = page * pageSize,
+            iterator: number = 0;
+          for(let i: number = startIndex; i < numberOfProjects+startIndex; i++) {
+            data[i] = res[iterator];
+            ++iterator;
+          }
+          if(this.isFiltered && this.filterValue !== '') {
+            sessionStorage.setItem('cachedresults', JSON.stringify(data));
+          } else {
+            sessionStorage.setItem('myprojects', JSON.stringify(data));
+          }
+          this.renderProjects(data);
+        }
+      )
+  }
+
+  onTableChange(event: any, source: string) {
+    if (source === 'projects') {
+      let ProjectsTable: TablesSettings = {};
+
+      if (this.projectsPage != event.pageIndex) {
+        this.projectsPage = event.pageIndex;
+      }
+
+      if (this.projectsPageSize != event.pageSize) {
+        this.projectsPageSize = event.pageSize;
+      }
+
+      if(sessionStorage.getItem('sortsettings')) {
+        let settings = JSON.parse(sessionStorage.getItem('sortsettings'));
+        this.populateProjects(this.projectsPage, this.projectsPageSize, true, settings.active, settings.direction);
+      } else {
+        this.populateProjects(this.projectsPage, this.projectsPageSize);
+      }
+      Object.assign(ProjectsTable, {'page': this.projectsPage, 'pageSize': this.projectsPageSize});
+      sessionStorage.setItem('projectsTable', JSON.stringify(ProjectsTable));
+    } else if(source === 'campaigns') {
+      let CampaignsTable: TablesSettings = {};
+
+      if (this.campaignsPage != event.pageIndex) {
+        this.campaignsPage = event.pageIndex;
+      }
+
+      if (this.campaignsPageSize != event.pageSize) {
+        this.campaignsPageSize = event.pageSize;
+      }
+
+      Object.assign(CampaignsTable, {'page': this.campaignsPage, 'pageSize': this.campaignsPageSize});
+      sessionStorage.setItem('campaignsTable', JSON.stringify(CampaignsTable));
+    }
+  }
+
+  onTableSort(event: Event) {
+    let e = (event as SortSettings),
+      sortBy: string = '',
+      sortedData: any = this.dataSource.sortData(this.dataSource.data, this.dataSource.sort);
+    sortBy = this.getSortBase(e.active);
+    e.active = sortBy;
+    sessionStorage.setItem('sortsettings', JSON.stringify(e));
+    if ( this.filterValue == '' ) {
+      sessionStorage.setItem('myprojects', JSON.stringify(sortedData));
+    } else {
+      sessionStorage.setItem('cachedresults', JSON.stringify(sortedData));
+    }
+    this.populateProjects(undefined, undefined, true, sortBy, e.direction);
+  }
+
+  getSortBase(tableValue: string) {
+    switch (tableValue) {
+      case 'watchCount':
+        return 'stats.videoWatchCount';
+      case 'pauseCount':
+        return 'stats.videoPauseCount';
+      case 'clickCount':
+        return 'stats.videoClickCount';
+      case 'buyNowCount':
+        return 'stats.buyNowClickCount';
+
+      default:
+        return tableValue;
+    }
+  }
+
+  renderProjects(projects: any) {
+    this.dataSource = new MatTableDataSource(projects);
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+    this.dataSource.sortingDataAccessor = (item: any, property: any) => {
+      switch (property) {
+        case 'watchCount':
+          return item.stats.videoWatchCount;
+        case 'pauseCount':
+          return item.stats.videoPauseCount;
+        case 'clickCount':
+          return item.stats.videoClickCount;
+        case 'buyNowCount':
+          return item.stats.buyNowClickCount;
+
+        default:
+          return item[property];
+      }
+    };
+  }
+
+  getCampaigns() {
+    if (sessionStorage.getItem('mycampaigns') !== null) {
+      const cachedResponse: any = sessionStorage.getItem('mycampaigns');
+      this.renderCampaigns(JSON.parse(cachedResponse));
+    } else {
+      this.campaignService
+        .getMyCampaigns()
+        .pipe(first())
+        .subscribe(
+          (campaigns: any) => {
+            sessionStorage.setItem('mycampaigns', JSON.stringify(campaigns));
+            this.renderCampaigns(campaigns);
+          },
+          (error) => {
+            this.error = error;
+          }
+        );
+    }
+  }
+
+  renderCampaigns(campaigns: any) {
+    this.campaignsDataSource = new MatTableDataSource<Campaign>(campaigns);
+    this.campaignsDataSource.paginator = this.campaignpaginator;
+    this.campaignsDataSource.sortingDataAccessor = (item: any, property: any) => {
+      switch (property) {
+        case 'name':
+          return item.name;
+        case 'project':
+          return item.project.name;
+        case 'completionCount':
+          return item.stats.completionCount;
+        case 'engagementCount':
+          return item.stats.engagementCount;
+        case 'impressionCount':
+          return item.stats.impressionCount;
+        case 'budgetAmount':
+          return item.budgetAmount;
+        case 'spentAmount':
+          return item.spentAmount;
+        case 'startDate':
+          return item.startDate;
+        case 'audienceId':
+          return item.audienceId;
+
+        default:
+          return item[property];
+      }
+    }
+    this.campaignsDataSource.sort = this.campaignsorter;
+  }
+
+  modifyThumbnailUrl(response: any) {
+    response.forEach((project: any) => {
+      if ('thumbnail' in project) {
+        let url = project['thumbnail']['url'],
+          queryTerm = 'upload/',
+          queryLength = queryTerm.length,
+          uploadsIndex = url.indexOf(queryTerm),
+          paramsIndex = uploadsIndex + queryLength,
+          imgHeight = 50,
+          imgWidth = 50,
+          params = `c_fill,h_${imgHeight},w_${imgWidth}/`,
+          resizedUrl = url.substr(0, paramsIndex) + params + url.substr(paramsIndex);
+
+        project['thumbnail']['url'] = resizedUrl;
+      }
+    });
   }
 
   projectsHelp() {
@@ -247,11 +440,17 @@ export class DashboardComponent implements OnInit {
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
 
+    let data: any = filterValue.trim().toLowerCase(),
+      cachedProjects: any = JSON.parse(sessionStorage.getItem('cachedResults'));
+    this.dataSource.filter = filterValue.trim().toLowerCase();
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
-    }
+    };
+    this.isFiltered = true;
+    this.filterValue = filterValue;
+    sessionStorage.setItem('cachedresults', JSON.stringify(this.dataSource.filteredData));
+    this.populateProjects(undefined, undefined, false, undefined, undefined);
   }
 
   applyCampaignsFilter(event: Event) {
@@ -286,32 +485,93 @@ export class DashboardComponent implements OnInit {
   }
 
   updateCampaignFunc(element: Campaign, e: any) {
-    const confirmDialog = this.dialog.open(ConfirmDialogComponent, {
-      data: {
-        title: 'Change Status',
-        message: 'Are you sure you want to change the status of the campaign?',
-      },
-    });
+    // Retrieve the campaign
+    this.campaignService.getCampaign(element).subscribe(
+      (res) => {
+        var campaign = res as Campaign;
 
-    confirmDialog.afterClosed().subscribe((result) => {
-      if (result === true) {
-        element.active = !element.active;
-        this.campaignService.updateCampaign(element).subscribe(
-          (res) => {
-            console.log(res);
+        if (!campaign.project.active) {
+          campaign.active = false;
+          e.source.checked = false;
+
+          const confirmDialog = this.dialog.open(OkDialogComponent, {
+            data: {
+              title: 'Project Inactive',
+              message:
+                'The project for this campaign is inactive.  Activate the project before activiating the campaign.',
+            },
+          });
+
+          return;
+        }
+
+        const confirmDialog = this.dialog.open(ConfirmDialogComponent, {
+          data: {
+            title: 'Change Status',
+            message:
+              'Are you sure you want to change the status of the campaign?',
           },
-          (error) => {
-            console.log(error);
+        });
+
+        confirmDialog.afterClosed().subscribe((result) => {
+          if (result === true) {
+            console.log('Element project : ' + element.project);
+
+            element.active = !element.active;
+            this.campaignService.updateCampaign(element).subscribe(
+              (res) => {
+                console.log(res);
+              },
+              (error) => {
+                console.log(error);
+              }
+            );
+          } else {
+            e.source.checked = element.active;
+            console.log(
+              'toggle should not change if I click the cancel button'
+            );
           }
-        );
-      } else {
-        e.source.checked = element.active;
-        console.log('toggle should not change if I click the cancel button');
+        });
+      },
+      (error) => {
+        console.log(error);
+        return;
       }
-    });
+    );
   }
 
   updateFunc(element: Project, e: any) {
+    if (element.active) {
+      this.projectService.getCampaignsForProject(element).subscribe(
+        (res) => {
+          if (Object.keys(res).length > 0) {
+            e.source.checked = true;
+
+            const confirmDialog = this.dialog.open(OkDialogComponent, {
+              data: {
+                title: 'Active Campaigns',
+                message:
+                  'There is at least one active campaign using this project. Deactivate the campaign(s) before deactivating this project.',
+              },
+            });
+
+            return;
+          } else {
+            this.updateProjectSubFunc(element, e);
+          }
+        },
+        (error) => {
+          console.log(error);
+          return;
+        }
+      );
+    } else {
+      this.updateProjectSubFunc(element, e);
+    }
+  }
+
+  updateProjectSubFunc(element: Project, e: any) {
     const confirmDialog = this.dialog.open(ConfirmDialogComponent, {
       data: {
         title: 'Change Status',

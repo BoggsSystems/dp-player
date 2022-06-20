@@ -26,13 +26,24 @@ export class XchaneAuthenticationService {
     return this.currentUserSubject.value;
   }
 
-  storeUser(user: any) {
+  storeUser(user: XchaneUser) {
+    user.token = this.currentUserValue.token;
     localStorage.setItem('XchaneCurrentUser', JSON.stringify(user));
     this.currentUserSubject.next(user);
   }
 
   getAllXchaneUsers() {
     return this.httpClient.get('/api/xchaneuser/');
+  }
+
+  toggleXchaneUserCategory(category:any, xchaneUser:any) {
+    return this.httpClient.put(`${environment.apiUrl}/api/xchaneuser/` + xchaneUser._id + '/togglecategory', category);
+  }
+
+
+  removeXchaneUserCategory(category:any, xchaneUser:any) {
+
+    return this.httpClient.put('/api/xchaneuser/' + xchaneUser._id + '/removecategory', category);
   }
 
   updateXchaneUser(xchaneUser: any) {
@@ -117,7 +128,7 @@ export class XchaneAuthenticationService {
     console.log('In getCurrentXchaneUser');
 
     return this.httpClient.get(
-      `${environment.apiUrl}/api/xchaneuser/`,
+      `${environment.apiUrl}/api/xchaneuser/me`,
       httpOptions
     );
   }

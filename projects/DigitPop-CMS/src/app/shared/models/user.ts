@@ -15,4 +15,5 @@ export class User {
     welcomed: boolean;
     token?: string;
     icon: any;
+    projectWizardPopup: boolean;
 }

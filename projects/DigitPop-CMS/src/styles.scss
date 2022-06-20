@@ -1,27 +1,91 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700&family=Montserrat:wght@400;500;700&display=swap');
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
 /* You can add global styles to this file, and also import other style files */
+/* RESET CSS */
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+}
 
-html, body { height: 100%; }
-body { margin: 0; }
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+    display: block;
+}
 
-$breakpoints: (
-	'xs-phone': 320px,
-	'phone': 480px,
-	'tablet': 768px,
-	'desktop': 1024px,
-	'widescreen': 1200px
-);
+html, body {
+    min-height: 100vh;
+    height    : auto;
+    margin    : 0;
+}
+
+body {
+    line-height: 1;
+    min-width  : 100%;
+    overflow-x : hidden;
+}
+
+ol, ul {
+    list-style: none;
+}
+
+blockquote, q {
+    quotes: none;
+}
+
+blockquote:before, blockquote:after,
+q:before, q:after {
+    content: '';
+    content: none;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing : 0;
+}
+
+body {
+    margin: 0;
+}
+
+$breakpoints: ('xs-phone': 320px,
+    'phone'     : 480px,
+    'tablet'    : 768px,
+    'desktop'   : 1024px,
+    'widescreen': 1200px);
 
 // keywords
-$media-expressions: (
-	'screen': 'screen',
-	'print': 'print',
-	'handheld': 'handheld',
-	'landscape': '(orientation: landscape)',
-	'portrait': '(orientation: portrait)',
-	'retina2x': '(-webkit-min-device-pixel-ratio: 1.5), (min-resolution: 144dpi)',
-	'retina3x': '(-webkit-min-device-pixel-ratio: 2.5), (min-resolution: 240dpi)'
+$media-expressions: ('screen': 'screen',
+    'print'    : 'print',
+    'handheld' : 'handheld',
+    'landscape': '(orientation: landscape)',
+    'portrait' : '(orientation: portrait)',
+    'retina2x' : '(-webkit-min-device-pixel-ratio: 1.5), (min-resolution: 144dpi)',
+    'retina3x' : '(-webkit-min-device-pixel-ratio: 2.5), (min-resolution: 240dpi)'
 );
 
 mat-progress-bar .mat-progress-bar-buffer {
-  background: #E4E8EB;
+    background: #E4E8EB;
 }

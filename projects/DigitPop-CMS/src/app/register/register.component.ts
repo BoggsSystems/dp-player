@@ -56,6 +56,7 @@ export class RegisterComponent implements OnInit {
     this.authService.createUser(user).subscribe(
       (res) => {
         if(res){
+          localStorage.setItem("currentrole",'Business');
           this.router.navigate(['/cms/dashboard']);
         }
       },

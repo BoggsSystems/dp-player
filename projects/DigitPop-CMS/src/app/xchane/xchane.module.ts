@@ -111,5 +111,6 @@ const routes: Routes = [
 })
 export class XchaneModule {
   constructor() {
+
   }
 }

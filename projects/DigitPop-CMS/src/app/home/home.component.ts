@@ -29,12 +29,16 @@ import {
 } from '@angular/animations';
 import { FixedSizeTableVirtualScrollStrategy } from 'ng-table-virtual-scroll';
 import { Platform } from '@angular/cdk/platform';
+import { first } from 'rxjs/operators';
+import {User} from '../shared/models/user'
+import {UserService} from '../../../../DigitPop-Player/src/app/shared/services/user.service';
+import { AuthenticationService } from '../shared/services/auth-service.service';
 
-// interface customWindow extends Window {
-//   billsbyData: any;
-// }
+interface customWindow extends Window {
+  billsbyData: any;
+}
 
-// declare const window: customWindow;
+declare const window: customWindow;
 
 @Component({
   selector: 'DigitPop-home',
@@ -80,6 +84,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   location: Location;
   iFrameSrc: any;
   fadeAnimation: any;
+  loading = false;
+  users: User[];
 
   constructor(
     private router: Router,
@@ -87,11 +93,25 @@ export class HomeComponent implements OnInit, OnDestroy {
     private dialog: MatDialog,
     location: Location,
     private _builder: AnimationBuilder,
-    public platform: Platform
+    public platform: Platform,
+    private userService: UserService
   ) {
-    // window['billsbyData'] = {
-    //   email: "fake@eamil.net"
-    // };
+    window['billsbyData'] = {
+      email: "fake@eamil.net",
+      customFields: [
+        {
+        customFieldId: 'password',
+        value: "[11111]"
+        }
+      ]
+    };
+    var playerUrl = environment.playerUrl;
+    console.log("Player URL is : " + playerUrl);
+
+    var apiUrl = environment.apiUrl;
+    console.log("API URL is : " + apiUrl);
+
+
     this.location = location;
     //this.iFrameSrc = `${environment.playerUrl}/ad/5aaad85b76f2c80400431c3c/embedded/true`;
     this.iFrameSrc = `${environment.playerUrl}/ad/60518dfbe73b860004205e72`;
@@ -155,7 +175,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   iOSVersion() {
-    if (window.MSStream) {
+    if (false) {
       // There is some iOS in Windows Phone...
       // https://msdn.microsoft.com/en-us/library/hh869301(v=vs.85).aspx
       return false;
@@ -347,7 +367,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
   }
   clicktrial(){
-   
     let element: HTMLElement = document.getElementById("checkout") as HTMLElement;
     element.click();
     console.log("Trial clicked");
