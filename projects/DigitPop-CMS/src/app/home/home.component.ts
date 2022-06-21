@@ -106,10 +106,10 @@ export class HomeComponent implements OnInit, OnDestroy {
     console.log("API URL is : " + apiUrl);
 
     var billsbyUrl = environment.billsbyUrl;
-    console.log("Billsby URL is : " + apiUrl);
+    console.log("Billsby URL is : " + billsbyUrl);
 
     var billsbyKey = environment.billsbyKey;
-    console.log("Billsby Key is : " + apiUrl);
+    console.log("Billsby Key is : " + billsbyKey);
 
 
     this.location = location;
