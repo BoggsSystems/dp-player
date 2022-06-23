@@ -6,5 +6,5 @@ export const environment = {
   CLOUDINARY_UPLOAD_PRESET:"yspatu75",
   billsbyUrl:"https://public.billsby.com/api/v1/rest/core/digitpop",
   billsbyKey:"digitpop_f1efba4792104a3ab66c1cb59f43993a",
-  homeUrl:"https://production-digit-cms.herokuapp.com/"
+  homeUrl:"https://production-digitpop-cms.herokuapp.com/"
 };
