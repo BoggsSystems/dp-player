@@ -11,7 +11,7 @@ import { LoginComponent } from './login/login.component';
 import { LogoutComponent } from './logout/logout.component';
 import { SignupComponent } from './xchane/signup/signup.component';
 import { ProjectWizardYoutubePopup } from './cms/project-wizard/popup/youtube-popup.component';
-
+declare let Calendly: any;
 @Component({
     selector: 'DigitPop-root',
     templateUrl: './app.component.html',
@@ -67,6 +67,13 @@ export class AppComponent {
         if (localStorage.getItem("currentrole")) {
             localStorage.removeItem("currentrole");
         }
+        Calendly.initBadgeWidget({
+            url: 'https://calendly.com/2omarhany/30min',
+            text: 'Schedule a Demo',
+            color: '#ff216a',
+            textColor: '#ffffff',
+            branding: true
+        });
     }
     ngDoCheck() {
         this.isLogin = false

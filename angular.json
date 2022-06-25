@@ -33,9 +33,12 @@
             "styles": [
               "node_modules/shepherd.js/dist/css/shepherd.css",
               "./node_modules/@angular/material/prebuilt-themes/pink-bluegrey.css",
-              "projects/DigitPop-CMS/src/styles.scss"
+              "projects/DigitPop-CMS/src/styles.scss",
+              "projects/DigitPop-CMS/src/assets/css/calendly.css"
             ],
-            "scripts": []
+            "scripts": [
+              "projects/DigitPop-CMS/src/assets/js/calendly.js"
+            ]
           },
           "configurations": {
             "production": {
