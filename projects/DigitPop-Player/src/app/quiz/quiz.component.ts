@@ -111,6 +111,8 @@ export class QuizComponent implements OnInit {
         (res) => {
           // Evaluate if the answer was correct
 
+
+          console.log("In answer callback, homeUrl is : " + environment.homeUrl);
           var targetWindow = window.parent;
           targetWindow.postMessage(res, `${environment.homeUrl}`);
 

@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  apiUrl:"https://digitpop-server.herokuapp.com",
+  apiUrl:"https://production-digitpop-server.herokuapp.com",
   cloudinaryUrl:"https://api.cloudinary.com/v1_1/",
   CLOUDINARY_CLOUD_NAME:"boggssystems",
   CLOUDINARY_UPLOAD_PRESET:"yspatu75",
