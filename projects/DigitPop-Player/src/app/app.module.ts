@@ -19,6 +19,7 @@ import { MainHelpComponent } from './help/main-help/main-help.component';
 import { MatStepperModule } from '@angular/material/stepper';
 import { SafePipe } from './video/utilities/SafePipe';
 import { AnswerDialogComponent } from './answer-dialog/answer-dialog.component';
+import { SubtitlePipe } from './video/utilities/SubtitlePipe';
 
 export const HTTP_NOAUTH = new InjectionToken('http_noauth');
 export const HTTP_NOBILLS = new InjectionToken('http_nobills');
@@ -26,6 +27,7 @@ export const HTTP_NOBILLS = new InjectionToken('http_nobills');
 @NgModule({
   declarations: [
     SafePipe,
+    SubtitlePipe,
     AppComponent,
     VideoComponent,
     ImageCarouselComponent,

@@ -128,8 +128,8 @@
 
     <!-- NOTE :  Insert a div here to encapsulate the product screen and product group screen.
          Base the visibility -->
-    <div class="productInfoSubTitle" *ngIf="viewState == 'Product'">
-      {{ currentProduct?.subtitle }}
+    <div class="productInfoSubTitle" [attr.title]="currentProduct?.subtitle" *ngIf="viewState == 'Product'">
+      {{ currentProduct?.subtitle | subtitle }}
     </div>
     <div class="productInfoPrice" *ngIf="viewState == 'Product'">
       {{ currentProduct?.price | currency }}
