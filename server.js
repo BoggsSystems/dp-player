@@ -20,10 +20,10 @@ console.log("Allow CORS");
 // app.use(allowCrossDomain);
 
 // Serve only the static files form the dist directory
-app.use(express.static(__dirname + "/dist/DigitPop-Player"));
+app.use(express.static(__dirname + "/dist/DigitPop-CMS"));
 
 app.get("/*", function (req, res) {
-  res.sendFile(path.join(__dirname + "/dist/DigitPop-Player/index.html"));
+  res.sendFile(path.join(__dirname + "/dist/DigitPop-CMS/index.html"));
 
 });
 
