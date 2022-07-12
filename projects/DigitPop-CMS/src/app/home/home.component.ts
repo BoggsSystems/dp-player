@@ -39,6 +39,7 @@ interface customWindow extends Window {
 }
 
 declare const window: customWindow;
+declare let Calendly: any;
 
 @Component({
   selector: 'DigitPop-home',
@@ -174,6 +175,13 @@ export class HomeComponent implements OnInit, OnDestroy {
   @ViewChild('embeddedFrame') embeddedFrame: ElementRef;
   @ViewChild('embeddedIFrame') embeddedIFrame: ElementRef;
   ngOnInit(): void {
+    Calendly.initBadgeWidget({
+        url: 'https://calendly.com/digitpop/15min',
+        text: 'Schedule a Demo',
+        color: '#ff216a',
+        textColor: '#ffffff',
+        branding: true
+    });
     window.addEventListener('message', this.receiveMessage.bind(this), false);
 
     if (this.route != null && this.route.queryParams != null) {
@@ -380,6 +388,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     return {message:'trial mode'}
   }
   ngOnDestroy(): void {
+    Calendly.destroyBadgeWidget();
+
     var frame = document.getElementById('checkout-billsby-iframe');
 
     if (frame != null) {
