@@ -12,7 +12,7 @@
             <a mat-button href="javascript:void(0)" (click)="scrollToSection(item.key)">{{ item.value }}</a>
         </div>
     </div>
-    <div *ngIf="isCMS && isLogin  && excludeCustomNav" fxShow="true" fxHide.lt-sm="true" fxLayout="row">
+    <div *ngIf="isCMS && isLogin  && excludeCustomNav && !isTrial" fxShow="true" fxHide.lt-sm="true" fxLayout="row">
         <div class="page-nav">
             <a mat-button  href="#" routerLink="/cms/dashboard" routerLinkActive="active">Dashboard</a>
         </div>
@@ -28,10 +28,10 @@
         <a mat-button *ngIf="!isLogin" (click)="openLoginDialog()">Login</a>
         <a mat-button *ngIf="isLogin" (click)="openLogout()">Logout</a>
         <a mat-button *ngIf="!isLogin" (click)="openSignup()">Sign Up</a>
-        <a mat-button *ngIf="isLogin && isCMS" routerLink="/account" (click)="account()"><mat-icon>account_circle</mat-icon></a>
+        <a mat-button *ngIf="isLogin && isCMS && !isTrial" routerLink="/account" (click)="account()"><mat-icon>account_circle</mat-icon></a>
     </div>
 
-    <div *ngIf="isLogin && isEligible" fxShow="true" fxHide.gt-xs="true">
+    <div *ngIf="isLogin && isEligible && !isTrial" fxShow="true" fxHide.gt-xs="true">
         <div class="hamburger-menu" (click)="sidenav.toggle()">
             <span></span>
             <span></span>

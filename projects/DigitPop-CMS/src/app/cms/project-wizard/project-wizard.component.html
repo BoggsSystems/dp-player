@@ -1,4 +1,5 @@
 <div class="container">
+  <p *ngIf="isTrial">This is a preview of the video project wizard.  You can create a sample shoppable video and view it in the preview step.  To get all the functionality, sign up on the home page</p>
   <mat-vertical-stepper [linear]="isLinear" #stepper class="stepper">
     <mat-step [stepControl]="projectFormGroup" #stepTitle>
       <form [formGroup]="projectFormGroup">
@@ -474,7 +475,7 @@
 
     <mat-step>
       <ng-template matStepLabel>Preview</ng-template>
-      <p>You are now done.</p>
+      <p>Preview your Shoppable Video here while you're making it.</p>
 
       <button
       type="button"
@@ -492,7 +493,7 @@
       </div>
     </mat-step>
 
-    <mat-step>
+    <mat-step *ngIf="!isTrial">
       <ng-template matStepLabel>Done</ng-template>
       <button
           type="button"
@@ -528,6 +529,15 @@
         <button mat-button (click)="stepper.reset()">Reset</button>
       </div>
     </mat-step>
+
+    <mat-step *ngIf="isTrial">
+      <ng-template matStepLabel>Finish Trial Shoppable Video.  Exit to Home Page</ng-template>
+
+      <div>
+        <button mat-button (click)="onExitTrial()" >Exit</button>
+      </div>
+    </mat-step>
+
     <mat-vertical-stepper> </mat-vertical-stepper
   ></mat-vertical-stepper>
 </div>

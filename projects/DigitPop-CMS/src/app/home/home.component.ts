@@ -8,7 +8,7 @@ import {
   ViewChild,
   ElementRef,
 } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import {
   HashLocationStrategy,
   Location,
@@ -95,7 +95,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     location: Location,
     private _builder: AnimationBuilder,
     public platform: Platform,
-    private userService: UserService
+    private userService: UserService,
+    private authService: AuthenticationService
   ) {
     window['billsbyData'] = {
       email: "fake@eamil.net",
@@ -107,21 +108,9 @@ export class HomeComponent implements OnInit, OnDestroy {
       ]
     };
 
-    var playerUrl = environment.playerUrl;
-    console.log("Player URL is : " + playerUrl);
-
-    var apiUrl = environment.apiUrl;
-    console.log("API URL is : " + apiUrl);
-
-    var billsbyUrl = environment.billsbyUrl;
-    console.log("Billsby URL is : " + billsbyUrl);
-
-    var billsbyKey = environment.billsbyKey;
-    console.log("Billsby Key is : " + billsbyKey);
-
 
     this.location = location;
-    //this.iFrameSrc = `${environment.playerUrl}/ad/5aaad85b76f2c80400431c3c/embedded/true`;
+
     this.iFrameSrc = `${environment.playerUrl}/ad/60518dfbe73b860004205e72`;
     this.fadeAnimation = animation(
       [
@@ -166,9 +155,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     const dialogConfig = new MatDialogConfig();
 
     dialogConfig.data = {
-      id: '5aaad85b76f2c80400431c3c',
+      id: '62295ae4eac043000487fa6f',
     };
-
     const dialogRef = this.dialog.open(PreviewComponent, dialogConfig);
   }
 
@@ -381,12 +369,41 @@ export class HomeComponent implements OnInit, OnDestroy {
       }
     }
   }
+
   clicktrial(){
     let element: HTMLElement = document.getElementById("checkout") as HTMLElement;
     element.click();
     console.log("Trial clicked");
     return {message:'trial mode'}
   }
+
+
+  createFreeTrialAccount() {
+
+    console.log("In  createFreeTrialAccount")
+    var user = new User();
+    user.email = "testfreetrial@gmail.com"
+    user.password = "testfreetrial";
+
+    this.authService.createUser(user).subscribe(
+      (res) => {
+        if(res){
+          localStorage.setItem("currentrole",'Business');
+          localStorage.setItem("trial",'true');
+
+          const navigationExtras: NavigationExtras = {
+            state: { trial: true },
+          };
+
+          this.router.navigate(['/cms/project-wizard'], navigationExtras);
+        }
+      },
+      (err) => {
+        console.log('Update error : ' + err.toString());
+      }
+    );
+  }
+
   ngOnDestroy(): void {
     Calendly.destroyBadgeWidget();
 
@@ -406,4 +423,5 @@ export class HomeComponent implements OnInit, OnDestroy {
   onRegister() {
     this.router.navigate(['/register']);
   }
+
 }

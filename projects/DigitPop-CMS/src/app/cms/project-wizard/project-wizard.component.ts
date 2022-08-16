@@ -43,6 +43,7 @@ export class ProjectWizardComponent implements OnInit {
   projectFormGroup: FormGroup;
   readonly maxSize = 104857600;
   uploadStatus: any;
+  isTrial = false;
   uploadComplete = false;
   imageUploadComplete = false;
   numberProductGroups: Number;
@@ -78,6 +79,27 @@ export class ProjectWizardComponent implements OnInit {
     } else {
       this.project = new Project();
     }
+
+    if (
+      nav != null &&
+      nav.extras != null &&
+      nav.extras.state != null &&
+      nav.extras.state.trial != null
+    ) {
+
+      console.log("Trial : " + nav.extras.state.trial );
+      this.isTrial = nav.extras.state.trial;
+
+    }
+  }
+
+  onExitTrial(): void {
+    localStorage.removeItem("currentuser");
+    localStorage.removeItem("XchaneCurrentUser");
+    localStorage.removeItem("currentrole");
+    this.router.navigate(['/']);
+    // this.authService.logout();
+    // this.router.navigate(['/home']);
   }
 
   onTitleHelp(): void {
