@@ -111,6 +111,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     this.location = location;
 
+    console.log("API URL is : " + environment.apiUrl);
     this.iFrameSrc = `${environment.playerUrl}/ad/60518dfbe73b860004205e72`;
     this.fadeAnimation = animation(
       [
@@ -388,14 +389,16 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.authService.createUser(user).subscribe(
       (res) => {
         if(res){
+
+          console.log("USER CREATED " + res);
           localStorage.setItem("currentrole",'Business');
-          localStorage.setItem("trial",'true');
+          //localStorage.setItem("trial",'true');
 
-          const navigationExtras: NavigationExtras = {
-            state: { trial: true },
-          };
+          // const navigationExtras: NavigationExtras = {
+          //   state: { trial: true },
+          // };
 
-          this.router.navigate(['/cms/project-wizard'], navigationExtras);
+          this.router.navigate(['/cms/dashboard']);
         }
       },
       (err) => {

@@ -128,6 +128,8 @@ export class SignupComponent implements OnInit {
         }
       );
     } else if(this.validRole == "Business") {
+
+
       localStorage.setItem('toSignUpBusinessUserPassword', this.signUpForm.controls['password'].value);
       this.homeComp.clicktrial();
     }
