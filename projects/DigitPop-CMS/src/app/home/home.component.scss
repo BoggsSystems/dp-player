@@ -5,6 +5,13 @@ main.landing,
     align-items    : center;
 }
 
+button{
+  margin-right: 1vw;
+  line-height: 72px;
+  height: auto;
+  width: auto;
+}
+
 main.landing {
     min-height: calc(100vh - 64px);
     padding   : 50px;

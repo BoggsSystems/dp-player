@@ -7,7 +7,7 @@ import { XchaneUser } from '../../shared/models/xchane.user';
 import { XchaneAuthenticationService } from '../../shared/services/xchane-auth-service.service';
 import { Token } from '../../shared/models/token';
 import { ThemePalette } from '@angular/material/core';
-import { SignupComponent } from '../signup/signup.component';
+import { SignupComponent } from '../../signup/signup.component';
 import { MatDialog } from '@angular/material/dialog';
 import { LoginComponent } from '../login/login.component';
 

@@ -33,7 +33,7 @@ import { TableVirtualScrollModule } from 'ng-table-virtual-scroll';
 import { GuidedTourModule } from 'ngx-guided-tour';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { SignupComponent } from './signup/signup.component';
+import { SignupComponent } from '../signup/signup.component';
 import { LoginComponent } from './login/login.component';
 import { AnswerDialogComponent } from './answer-dialog/answer-dialog.component';
 import { CommonModule } from '@angular/common';
@@ -102,7 +102,6 @@ const routes: Routes = [
     FailurepopupComponent,
     RedemptionpopupComponent,
     LandingComponent,
-    SignupComponent,
     LoginComponent,
     AnswerDialogComponent,
     WelcomeComponent,

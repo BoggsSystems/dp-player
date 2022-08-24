@@ -9,7 +9,7 @@ import { SpinnerService } from './shared/services/spinner.service';
 import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './login/login.component';
 import { LogoutComponent } from './logout/logout.component';
-import { SignupComponent } from './xchane/signup/signup.component';
+import { SignupComponent } from './signup/signup.component';
 import { ProjectWizardYoutubePopup } from './cms/project-wizard/popup/youtube-popup.component';
 
 @Component({

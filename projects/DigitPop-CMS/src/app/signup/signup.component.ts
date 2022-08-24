@@ -2,13 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
-import { XchaneAuthenticationService } from '../../shared/services/xchane-auth-service.service';
-import { AuthenticationService } from '../../shared/services/auth-service.service';
-import { ConfirmedValidator } from '../../shared/helpers/confirmed.validator';
-import { XchaneUser } from '../../shared/models/xchane.user';
-import { User} from '../../shared/models/user';
-import { Role } from '../../shared/models/role';
-import { HomeComponent } from '../../home/home.component';
+import { XchaneAuthenticationService } from '../shared/services/xchane-auth-service.service';
+import { AuthenticationService } from '../shared/services/auth-service.service';
+import { ConfirmedValidator } from '../shared/helpers/confirmed.validator';
+import { XchaneUser } from '../shared/models/xchane.user';
+import { User} from '../shared/models/user';
+import { Role } from '../shared/models/role';
 import { JsonpClientBackend } from '@angular/common/http';
 interface customWindow extends Window {
   billsbyData: any;
@@ -17,7 +16,6 @@ declare const window: customWindow;
 
 
 @Component({
-  providers:[HomeComponent],
   selector: 'DigitPop-signup',
   templateUrl: './signup.component.html',
   styleUrls: ['./signup.component.scss'],
@@ -34,10 +32,9 @@ export class SignupComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private authService: XchaneAuthenticationService,
-    // private authService:AuthenticationService,
-    private homeComp:HomeComponent,
+    private bizAuthService:AuthenticationService
   ) {
-    this.validRole = Role.Consumer;
+    this.validRole = Role.Business;
     //  window['billsbyData'] = {
     //   email: "fake@eamil.net",
     //   fname: "fake"
@@ -89,51 +86,43 @@ export class SignupComponent implements OnInit {
 //    // MatCheckboxChange {checked,MatCheckbox}
 //  }
 
+
+submit() {
+
+  console.log("In  createFreeTrialAccount")
+  var user = new User();
+
+  let r = (Math.random() + 1).toString(36).substring(7);
+  console.log("random", r);
+
+  user.email = this.signUpForm.controls['email'].value;
+  user.password = this.signUpForm.controls['password'].value;
+
+  this.bizAuthService.createUser(user).subscribe(
+    (res) => {
+      if(res){
+
+        console.log("USER CREATED " + res);
+        localStorage.setItem("currentrole",'Business');
+        //localStorage.setItem("trial",'true');
+
+        // const navigationExtras: NavigationExtras = {
+        //   state: { trial: true },
+        // };
+        this.dialogRef.close();
+        this.router.navigate(['/cms/dashboard']);
+      }
+    },
+    (err) => {
+      console.log('Update error : ' + err.toString());
+    }
+  );
+}
+
   ngOnInit(): void {}
 
   get f() {
     return this.signUpForm.controls;
-  }
-
-  submit() {
-    if(this.validRole == "consumer"){
-      var user = new XchaneUser();
-      user.email = this.signUpForm.controls['email'].value;
-      user.password = this.signUpForm.controls['password'].value;
-      // user.role=this.validRole;
-      // console.log(this.signUpForm.controls['roleSelection'].value);
-
-      // stop here if form is invalid
-      if (this.signUpForm.invalid) {
-        return;
-      }
-
-      this.authService.createXchaneUser(user).subscribe(
-        (res) => {
-          console.log("createXchaneUser result : " + JSON.stringify(res) );
-          if(res.user){
-            localStorage.setItem("currentrole",'customer');
-            this.dialogRef.close();
-            console.log(res);
-            this.router.navigate(['/xchane/dashboard']);
-          } else{
-            this.dialogRef.close();
-          }
-
-
-        },
-        (err) => {
-          console.log('Update error : ' + err.toString());
-
-        }
-      );
-    } else if(this.validRole == "Business") {
-
-
-      localStorage.setItem('toSignUpBusinessUserPassword', this.signUpForm.controls['password'].value);
-      this.homeComp.clicktrial();
-    }
-
   }
 
 
@@ -143,7 +132,7 @@ export class SignupComponent implements OnInit {
   // }
   callBillsby(){
   // this.dialogRef.close();
-  this.homeComp.clicktrial();
+  //this.homeComp.clicktrial();
   }
   // ngDoCheck(){
   //   window['billsbyData'] = {

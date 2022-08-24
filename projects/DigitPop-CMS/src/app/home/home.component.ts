@@ -33,6 +33,7 @@ import { first } from 'rxjs/operators';
 import {User} from '../shared/models/user'
 import {UserService} from '../../../../DigitPop-Player/src/app/shared/services/user.service';
 import { AuthenticationService } from '../shared/services/auth-service.service';
+import { SignupComponent } from '../signup/signup.component';
 
 interface customWindow extends Window {
   billsbyData: any;
@@ -378,11 +379,26 @@ export class HomeComponent implements OnInit, OnDestroy {
     return {message:'trial mode'}
   }
 
+  openSignup() {
+    const dialogRef = this.dialog.open(SignupComponent, {
+      width: '40%',
+      height: '70%',
+    });
+
+    dialogRef.afterClosed().subscribe(() => {
+      console.log('The dialog was closed');
+    });
+  }
+
 
   createFreeTrialAccount() {
 
     console.log("In  createFreeTrialAccount")
     var user = new User();
+
+    let r = (Math.random() + 1).toString(36).substring(7);
+    console.log("random", r);
+
     user.email = "testfreetrial@gmail.com"
     user.password = "testfreetrial";
 
