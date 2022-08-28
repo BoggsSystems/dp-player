@@ -34,6 +34,8 @@ import {User} from '../shared/models/user'
 import {UserService} from '../../../../DigitPop-Player/src/app/shared/services/user.service';
 import { AuthenticationService } from '../shared/services/auth-service.service';
 import { SignupComponent } from '../signup/signup.component';
+import { MetricsService } from 'projects/DigitPop-CMS/src/app/shared/services/metrics.service';
+import { Metric } from '../shared/models/metric';
 
 interface customWindow extends Window {
   billsbyData: any;
@@ -97,6 +99,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     private _builder: AnimationBuilder,
     public platform: Platform,
     private userService: UserService,
+    private metricsService: MetricsService,
     private authService: AuthenticationService
   ) {
     window['billsbyData'] = {
@@ -154,6 +157,19 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   preview() {
+    var metric = new Metric();
+    metric.description = "Preview Shoppable Video Button Press";
+    console.log("Calling metrics service");
+
+    this.metricsService.createMetric(metric).subscribe(
+      (res) => {
+        console.log('Metric Created');
+      },
+      (err) => {
+        console.log('Error : ' + err);
+      }
+    );
+
     const dialogConfig = new MatDialogConfig();
 
     dialogConfig.data = {
@@ -380,6 +396,20 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   openSignup() {
+
+    var metric = new Metric();
+    metric.description = "Signup Button Press";
+    console.log("Calling metrics service");
+
+    this.metricsService.createMetric(metric).subscribe(
+      (res) => {
+        console.log('Metric Created');
+      },
+      (err) => {
+        console.log('Error : ' + err);
+      }
+    );
+
     const dialogRef = this.dialog.open(SignupComponent, {
       width: '40%',
       height: '70%',
