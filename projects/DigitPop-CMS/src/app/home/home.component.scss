@@ -5,6 +5,11 @@ main.landing,
     align-items    : center;
 }
 
+cloudTitle {
+  line-height: 72px;
+  font-size: xx-large;
+}
+
 button{
   margin-right: 1vw;
   line-height: 72px;
@@ -17,9 +22,9 @@ main.landing {
     padding   : 50px;
 }
 
+
 .dp-background {
-    background     : url("../../assets/img/dgpop_back.png") repeat right 200px top;
-    background-size: 50%;
+  background-color: darkslategrey;
 }
 
 .dp-blackgradient {
@@ -35,7 +40,7 @@ main.landing {
 }
 
 .video-iframe {
-    width          : calc(50% - 25px);
+    width          : calc(100% - 25px);
     min-width      : 320px;
     display        : inline-flex;
     flex-direction : column;
