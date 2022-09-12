@@ -1,16 +1,11 @@
 main.landing,
 .video-players {
-    display        : flex;
-    justify-content: space-between;
-    align-items    : center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-cloudTitle {
-  line-height: 72px;
-  font-size: xx-large;
-}
-
-button{
+button {
   margin-right: 1vw;
   line-height: 72px;
   height: auto;
@@ -18,61 +13,121 @@ button{
 }
 
 main.landing {
-    min-height: calc(100vh - 64px);
-    padding   : 50px;
+  min-height: calc(100vh - 64px);
+  padding: 50px;
 }
 
-
 .dp-background {
-  background-color: darkslategrey;
 }
 
 .dp-blackgradient {
-    background-color: #000000;
-    background-image: linear-gradient(147deg, #000000 0%, #434343 74%);
+  background-color: #000000;
+  background-image: linear-gradient(147deg, #000000 0%, #434343 74%);
 }
 
 .video-players {
-    min-width : 100%;
-    column-gap: 50px;
-    row-gap   : 50px;
-    flex-wrap : wrap;
+  min-width: 100%;
+  column-gap: 50px;
+  row-gap: 50px;
+  flex-wrap: wrap;
+}
+
+@media only screen and (min-width: 1600px) {
+  .shoppable-title {
+    font-size: 64px;
+  }
+
+  .shoppable-subtitle  {
+    font-size: 32px;
+  }
+}
+
+@media only screen and (min-width: 1024px) and (max-width: 1599px) {
+  .shoppable-title {
+    font-size: 48px;
+  }
+
+  .shoppable-subtitle  {
+    font-size: 24px;
+  }
+}
+
+@media only screen and (min-width: 660px) and (max-width: 1023px) {
+  .shoppable-title {
+    font-size: 32px;
+  }
+
+  .shoppable-subtitle  {
+    font-size: 16px;
+  }
+}
+
+@media only screen and (max-width: 659px) {
+  .shoppable-title {
+    font-size: 24px;
+  }
+
+  .shoppable-subtitle  {
+    font-size: 12px;
+  }
+}
+
+video {
+  object-fit: cover;
+}
+
+.video-iframe-title {
+  width: calc(1000% - 25px);
+  min-width: 320px;
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
 }
 
 .video-iframe {
-    width          : calc(100% - 25px);
-    min-width      : 320px;
-    display        : inline-flex;
-    flex-direction : column;
-    justify-content: center;
-    align-items    : flex-start;
+  width: calc(50% - 25px);
+  min-width: 320px;
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.video-iframe-test {
+  width: calc(75% - 25px);
+  min-width: 320px;
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
 }
 
 .video-iframe h1 {
-    font-family  : 'Verdana', serif;
-    min-height   : 82px;
-    margin-bottom: 20px;
+  font-family: "Segoe", sans-serif;
+  min-height: 82px;
+  margin-bottom: 20px;
 }
 
 .video-iframe h1::before {
-    opacity         : 0.25;
-    display         : block;
-    content         : "";
-    height          : 3px;
-    width           : 75%;
-    margin-bottom   : 15px;
-    border-radius   : 3px;
-    background-color: #fff;
+  opacity: 0.25;
+  display: block;
+  content: "";
+  height: 3px;
+  width: 75%;
+  margin-bottom: 15px;
+  border-radius: 3px;
+  background-color: #fff;
 }
 
 .video-iframe iframe {
-    height       : 500px;
-    width        : 100%;
-    border-radius: 10px;
+  height: 500px;
+  width: 100%;
+  border-radius: 10px;
 }
 
 @media (max-width: 991.98px) {
-    .video-iframe {
-        width: 100%;
-    }
+  .video-iframe {
+    width: 100%;
+  }
 }
