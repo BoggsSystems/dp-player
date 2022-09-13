@@ -178,6 +178,52 @@ export class HomeComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(PreviewComponent, dialogConfig);
   }
 
+  preview_fenty_icon() {
+    var metric = new Metric();
+    metric.description = "Preview Shoppable Video Button Press";
+    console.log("Calling metrics service");
+
+    this.metricsService.createMetric(metric).subscribe(
+      (res) => {
+        console.log('Metric Created');
+      },
+      (err) => {
+        console.log('Error : ' + err);
+      }
+    );
+
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.data = {
+      id: '62295ae4eac043000487fa6f',
+    };
+
+    const dialogRef = this.dialog.open(PreviewComponent, dialogConfig);
+  }
+
+  preview_cardi_reebok() {
+    var metric = new Metric();
+    metric.description = "Preview Shoppable Video Button Press";
+    console.log("Calling metrics service");
+
+    this.metricsService.createMetric(metric).subscribe(
+      (res) => {
+        console.log('Metric Created');
+      },
+      (err) => {
+        console.log('Error : ' + err);
+      }
+    );
+
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.data = {
+      id: '6310850fa0640500046e961a',
+    };
+
+    const dialogRef = this.dialog.open(PreviewComponent, dialogConfig);
+  }
+
   @ViewChild('embeddedFrame') embeddedFrame: ElementRef;
   @ViewChild('embeddedIFrame') embeddedIFrame: ElementRef;
   ngOnInit(): void {
