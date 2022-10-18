@@ -12,6 +12,7 @@
 	.dpop-sect-foot { background-color: rgba(33,33,33,1); height: 220px; padding-bottom: 100px; }
 	.dpop-cont { height: 100%; margin: 0 auto; display: flex; }
 	video { width: 100%; }
+	button { border: none; cursor: pointer; font-family: inherit; }
 	
 	#top { width: 60px; height: 60px; position: fixed; left: 30px; bottom: calc(50vh - 30px); border-radius: 50%; background: rgba(255,33,105,1) url('../../assets/img/top.svg'); border: rgba(255,255,255,1) 5px solid; display: none; cursor: pointer; z-index: 1; }
 	
