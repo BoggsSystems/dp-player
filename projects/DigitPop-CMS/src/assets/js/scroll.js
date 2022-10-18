@@ -9,7 +9,7 @@
 	let PAD;
 
 	$(document).ready(function() {
-		$("a[href^=\\#]").on('click', function(e) { 
+		$("a.dpop-cta-s").on('click', function(e) { 
 			e.preventDefault(); 
 			$('html,body').animate({ scrollTop: $('#' + $(this).attr('href').substring(1)).offset().top }, 'slow').trigger('scroll');
 		});
