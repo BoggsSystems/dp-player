@@ -1,32 +1,30 @@
-import { Component, OnInit, AfterViewInit, ViewChild, Directive, ElementRef } from '@angular/core';
-import { Observable } from 'rxjs';
-import { Breakpoints, BreakpointObserver } from '@angular/cdk/layout';
-import { map, shareReplay, first, switchMap } from 'rxjs/operators';
-import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
-import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
-import { MatPaginator } from '@angular/material/paginator';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {BreakpointObserver} from '@angular/cdk/layout';
+import {first} from 'rxjs/operators';
+import {ActivatedRoute, NavigationExtras, Router} from '@angular/router';
+import {MatSort} from '@angular/material/sort';
+import {MatTableDataSource} from '@angular/material/table';
+import {MatPaginator} from '@angular/material/paginator';
+import {animate, state, style, transition, trigger,} from '@angular/animations';
+import {ThemePalette} from '@angular/material/core';
+import {MatDialog} from '@angular/material/dialog';
+import {Project} from '../../shared/models/project';
+import {ProductGroup} from '../../shared/models/productGroup';
+import {BillsbyService} from '../../shared/services/billsby.service';
+import {CampaignService} from '../../shared/services/campaign.service';
+import {ProjectService} from '../../shared/services/project.service';
+import {ProductGroupService} from '../../shared/services/product-group.service';
 import {
-  trigger,
-  state,
-  style,
-  transition,
-  animate,
-} from '@angular/animations';
-import { ThemePalette } from '@angular/material/core';
-import { MatDialog } from '@angular/material/dialog';
-import { Project } from '../../shared/models/project';
-import { ProductGroup } from '../../shared/models/productGroup';
-import { BillsbyService } from '../../shared/services/billsby.service';
-import { CampaignService } from '../../shared/services/campaign.service';
-import { ProjectService } from '../../shared/services/project.service';
-import { ProductGroupService } from '../../shared/services/product-group.service';
-import { AuthenticationService } from '../../shared/services/auth-service.service';
-import { WelcomeComponent } from '../help/welcome/welcome.component';
-import { ProjectsHelpComponent } from '../help/projects/projects-help.component';
-import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
-import { Campaign } from '../../shared/models/campaign';
-import { OkDialogComponent } from '../ok-dialog/ok-dialog.component';
+  AuthenticationService
+} from '../../shared/services/auth-service.service';
+import {WelcomeComponent} from '../help/welcome/welcome.component';
+import {ProjectsHelpComponent} from '../help/projects/projects-help.component';
+import {
+  ConfirmDialogComponent
+} from '../confirm-dialog/confirm-dialog.component';
+import {Campaign} from '../../shared/models/campaign';
+import {OkDialogComponent} from '../ok-dialog/ok-dialog.component';
+import * as _ from 'lodash';
 
 interface TablesSettings {
   [key: string]: any;
@@ -46,16 +44,16 @@ interface requestArguments {
   styleUrls: ['./dashboard.component.scss'],
   animations: [
     trigger('detailExpand', [
-      state('collapsed', style({ height: '0px', minHeight: '0' })),
-      state('expanded', style({ height: '*' })),
+      state('collapsed', style({height: '0px', minHeight: '0'})),
+      state('expanded', style({height: '*'})),
       transition(
         'expanded <=> collapsed',
         animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')
       ),
     ]),
     trigger('pgDetailExpand', [
-      state('collapsed', style({ height: '0px', minHeight: '0' })),
-      state('expanded', style({ height: '*' })),
+      state('collapsed', style({height: '0px', minHeight: '0'})),
+      state('expanded', style({height: '*'})),
       transition(
         'expanded <=> collapsed',
         animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')
@@ -88,8 +86,6 @@ export class DashboardComponent implements OnInit {
     'campaignEdit',
   ];
 
-  //displayedColumns2: string[] = ['cname', 'position', 'weight', 'symbol'];
-
   innerDisplayedColumns: string[] = ['title', 'pauseCount', 'clickCount'];
   innerProductDisplayedColumns: string[] = [
     'thumbnail',
@@ -113,7 +109,11 @@ export class DashboardComponent implements OnInit {
   campaignsPageSize: number = 5;
   isFiltered: boolean = false;
   filterValue: String = '';
-  // isSorted: boolean = false;
+
+  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
+  @ViewChild('campaignpaginator') campaignpaginator: MatPaginator;
+  @ViewChild(MatSort, {static: true}) sort: MatSort;
+  @ViewChild('campaignsorter') campaignsorter: MatSort;
 
   constructor(
     private route: ActivatedRoute,
@@ -129,13 +129,6 @@ export class DashboardComponent implements OnInit {
     this.height = 25;
     this.width = 150;
   }
-
-  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
-  @ViewChild('campaignpaginator') campaignpaginator: MatPaginator;
-
-  @ViewChild(MatSort, { static: true }) sort: MatSort;
-  @ViewChild('campaignsorter') campaignsorter: MatSort;
-
 
   openWelcomeDialog(): void {
     const dialogRef = this.dialog.open(WelcomeComponent, {
@@ -183,19 +176,19 @@ export class DashboardComponent implements OnInit {
 
   getTablesSetting() {
     if (sessionStorage.getItem('projectsTable') !== null) {
-      let settings = sessionStorage.getItem('projectsTable');
+      const settings = sessionStorage.getItem('projectsTable');
       this.projectsPage = +JSON.parse(settings).page;
       this.projectsPageSize = +JSON.parse(settings).pageSize;
     }
     if (sessionStorage.getItem('campaignsTable') !== null) {
-      let settings = sessionStorage.getItem('campaignsTable');
+      const settings = sessionStorage.getItem('campaignsTable');
       this.campaignsPage = +JSON.parse(settings).page;
       this.campaignsPageSize = +JSON.parse(settings).pageSize;
     }
   }
 
   getProjects() {
-    if (sessionStorage.getItem('myprojects') !== null ) {
+    if (sessionStorage.getItem('myprojects') !== null) {
       const cachedResponse: any = sessionStorage.getItem('myprojects'),
         data = JSON.parse(cachedResponse);
       this.renderProjects(data);
@@ -208,7 +201,7 @@ export class DashboardComponent implements OnInit {
             sessionStorage.setItem('myprojects', JSON.stringify(res));
             this.renderProjects(res);
             let numberOfPages: number = res.length / 5;
-            this.populateProjects();
+            return this.populateProjects();
           },
           (error) => {
             this.error = error;
@@ -218,46 +211,47 @@ export class DashboardComponent implements OnInit {
   }
 
   populateProjects(
-    page        : number  = 0
-    , pageSize  : number  = 5
-    , sorted    : boolean = false
-    , sortedby  : string  = ''
-    , sortdir   : string  =''
+    page: number = 0, pageSize: number = 5, sorted: boolean = true, sortBy: string = 'updatedAt', sortDirection: string = 'desc'
   ) {
-    let args: requestArguments = {};
+    const args: requestArguments = {};
     args.page = page;
     args.pageSize = pageSize;
 
     if (sorted) {
+      console.log(`yes sorted`);
       args.sorted = sorted;
-      args.sortby = sortedby;
-      args.sortdir = sortdir;
-    };
-    if(this.filterValue) {
+      args.sortby = sortBy;
+      args.sortdir = sortDirection;
+    }
+
+    if (this.filterValue) {
       args.filter = this.filterValue;
-    };
+    }
+
     this.projectService
       .populateMyProject(args)
       .subscribe(
         (res: any) => {
           this.modifyThumbnailUrl(res);
-          let numberOfProjects: number = res.length,
-            currentTable:any = this.isFiltered && this.filterValue !== '' ? sessionStorage.getItem('cachedresults') : sessionStorage.getItem('myprojects'),
-            data: any = JSON.parse(currentTable),
-            startIndex: number = page * pageSize,
-            iterator: number = 0;
-          for(let i: number = startIndex; i < numberOfProjects+startIndex; i++) {
+          const numberOfProjects: number = res.length;
+          const currentTable: any = this.isFiltered && this.filterValue !== ''
+              ? sessionStorage.getItem('cachedresults') : sessionStorage.getItem('myprojects');
+          let data: any = JSON.parse(currentTable);
+          data = _.orderBy(data, (a) => new Date(a.updatedAt), ['desc']);
+          const startIndex: number = page * pageSize;
+          let iterator: number = 0;
+          for (let i: number = startIndex; i < numberOfProjects + startIndex; i++) {
             data[i] = res[iterator];
             ++iterator;
           }
-          if(this.isFiltered && this.filterValue !== '') {
+          if (this.isFiltered && this.filterValue !== '') {
             sessionStorage.setItem('cachedresults', JSON.stringify(data));
           } else {
             sessionStorage.setItem('myprojects', JSON.stringify(data));
           }
-          this.renderProjects(data);
+          this.renderProjects(data, true);
         }
-      )
+      );
   }
 
   onTableChange(event: any, source: string) {
@@ -272,15 +266,18 @@ export class DashboardComponent implements OnInit {
         this.projectsPageSize = event.pageSize;
       }
 
-      if(sessionStorage.getItem('sortsettings')) {
+      if (sessionStorage.getItem('sortsettings')) {
         let settings = JSON.parse(sessionStorage.getItem('sortsettings'));
         this.populateProjects(this.projectsPage, this.projectsPageSize, true, settings.active, settings.direction);
       } else {
         this.populateProjects(this.projectsPage, this.projectsPageSize);
       }
-      Object.assign(ProjectsTable, {'page': this.projectsPage, 'pageSize': this.projectsPageSize});
+      Object.assign(ProjectsTable, {
+        'page': this.projectsPage,
+        'pageSize': this.projectsPageSize
+      });
       sessionStorage.setItem('projectsTable', JSON.stringify(ProjectsTable));
-    } else if(source === 'campaigns') {
+    } else if (source === 'campaigns') {
       let CampaignsTable: TablesSettings = {};
 
       if (this.campaignsPage != event.pageIndex) {
@@ -291,7 +288,10 @@ export class DashboardComponent implements OnInit {
         this.campaignsPageSize = event.pageSize;
       }
 
-      Object.assign(CampaignsTable, {'page': this.campaignsPage, 'pageSize': this.campaignsPageSize});
+      Object.assign(CampaignsTable, {
+        'page': this.campaignsPage,
+        'pageSize': this.campaignsPageSize
+      });
       sessionStorage.setItem('campaignsTable', JSON.stringify(CampaignsTable));
     }
   }
@@ -303,7 +303,7 @@ export class DashboardComponent implements OnInit {
     sortBy = this.getSortBase(e.active);
     e.active = sortBy;
     sessionStorage.setItem('sortsettings', JSON.stringify(e));
-    if ( this.filterValue == '' ) {
+    if (this.filterValue == '') {
       sessionStorage.setItem('myprojects', JSON.stringify(sortedData));
     } else {
       sessionStorage.setItem('cachedresults', JSON.stringify(sortedData));
@@ -327,10 +327,10 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  renderProjects(projects: any) {
+  renderProjects(projects: any, update: boolean = false) {
     this.dataSource = new MatTableDataSource(projects);
-    this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
+    this.dataSource.paginator = this.paginator;
     this.dataSource.sortingDataAccessor = (item: any, property: any) => {
       switch (property) {
         case 'watchCount':
@@ -446,7 +446,8 @@ export class DashboardComponent implements OnInit {
     this.dataSource.filter = filterValue.trim().toLowerCase();
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
-    };
+    }
+
     this.isFiltered = true;
     this.filterValue = filterValue;
     sessionStorage.setItem('cachedresults', JSON.stringify(this.dataSource.filteredData));
@@ -472,14 +473,14 @@ export class DashboardComponent implements OnInit {
 
   onEdit(project: Project) {
     const navigationExtras: NavigationExtras = {
-      state: { project: project },
+      state: {project: project},
     };
     this.router.navigate(['/cms/project-wizard'], navigationExtras);
   }
 
   onCampaignEdit(campaign: Campaign) {
     const navigationExtras: NavigationExtras = {
-      state: { campaign: campaign },
+      state: {campaign: campaign},
     };
     this.router.navigate(['/cms/campaign-wizard'], navigationExtras);
   }
