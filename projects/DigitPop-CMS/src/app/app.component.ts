@@ -116,9 +116,8 @@ export class AppComponent {
   }
   openLoginDialog(): void {
     const dialogRef = this.dialog.open(LoginComponent, {
-      width: '250px',
-      height: '350px',
-    });
+		panelClass: 'dpop-modal'
+	});
 
     dialogRef.afterClosed().subscribe(() => {
       console.log('The dialog was closed');
@@ -126,9 +125,8 @@ export class AppComponent {
   }
   openSignup(): void {
     const dialogRef = this.dialog.open(SignupComponent, {
-      width: '40%',
-      height: '70%',
-    });
+		panelClass: 'dpop-modal'
+	});
 
     dialogRef.afterClosed().subscribe(() => {
       console.log('The dialog was closed');
@@ -136,12 +134,13 @@ export class AppComponent {
   }
   openLogout(): void {
     const dialogRef = this.dialog.open(LogoutComponent, {
-      width: '400px',
-      height: '150px',
-    });
+		panelClass: 'dpop-modal'
+	});
+
     dialogRef.afterClosed().subscribe(() => {
       console.log('The dialog was closed');
     });
+
     // localStorage.removeItem("currentuser");
     // localStorage.removeItem("currentrole");
     // this.router.navigate(['/']);

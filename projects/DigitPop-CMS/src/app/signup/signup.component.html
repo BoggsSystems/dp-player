@@ -1,20 +1,8 @@
-<div mat-dialog- class="container">
-  <form [formGroup]="signUpForm" class="formLayout" (ngSubmit)="submit()">
-    <div class="logo">
-      <svg viewBox="0 0 180 60">
-        <use xlink:href="assets/img/app_assets.svg#logo"></use>
-      </svg>
-    </div>
+<div mat-dialog-content class="signup-modal">
+  <button class="mat-dialog-close" [mat-dialog-close] cdkFocusInitial>&#10006;</button>
+  <form [formGroup]="signUpForm" (ngSubmit)="submit()">
 
-    <div
-      class="form-group email"
-      fxLayout="row"
-      fxLayoutGap="5px"
-      fxLayoutAlign="center center"
-    >
-      <mat-icon matPrefix aria-hidden="false" aria-label="Email"
-        >email</mat-icon
-      >
+    <div class="form-group email">
       <mat-form-field>
         <mat-label>Email</mat-label>
         <input
@@ -28,15 +16,10 @@
           <div *ngIf="f.email.errors.required">Email is required</div>
         </div>
       </mat-form-field>
-    </div>
+	  <mat-icon matPrefix aria-hidden="false" aria-label="Email">email</mat-icon>
+	</div>
 
-    <div
-      class="form-group password"
-      fxLayout="row"
-      fxLayoutGap="5px"
-      fxLayoutAlign="center center"
-    >
-      <mat-icon matPrefix aria-hidden="false" aria-label="Lock">lock</mat-icon>
+    <div class="form-group password">
       <mat-form-field>
         <mat-label for="password">Password</mat-label>
         <input
@@ -53,31 +36,26 @@
           <div *ngIf="f.password.errors.required">Password is required.</div>
         </div>
       </mat-form-field>
-    </div>
+	  <mat-icon matPrefix aria-hidden="false" aria-label="Lock">lock</mat-icon>
+	</div>
 
-    <div
-      class="form-group passwordConfirmation"
-      fxLayout="row"
-      fxLayoutGap="5px"
-      fxLayoutAlign="center center"
-    >
-      <mat-icon matPrefix aria-hidden="false" aria-label="Lock">lock</mat-icon>
+    <div class="form-group passwordConfirmation">
       <mat-form-field>
         <mat-label class="labelStyle" for="confirm_password"
           >Confirm Password</mat-label
         >
-        <div fxLayout="row" fxLayoutGap="5px" fxLayoutAlign="center center">
-          <input
-            matInput
-            formControlName="confirm_password"
-            id="confirm_password"
-            type="password"
-          />
-        </div>
+		<input
+		  matInput
+		  formControlName="confirm_password"
+		  id="confirm_password"
+		  type="password"
+		/>
       </mat-form-field>
+	  <mat-icon matPrefix aria-hidden="false" aria-label="Lock">lock</mat-icon>
     </div>
 
-    <button class="submitButton mat-raised-button" type="submit">Submit</button>
+	<div class="form-group">
+		<button class="submitButton mat-button" type="submit">Submit</button>
 
     <!-- <a class="submitButton mat-raised-button" (click)="callBillsby()"
       >Start free trial</a
@@ -102,5 +80,6 @@
           Password and Confirm Password must be match.
         </div>
       </div> -->
+	  </div>
   </form>
 </div>
