@@ -5,7 +5,7 @@ import {ActivatedRoute, NavigationExtras, Router} from '@angular/router';
 import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {MatPaginator} from '@angular/material/paginator';
-import {animate, state, style, transition, trigger,} from '@angular/animations';
+import {animate, state, style, transition, trigger} from '@angular/animations';
 import {ThemePalette} from '@angular/material/core';
 import {MatDialog} from '@angular/material/dialog';
 import {Project} from '../../shared/models/project';
@@ -34,7 +34,7 @@ interface SortSettings {
   [key: string]: any;
 }
 
-interface requestArguments {
+interface RequestArguments {
   [key: string]: any;
 }
 
@@ -103,17 +103,19 @@ export class DashboardComponent implements OnInit {
   expandedElement: Project | null;
   expandedProductGroupElement: ProductGroup | null;
   color: ThemePalette = 'primary';
-  projectsPage: number = 0;
-  projectsPageSize: number = 5;
-  campaignsPage: number = 0;
-  campaignsPageSize: number = 5;
-  isFiltered: boolean = false;
-  filterValue: String = '';
+  projectsPage = 0;
+  projectsPageSize = 5;
+  campaignsPage = 0;
+  campaignsPageSize = 5;
+  isFiltered = false;
+  filterValue = '';
+  sortBy = 'updatedAt';
+  sortDirection = -1;
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
-  @ViewChild('campaignpaginator') campaignpaginator: MatPaginator;
+  @ViewChild('campaignPaginator') campaignPaginator: MatPaginator;
   @ViewChild(MatSort, {static: true}) sort: MatSort;
-  @ViewChild('campaignsorter') campaignsorter: MatSort;
+  @ViewChild('campaignSorter') campaignSorter: MatSort;
 
   constructor(
     private route: ActivatedRoute,
@@ -188,9 +190,9 @@ export class DashboardComponent implements OnInit {
   }
 
   getProjects() {
-    if (sessionStorage.getItem('myprojects') !== null) {
-      const cachedResponse: any = sessionStorage.getItem('myprojects'),
-        data = JSON.parse(cachedResponse);
+    if (sessionStorage.getItem('my-projects') !== null) {
+      const cachedResponse: any = sessionStorage.getItem('my-projects');
+      const data = JSON.parse(cachedResponse);
       this.renderProjects(data);
     } else {
       this.projectService
@@ -198,9 +200,9 @@ export class DashboardComponent implements OnInit {
         .subscribe(
           (res: any) => {
             this.modifyThumbnailUrl(res);
-            sessionStorage.setItem('myprojects', JSON.stringify(res));
+            sessionStorage.setItem('my-projects', JSON.stringify(res));
             this.renderProjects(res);
-            let numberOfPages: number = res.length / 5;
+            const numberOfPages: number = res.length / 5;
             return this.populateProjects();
           },
           (error) => {
@@ -213,12 +215,11 @@ export class DashboardComponent implements OnInit {
   populateProjects(
     page: number = 0, pageSize: number = 5, sorted: boolean = true, sortBy: string = 'updatedAt', sortDirection: string = 'desc'
   ) {
-    const args: requestArguments = {};
+    const args: RequestArguments = {};
     args.page = page;
     args.pageSize = pageSize;
 
     if (sorted) {
-      console.log(`yes sorted`);
       args.sorted = sorted;
       args.sortby = sortBy;
       args.sortdir = sortDirection;
@@ -235,78 +236,95 @@ export class DashboardComponent implements OnInit {
           this.modifyThumbnailUrl(res);
           const numberOfProjects: number = res.length;
           const currentTable: any = this.isFiltered && this.filterValue !== ''
-              ? sessionStorage.getItem('cachedresults') : sessionStorage.getItem('myprojects');
+              ? sessionStorage.getItem('cached-results') : sessionStorage.getItem('my-projects');
           let data: any = JSON.parse(currentTable);
-          data = _.orderBy(data, (a) => new Date(a.updatedAt), ['desc']);
+          /* Sort retrieved sessionStorage data in sync with table sort
+           * default sort: sort by updatedBy, desc
+           */
+          data = this.sortData(data);
           const startIndex: number = page * pageSize;
-          let iterator: number = 0;
+          let iterator = 0;
           for (let i: number = startIndex; i < numberOfProjects + startIndex; i++) {
             data[i] = res[iterator];
             ++iterator;
           }
           if (this.isFiltered && this.filterValue !== '') {
-            sessionStorage.setItem('cachedresults', JSON.stringify(data));
+            sessionStorage.setItem('cached-results', JSON.stringify(data));
           } else {
-            sessionStorage.setItem('myprojects', JSON.stringify(data));
+            sessionStorage.setItem('my-projects', JSON.stringify(data));
           }
-          this.renderProjects(data, true);
+          this.renderProjects(data);
         }
       );
   }
 
+  sortData(data: any, sortBy: string = this.sortBy, sortDirection: number = this.sortDirection, sortType: string = 'date') {
+    const orders = sortDirection > 0 ? 'asc' : 'desc';
+    let sortCondition;
+    switch (sortType) {
+      case (`date`):
+        sortCondition = (o: any) => new Date(o[sortBy]);
+        break;
+      default:
+        sortCondition = (o: any) => o[sortBy].toLowerCase();
+        break;
+    }
+    return _.orderBy(data, sortCondition, [orders]);
+  }
+
   onTableChange(event: any, source: string) {
     if (source === 'projects') {
-      let ProjectsTable: TablesSettings = {};
+      const ProjectsTable: TablesSettings = {};
 
-      if (this.projectsPage != event.pageIndex) {
+      if (this.projectsPage !== event.pageIndex) {
         this.projectsPage = event.pageIndex;
       }
 
-      if (this.projectsPageSize != event.pageSize) {
+      if (this.projectsPageSize !== event.pageSize) {
         this.projectsPageSize = event.pageSize;
       }
 
-      if (sessionStorage.getItem('sortsettings')) {
-        let settings = JSON.parse(sessionStorage.getItem('sortsettings'));
+      if (sessionStorage.getItem('sort-settings')) {
+        const settings = JSON.parse(sessionStorage.getItem('sort-settings'));
         this.populateProjects(this.projectsPage, this.projectsPageSize, true, settings.active, settings.direction);
       } else {
         this.populateProjects(this.projectsPage, this.projectsPageSize);
       }
       Object.assign(ProjectsTable, {
-        'page': this.projectsPage,
-        'pageSize': this.projectsPageSize
+        page: this.projectsPage,
+        pageSize: this.projectsPageSize
       });
       sessionStorage.setItem('projectsTable', JSON.stringify(ProjectsTable));
     } else if (source === 'campaigns') {
-      let CampaignsTable: TablesSettings = {};
+      const CampaignsTable: TablesSettings = {};
 
-      if (this.campaignsPage != event.pageIndex) {
+      if (this.campaignsPage !== event.pageIndex) {
         this.campaignsPage = event.pageIndex;
       }
 
-      if (this.campaignsPageSize != event.pageSize) {
+      if (this.campaignsPageSize !== event.pageSize) {
         this.campaignsPageSize = event.pageSize;
       }
 
       Object.assign(CampaignsTable, {
-        'page': this.campaignsPage,
-        'pageSize': this.campaignsPageSize
+        page: this.campaignsPage,
+        pageSize: this.campaignsPageSize
       });
       sessionStorage.setItem('campaignsTable', JSON.stringify(CampaignsTable));
     }
   }
 
   onTableSort(event: Event) {
-    let e = (event as SortSettings),
-      sortBy: string = '',
-      sortedData: any = this.dataSource.sortData(this.dataSource.data, this.dataSource.sort);
+    const e = (event as SortSettings);
+    let sortBy = '';
+    const sortedData: any = this.dataSource.sortData(this.dataSource.data, this.dataSource.sort);
     sortBy = this.getSortBase(e.active);
     e.active = sortBy;
-    sessionStorage.setItem('sortsettings', JSON.stringify(e));
-    if (this.filterValue == '') {
-      sessionStorage.setItem('myprojects', JSON.stringify(sortedData));
+    sessionStorage.setItem('sort-settings', JSON.stringify(e));
+    if (this.filterValue === '') {
+      sessionStorage.setItem('my-projects', JSON.stringify(sortedData));
     } else {
-      sessionStorage.setItem('cachedresults', JSON.stringify(sortedData));
+      sessionStorage.setItem('cached-results', JSON.stringify(sortedData));
     }
     this.populateProjects(undefined, undefined, true, sortBy, e.direction);
   }
@@ -327,7 +345,7 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  renderProjects(projects: any, update: boolean = false) {
+  renderProjects(projects: any) {
     this.dataSource = new MatTableDataSource(projects);
     this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
@@ -349,8 +367,8 @@ export class DashboardComponent implements OnInit {
   }
 
   getCampaigns() {
-    if (sessionStorage.getItem('mycampaigns') !== null) {
-      const cachedResponse: any = sessionStorage.getItem('mycampaigns');
+    if (sessionStorage.getItem('my-campaigns') !== null) {
+      const cachedResponse: any = sessionStorage.getItem('my-campaigns');
       this.renderCampaigns(JSON.parse(cachedResponse));
     } else {
       this.campaignService
@@ -358,7 +376,7 @@ export class DashboardComponent implements OnInit {
         .pipe(first())
         .subscribe(
           (campaigns: any) => {
-            sessionStorage.setItem('mycampaigns', JSON.stringify(campaigns));
+            sessionStorage.setItem('my-campaigns', JSON.stringify(campaigns));
             this.renderCampaigns(campaigns);
           },
           (error) => {
@@ -370,7 +388,7 @@ export class DashboardComponent implements OnInit {
 
   renderCampaigns(campaigns: any) {
     this.campaignsDataSource = new MatTableDataSource<Campaign>(campaigns);
-    this.campaignsDataSource.paginator = this.campaignpaginator;
+    this.campaignsDataSource.paginator = this.campaignPaginator;
     this.campaignsDataSource.sortingDataAccessor = (item: any, property: any) => {
       switch (property) {
         case 'name':
@@ -395,24 +413,22 @@ export class DashboardComponent implements OnInit {
         default:
           return item[property];
       }
-    }
-    this.campaignsDataSource.sort = this.campaignsorter;
+    };
+    this.campaignsDataSource.sort = this.campaignSorter;
   }
 
   modifyThumbnailUrl(response: any) {
     response.forEach((project: any) => {
       if ('thumbnail' in project) {
-        let url = project['thumbnail']['url'],
-          queryTerm = 'upload/',
-          queryLength = queryTerm.length,
-          uploadsIndex = url.indexOf(queryTerm),
-          paramsIndex = uploadsIndex + queryLength,
-          imgHeight = 50,
-          imgWidth = 50,
-          params = `c_fill,h_${imgHeight},w_${imgWidth}/`,
-          resizedUrl = url.substr(0, paramsIndex) + params + url.substr(paramsIndex);
-
-        project['thumbnail']['url'] = resizedUrl;
+        const url = project.thumbnail.url;
+        const queryTerm = 'upload/';
+        const queryLength = queryTerm.length;
+        const uploadsIndex = url.indexOf(queryTerm);
+        const paramsIndex = uploadsIndex + queryLength;
+        const imgHeight = 50;
+        const imgWidth = 50;
+        const params = `c_fill,h_${imgHeight},w_${imgWidth}/`;
+        project.thumbnail.url = url.substr(0, paramsIndex) + params + url.substr(paramsIndex);
       }
     });
   }
@@ -422,27 +438,13 @@ export class DashboardComponent implements OnInit {
       width: '100%',
       height: '90%',
     });
-
-    dialogRef.afterClosed().subscribe(() => {
-      console.log('The dialog was closed');
-    });
-  }
-
-  campaignsHelp() {
-    // const dialogRef = this.dialog.open(ProjectsHelpComponent, {
-    //   width: '100%',
-    //   height: '90%',
-    // });
-    // dialogRef.afterClosed().subscribe(() => {
-    //   console.log('The dialog was closed');
-    // });
   }
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
 
-    let data: any = filterValue.trim().toLowerCase(),
-      cachedProjects: any = JSON.parse(sessionStorage.getItem('cachedResults'));
+    const data: any = filterValue.trim().toLowerCase();
+    const cachedProjects: any = JSON.parse(sessionStorage.getItem('cachedResults'));
     this.dataSource.filter = filterValue.trim().toLowerCase();
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
@@ -450,7 +452,7 @@ export class DashboardComponent implements OnInit {
 
     this.isFiltered = true;
     this.filterValue = filterValue;
-    sessionStorage.setItem('cachedresults', JSON.stringify(this.dataSource.filteredData));
+    sessionStorage.setItem('cached-results', JSON.stringify(this.dataSource.filteredData));
     this.populateProjects(undefined, undefined, false, undefined, undefined);
   }
 
@@ -473,14 +475,14 @@ export class DashboardComponent implements OnInit {
 
   onEdit(project: Project) {
     const navigationExtras: NavigationExtras = {
-      state: {project: project},
+      state: {project},
     };
     this.router.navigate(['/cms/project-wizard'], navigationExtras);
   }
 
   onCampaignEdit(campaign: Campaign) {
     const navigationExtras: NavigationExtras = {
-      state: {campaign: campaign},
+      state: {campaign},
     };
     this.router.navigate(['/cms/campaign-wizard'], navigationExtras);
   }
@@ -489,7 +491,7 @@ export class DashboardComponent implements OnInit {
     // Retrieve the campaign
     this.campaignService.getCampaign(element).subscribe(
       (res) => {
-        var campaign = res as Campaign;
+        const campaign = res as Campaign;
 
         if (!campaign.project.active) {
           campaign.active = false;
@@ -536,7 +538,7 @@ export class DashboardComponent implements OnInit {
         });
       },
       (error) => {
-        console.log(error);
+        console.error(error);
         return;
       }
     );
@@ -563,7 +565,7 @@ export class DashboardComponent implements OnInit {
           }
         },
         (error) => {
-          console.log(error);
+          console.error(error);
           return;
         }
       );

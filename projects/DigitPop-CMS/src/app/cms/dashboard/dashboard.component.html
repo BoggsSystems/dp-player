@@ -23,7 +23,7 @@
             <input matInput (input)="applyFilter($event)" placeholder="Ex. Mia" #input />
         </mat-form-field>
 
-        <table mat-table multiTemplateDataRows [dataSource]="dataSource" matSort matSortActive="updatedAt" matSortDirection="desc" class="mat-elevation-z8" (matSortChange)="onTableSort($event)">
+        <table mat-table multiTemplateDataRows [dataSource]="dataSource" matSort [matSortActive]="sortBy" [matSortDirection]="sortDirection > 0 ? 'asc' : 'desc'" class="mat-elevation-z8" (matSortChange)="onTableSort($event)">
             <!--- Note that these columns can be defined in any order.
           The actual rendered columns are set as a property on the row definition" -->
 
@@ -185,9 +185,6 @@
     </div>
 
     <div class="campaignsList">
-        <h3>Campaigns<mat-icon (click)="campaignsHelp()">help</mat-icon>
-        </h3>
-
         <mat-form-field>
             <mat-label>Filter</mat-label>
             <input matInput (keyup)="applyCampaignsFilter($event)" placeholder="Ex. Mia" #input />
