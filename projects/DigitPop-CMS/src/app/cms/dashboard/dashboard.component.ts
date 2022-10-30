@@ -25,6 +25,9 @@ import {
 import {Campaign} from '../../shared/models/campaign';
 import {OkDialogComponent} from '../ok-dialog/ok-dialog.component';
 import * as _ from 'lodash';
+import {
+  NotificationDialogComponent
+} from "../notification-dialog/notification-dialog.component";
 
 interface TablesSettings {
   [key: string]: any;
@@ -61,8 +64,9 @@ interface RequestArguments {
     ]),
   ],
 })
+
 export class DashboardComponent implements OnInit {
-  displayedColumns: string[] = [
+  projectsCols: string[] = [
     'thumbnail',
     'name',
     'watchCount',
@@ -441,6 +445,7 @@ export class DashboardComponent implements OnInit {
   }
 
   applyFilter(event: Event) {
+    console.log(`applying filter`);
     const filterValue = (event.target as HTMLInputElement).value;
 
     const data: any = filterValue.trim().toLowerCase();
@@ -453,7 +458,7 @@ export class DashboardComponent implements OnInit {
     this.isFiltered = true;
     this.filterValue = filterValue;
     sessionStorage.setItem('cached-results', JSON.stringify(this.dataSource.filteredData));
-    this.populateProjects(undefined, undefined, false, undefined, undefined);
+    this.populateProjects();
   }
 
   applyCampaignsFilter(event: Event) {
@@ -478,6 +483,46 @@ export class DashboardComponent implements OnInit {
       state: {project},
     };
     this.router.navigate(['/cms/project-wizard'], navigationExtras);
+  }
+
+  deleteProject(project: Project) {
+    const confirmDialog = this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: 'Delete Project',
+        message:
+          `Are you sure you want to delete this project?`,
+      },
+    });
+
+    confirmDialog.afterClosed().subscribe((result) => {
+      if (result === true) {
+        this.projectService.deleteProject(project).subscribe(
+          (res) => {
+            sessionStorage.removeItem('my-projects');
+            const deletedDialog = this.dialog.open(NotificationDialogComponent, {
+              data: {
+                message:
+                  `Project deleted successfully.`,
+              },
+            });
+            deletedDialog.afterOpened().subscribe(_ => {
+              setTimeout(() => {
+                deletedDialog.close();
+              }, 3000);
+            });
+
+            this.getProjects();
+          },
+          (error) => {
+            console.error(error);
+            return;
+          }
+        );
+      } else {
+        return;
+      }
+    });
+
   }
 
   onCampaignEdit(campaign: Campaign) {

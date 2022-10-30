@@ -1,15 +1,16 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { map, publishReplay, refCount, shareReplay } from 'rxjs/operators';
-import { Project } from '../models/project';
-import { environment } from 'projects/DigitPop-CMS/src/environments/environment';
-import { Observable } from 'rxjs';
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {publishReplay, refCount, shareReplay} from 'rxjs/operators';
+import {Project} from '../models/project';
+import {environment} from 'projects/DigitPop-CMS/src/environments/environment';
+import {Observable} from 'rxjs';
 
-@Injectable({ providedIn: 'root' })
+@Injectable({providedIn: 'root'})
 export class ProjectService {
   projectList$: Observable<Object>;
 
-  constructor(private httpClient: HttpClient) {}
+  constructor(private httpClient: HttpClient) {
+  }
 
   addProject(project: any) {
     this.projectList$ = null;
@@ -31,8 +32,8 @@ export class ProjectService {
   updateProjectProductGroups(project: Project) {
     return this.httpClient.put<any>(
       `${environment.apiUrl}/api/projects/` +
-        project._id +
-        '/updateProductGroups',
+      project._id +
+      '/updateProductGroups',
       {
         project,
       }
@@ -42,14 +43,14 @@ export class ProjectService {
   sendEmail(email: any) {
     return this.httpClient.post<any>(
       `${environment.apiUrl}/api/projects/email`,
-      { email }
+      {email}
     );
   }
 
   getProjects() {
     return this.httpClient
       .get(`${environment.apiUrl}/api/projects`)
-      .pipe(shareReplay({ refCount: true, bufferSize: 1 }));
+      .pipe(shareReplay({refCount: true, bufferSize: 1}));
   }
 
   getProject(id: any) {
@@ -74,15 +75,15 @@ export class ProjectService {
   }
 
   populateMyProject(args: any = {}) {
-    let page: number  = 0,
-    pageSize: number  = 5,
-    sorted  : boolean = false,
-    sortby  : string  = '',
-    sortdir : string  = '',
-    filter  : string  = '';
+    let page: number = 0,
+      pageSize: number = 5,
+      sorted: boolean = false,
+      sortby: string = '',
+      sortdir: string = '',
+      filter: string = '';
 
-    for (let key in args ) {
-      switch(key) {
+    for (let key in args) {
+      switch (key) {
         case 'page':
           page = args[key];
           break;
@@ -107,17 +108,17 @@ export class ProjectService {
     let reqUrl: string;
     reqUrl = `${environment.apiUrl}/api/projects/populateproject?page=${page}&pageSize=${pageSize}`;
 
-    if(sorted) {
+    if (sorted) {
       reqUrl += `&sortby=${sortby}&sortdir=${sortdir}`;
     }
 
-    if(filter) {
+    if (filter) {
       reqUrl += `&filter=${filter}`;
     }
 
     return this.httpClient
-    .get(reqUrl)
-    .pipe(publishReplay(1), refCount());
+      .get(reqUrl)
+      .pipe(publishReplay(1), refCount());
   }
 
   getPublishedProjects() {
@@ -132,14 +133,20 @@ export class ProjectService {
     );
   }
 
-  getCampaignsForProject(project : Project) {
+  getCampaignsForProject(project: Project) {
     return this.httpClient.put<any>(
       `${environment.apiUrl}/api/projects/` +
-        project._id +
-        '/getCampaignsForProject',
+      project._id +
+      '/getCampaignsForProject',
       {
         project
       }
+    );
+  }
+
+  deleteProject(project: Project) {
+    return this.httpClient.delete(
+      `${environment.apiUrl}/api/projects/${project._id}`
     );
   }
 }

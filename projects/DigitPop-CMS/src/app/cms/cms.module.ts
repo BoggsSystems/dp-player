@@ -3,6 +3,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { AccountComponent } from './account/account.component';
 import { CampaignsComponent } from './campaigns/campaigns.component';
 import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
+import { NotificationDialogComponent } from './notification-dialog/notification-dialog.component';
 import { ProjectWizardComponent } from './project-wizard/project-wizard.component';
 import { PreviewComponent } from './preview/preview.component';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -133,6 +134,7 @@ const routes: Routes = [
     AccountComponent,
     CampaignsComponent,
     ConfirmDialogComponent,
+    NotificationDialogComponent,
     OkDialogComponent,
     PreviewComponent,
     ProjectWizardComponent,
