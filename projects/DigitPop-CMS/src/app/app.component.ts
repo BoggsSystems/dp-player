@@ -50,7 +50,6 @@ export class AppComponent {
     private router: Router
   ) {
     router.events.subscribe(() => {
-      console.log("GET SECTIONS");
       this.getSections();
     });
   }

@@ -1,43 +1,58 @@
-import { Component, OnInit } from '@angular/core';
-import { FormGroup, Validators, FormArray, FormControl } from '@angular/forms';
-import { map } from 'rxjs/operators';
-import { HttpEventType } from '@angular/common/http';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import {Component, OnInit} from '@angular/core';
+import {FormArray, FormControl, FormGroup, Validators} from '@angular/forms';
+import {map} from 'rxjs/operators';
+import {HttpEventType} from '@angular/common/http';
+import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import * as _ from 'lodash';
-import { Router, Params } from '@angular/router';
-import { VideoService } from '../../shared/services/video.service';
-import { ImageService } from '../../shared/services/image.service';
-import { ProjectService } from '../../shared/services/project.service';
-import { ProductGroupService } from '../../shared/services/product-group.service';
-import { ProductService } from '../../shared/services/product.service';
-import { Project } from 'projects/DigitPop-Player/src/app/models/project';
-import { TitleHelpComponent } from '../help/title/title-help.component';
-import { ProjectWizardHelpComponent } from '../help/project/project-wizard-help.component';
-import { FileValidatorUtil } from '../../shared/utility/FileValidator';
-import { ProductGroup } from 'projects/DigitPop-Player/src/app/models/productGroup';
+import {Params, Router} from '@angular/router';
+import {VideoService} from '../../shared/services/video.service';
+import {ImageService} from '../../shared/services/image.service';
+import {ProjectService} from '../../shared/services/project.service';
+import {ProductGroupService} from '../../shared/services/product-group.service';
+import {ProductService} from '../../shared/services/product.service';
+import {Project} from 'projects/DigitPop-Player/src/app/models/project';
+import {TitleHelpComponent} from '../help/title/title-help.component';
+import {
+  ProjectWizardHelpComponent
+} from '../help/project/project-wizard-help.component';
+import {FileValidatorUtil} from '../../shared/utility/FileValidator';
+import {
+  ProductGroup
+} from 'projects/DigitPop-Player/src/app/models/productGroup';
 import {
   Product,
   ProductImage,
 } from 'projects/DigitPop-Player/src/app/models/product';
-import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
-import { VideoHelpComponent } from '../help/video/video-help.component';
-import { ProductHelpComponent } from '../help/product/product-help.component';
-import { ProductGroupHelpComponent } from '../help/product-group/product-group-help.component';
-import { ProductGroupsHelpComponent } from '../help/product-groups/product-groups-help.component';
-import { ThumbnailHelpComponent } from '../help/thumbnail/thumbnail-help.component';
-import { PreviewHelpComponent } from '../help/preview/preview-help.component';
-import { PreviewComponent } from '../preview/preview.component';
-import { AuthenticationService } from '../../shared/services/auth-service.service';
-import { WelcomeComponent } from '../help/welcome/welcome.component';
-import { ProjectWizardYoutubePopup } from './popup/youtube-popup.component';
-import { Clipboard } from '@angular/cdk/clipboard';
+import {
+  ConfirmDialogComponent
+} from '../confirm-dialog/confirm-dialog.component';
+import {VideoHelpComponent} from '../help/video/video-help.component';
+import {ProductHelpComponent} from '../help/product/product-help.component';
+import {
+  ProductGroupHelpComponent
+} from '../help/product-group/product-group-help.component';
+import {
+  ProductGroupsHelpComponent
+} from '../help/product-groups/product-groups-help.component';
+import {
+  ThumbnailHelpComponent
+} from '../help/thumbnail/thumbnail-help.component';
+import {PreviewHelpComponent} from '../help/preview/preview-help.component';
+import {PreviewComponent} from '../preview/preview.component';
+import {
+  AuthenticationService
+} from '../../shared/services/auth-service.service';
+import {ProjectWizardYoutubePopup} from './popup/youtube-popup.component';
+import {Clipboard} from '@angular/cdk/clipboard';
+import { Cache } from '../../shared/helpers/cache';
 
 
 @Component({
-  selector: 'DigitPop-project-wizard',
+  selector: 'digit-pop-project-wizard',
   templateUrl: './project-wizard.component.html',
   styleUrls: ['./project-wizard.component.scss'],
 })
+
 export class ProjectWizardComponent implements OnInit {
   isLinear = false;
   projectFormGroup: FormGroup;
@@ -94,12 +109,7 @@ export class ProjectWizardComponent implements OnInit {
   }
 
   onExitTrial(): void {
-    localStorage.removeItem("currentuser");
-    localStorage.removeItem("XchaneCurrentUser");
-    localStorage.removeItem("currentrole");
-    this.router.navigate(['/']);
-    // this.authService.logout();
-    // this.router.navigate(['/home']);
+    Cache.exitTrial(this.router);
   }
 
   onTitleHelp(): void {
@@ -214,6 +224,11 @@ export class ProjectWizardComponent implements OnInit {
 
   ngOnInit() {
     this.wizardPopup();
+    this.render();
+    this.updateProjectData();
+  }
+
+  render = () => {
     this.projectFormGroup = new FormGroup({
       title: new FormControl('', {
         validators: [Validators.required, Validators.maxLength(100)],
@@ -240,109 +255,63 @@ export class ProjectWizardComponent implements OnInit {
       this.updateProject();
     });
 
-    this.projectFormGroup.get('productGroups').valueChanges.subscribe(() => {
-      // this.project.productGroupTimeLine = this.projectFormGroup.get(
-      //   'productGroups'
-      // ).value;
-      //this.updateProject();
-    });
-
     if (this.editFlag) {
       this.projectFormGroup
         .get('title')
-        .setValue(this.project.name, { emitEvent: false });
-      // this.projectFormGroup
-      //   .get('description')
-      //   .setValue(this.project.description);
+        .setValue(this.project.name, {emitEvent: false});
 
-      for (
-        let counter = 0;
-        counter < this.project.productGroupTimeLine.length;
-        counter++
-      ) {
-        var productGroupFormGroup = this.addProductGroupItem();
-
+      for (const pgtl of this.project.productGroupTimeLine) {
+        const productGroupFormGroup = this.addProductGroupItem();
         productGroupFormGroup
           .get('title')
-          .setValue(this.project.productGroupTimeLine[counter]?.title, {
+          .setValue(pgtl?.title, {
             emitEvent: false,
           });
         productGroupFormGroup
           .get('description')
-          .setValue(this.project.productGroupTimeLine[counter].description, {
+          .setValue(pgtl.description, {
             emitEvent: false,
           });
         productGroupFormGroup
           .get('subtitle')
-          .setValue(this.project.productGroupTimeLine[counter]?.subtitle, {
+          .setValue(pgtl?.subtitle, {
             emitEvent: false,
           });
         productGroupFormGroup
           .get('time')
-          .setValue(this.project.productGroupTimeLine[counter]?.time, {
+          .setValue(pgtl?.time, {
             emitEvent: false,
           });
         productGroupFormGroup
           .get('_id')
-          .setValue(this.project.productGroupTimeLine[counter]._id, {
+          .setValue(pgtl._id, {
             emitEvent: false,
           });
-
         this.addEventsProductGroupItem(productGroupFormGroup);
 
-        for (
-          let counter2 = 0;
-          counter2 < this.project.productGroupTimeLine[counter].products.length;
-          counter2++
-        ) {
-          var productFormGroup = this.addProductItem(
-            this.project.productGroupTimeLine[counter]
-          );
-
+        for (const product of pgtl.products) {
+          let productFormGroup = this.addProductItem(pgtl);
           productFormGroup
             .get('name')
-            .setValue(
-              this.project.productGroupTimeLine[counter].products[counter2]
-                ?.name
-            );
+            .setValue(product?.name);
           productFormGroup
             .get('description')
-            .setValue(
-              this.project.productGroupTimeLine[counter].products[counter2]
-                ?.description
-            );
+            .setValue(product?.description);
           productFormGroup
             .get('subtitle')
-            .setValue(
-              this.project.productGroupTimeLine[counter].products[counter2]
-                ?.subtitle
-            );
+            .setValue(product?.subtitle);
           productFormGroup
             .get('price')
-            .setValue(
-              this.project.productGroupTimeLine[counter].products[counter2]
-                ?.price
-            );
+            .setValue(product?.price);
           productFormGroup
             .get('makeThisYourLookURL')
-            .setValue(
-              this.project.productGroupTimeLine[counter].products[counter2]
-                ?.makeThisYourLookURL
-            );
+            .setValue(product?.makeThisYourLookURL);
           productFormGroup
             .get('_id')
-            .setValue(
-              this.project.productGroupTimeLine[counter].products[counter2]?._id
-            );
+            .setValue(product?._id);
 
-          for (
-            let counter3 = 0;
-            counter3 <
-            this.project.productGroupTimeLine[counter].products[counter2].images
-              .length;
-            counter3++
-          ) {
-            var fg = new FormGroup({
+          for (const image of product.images) {
+            const fg = new FormGroup({
               imageFile: new FormControl('', [
                 FileValidatorUtil.fileMinSize(1),
                 FileValidatorUtil.fileExtensions(this.allowedExtensions),
@@ -350,11 +319,7 @@ export class ProjectWizardComponent implements OnInit {
               imageResult: new FormControl('', Validators.required),
             });
 
-            fg.get('imageFile').setValue(
-              this.project.productGroupTimeLine[counter].products[counter2]
-                .images[counter3].url
-            );
-
+            fg.get('imageFile').setValue(image.url);
             (productFormGroup.get('images') as FormArray).push(fg);
           }
 
@@ -366,16 +331,21 @@ export class ProjectWizardComponent implements OnInit {
     }
   }
 
-  getProject(id: any) {
-    console.log('About to get the project in getProject()');
+  updateProjectData = () => {
+    this.getProject(this.project._id);
+  }
+
+  getProject = (id: any) => {
     this.projectService.getProject(id).subscribe(
       (res) => {
-        console.log('getProject result : ' + JSON.stringify(res));
-        this.project = res;
-        return res;
+        if (!_.isEqual(res, this.project)) {
+          this.project = res;
+          return this.render();
+        }
+        return;
       },
       (err) => {
-        console.log('Update error : ' + err.toString());
+        console.error(err.toString());
       }
     );
   }
@@ -383,10 +353,11 @@ export class ProjectWizardComponent implements OnInit {
   updateProjectProductGroups() {
     this.projectService.updateProjectProductGroups(this.project).subscribe(
       (res) => {
+        Cache.invokeCache();
         return res;
       },
       (err) => {
-        console.log('Update error : ' + err.toString());
+        console.error(err.toString());
       }
     );
   }
@@ -394,38 +365,33 @@ export class ProjectWizardComponent implements OnInit {
   updateProject() {
     this.projectService.updateProject(this.project).subscribe(
       (res) => {
+        Cache.invokeCache();
         return res;
       },
       (err) => {
-        console.log('Update error : ' + err.toString());
+        console.error(err.toString());
       }
     );
   }
 
   updateProductGroupDeleteProduct(pg: ProductGroup) {
-    console.log('In updateProductGroup()');
     this.productGroupService.updateProductGroupDeleteProduct(pg).subscribe(
       (res) => {
-        console.log(
-          'Product Group Update Delete Product response : ' + res.toString()
-        );
+        return Cache.invokeCache();
       },
       (err) => {
-        console.log(
-          'Product Group Update Delete Product error : ' + err.toString()
-        );
+        console.error(err);
       }
     );
   }
 
   updateProductGroup(pg: ProductGroup) {
-    console.log('In updateProductGroup()');
     this.productGroupService.updateProductGroup(pg).subscribe(
       (res) => {
-        console.log('Product Group Update response : ' + res.toString());
+        return Cache.invokeCache();
       },
       (err) => {
-        console.log('Product Group Update Update error : ' + err.toString());
+        console.error(err);
       }
     );
   }
@@ -433,7 +399,7 @@ export class ProjectWizardComponent implements OnInit {
   updateProduct(product: Product) {
     this.productService.updateProduct(product).subscribe(
       (res) => {
-        console.log('Update response : ' + res.toString());
+        return Cache.invokeCache();
       },
       (err) => {
         console.log('Update error : ' + err.toString());
@@ -444,10 +410,10 @@ export class ProjectWizardComponent implements OnInit {
   updateProductImages(product: Product) {
     this.productService.updateProductImages(product).subscribe(
       (res) => {
-        console.log('Update response : ' + res.toString());
+        return Cache.invokeCache();
       },
       (err) => {
-        console.log('Update error : ' + err.toString());
+        console.error(err);
       }
     );
   }
@@ -456,21 +422,10 @@ export class ProjectWizardComponent implements OnInit {
     this.projectService.addProject(this.project).subscribe(
       (res) => {
         this.project._id = res._id;
-        console.log('Subscribed response : ' + res.toString());
+        return Cache.invokeCache();
       },
       (err) => {
-        console.log('Error : ' + err);
-      }
-    );
-  }
-
-  createNewProductGroup(pg: ProductGroup) {
-    this.productGroupService.createProductGroup(this.project, pg).subscribe(
-      (res) => {
-        return res;
-      },
-      (err) => {
-        console.log('Error : ' + err);
+        console.error(err);
       }
     );
   }
@@ -498,17 +453,6 @@ export class ProjectWizardComponent implements OnInit {
     });
   }
 
-  onSubmitProject() {
-    this.projectService.addProject(this.project).subscribe(
-      (res) => {
-        console.log('Subscribed response : ' + res.toString());
-      },
-      (err) => {
-        console.log('Error : ' + err);
-      }
-    );
-  }
-
   onDeleteProduct(i: any, j: any) {
     const confirmDialog = this.dialog.open(ConfirmDialogComponent, {
       data: {
@@ -522,7 +466,7 @@ export class ProjectWizardComponent implements OnInit {
           i
         ].get('products') as FormArray).removeAt(j);
 
-        var deletedElement = this.project.productGroupTimeLine[
+        const deletedElement = this.project.productGroupTimeLine[
           i
         ].products.splice(j, 1);
         console.log('DELETED ELEMENT : ' + JSON.stringify(deletedElement));
@@ -548,12 +492,13 @@ export class ProjectWizardComponent implements OnInit {
             (this.projectFormGroup.controls
               .productGroups as FormArray).removeAt(i);
             this.project.productGroupTimeLine.splice(i, 1);
-
             this.updateProjectProductGroups();
+
+            Cache.invokeCache();
             return res;
           },
           (err) => {
-            console.log('Update error : ' + err.toString());
+            console.error(err);
           }
         );
       }
@@ -586,10 +531,10 @@ export class ProjectWizardComponent implements OnInit {
       )
       .subscribe(
         (res) => {
-          console.log('Video upload subscription result : ' + res);
+          return Cache.invokeCache();
         },
         (err) => {
-          console.log('Error : ' + err);
+          console.error(err);
         }
       );
   }
@@ -619,15 +564,13 @@ export class ProjectWizardComponent implements OnInit {
       )
       .subscribe(
         (res) => {
-          console.log('Response log : ' + res);
+          return Cache.invokeCache();
         },
         (err) => {
-          console.log('Error : ' + err);
+          console.error(err);
         }
       );
   }
-
-  onAddImage() {}
 
   onSubmitProductImage(i: any, j: any, k: any) {
     this.imageService
@@ -664,16 +607,16 @@ export class ProjectWizardComponent implements OnInit {
       )
       .subscribe(
         (res) => {
-          console.log('Subscribed response : ' + res.toString());
+          return Cache.invokeCache();
         },
         (err) => {
-          console.log('Error : ' + err);
+          console.error(err);
         }
       );
   }
 
   addProductGroupItem(): FormGroup {
-    var formgroup = new FormGroup({
+    const formgroup = new FormGroup({
       id: new FormControl('', Validators.required),
       _id: new FormControl(''),
       title: new FormControl('', {
@@ -703,7 +646,7 @@ export class ProjectWizardComponent implements OnInit {
 
   addEventsProductGroupItem(formgroup: any) {
     formgroup.get('title').valueChanges.subscribe(() => {
-      var pg = _.find(this.project.productGroupTimeLine, {
+      const pg = _.find(this.project.productGroupTimeLine, {
         _id: formgroup.get('_id').value,
       });
 
@@ -714,7 +657,7 @@ export class ProjectWizardComponent implements OnInit {
     });
 
     formgroup.get('description').valueChanges.subscribe(() => {
-      var pg = _.find(this.project.productGroupTimeLine, {
+      const pg = _.find(this.project.productGroupTimeLine, {
         _id: formgroup.get('_id').value,
       });
 
@@ -725,7 +668,7 @@ export class ProjectWizardComponent implements OnInit {
     });
 
     formgroup.get('subtitle').valueChanges.subscribe(() => {
-      var pg = _.find(this.project.productGroupTimeLine, {
+      const pg = _.find(this.project.productGroupTimeLine, {
         _id: formgroup.get('_id').value,
       });
 
@@ -736,7 +679,7 @@ export class ProjectWizardComponent implements OnInit {
     });
 
     formgroup.get('time').valueChanges.subscribe(() => {
-      var pg = _.find(this.project.productGroupTimeLine, {
+      const pg = _.find(this.project.productGroupTimeLine, {
         _id: formgroup.get('_id').value,
       });
 
@@ -747,7 +690,7 @@ export class ProjectWizardComponent implements OnInit {
     });
 
     formgroup.get('thumbnail').valueChanges.subscribe((selectedValue: any) => {
-      var pg = _.find(this.project.productGroupTimeLine, {
+      const pg = _.find(this.project.productGroupTimeLine, {
         _id: formgroup.get('_id').value,
       });
 
@@ -776,10 +719,10 @@ export class ProjectWizardComponent implements OnInit {
         )
         .subscribe(
           (res) => {
-            console.log('Response log : ' + res);
+            return Cache.invokeCache();
           },
           (err) => {
-            console.log('Error : ' + err);
+            console.error(err);
           }
         );
     });
@@ -788,44 +731,46 @@ export class ProjectWizardComponent implements OnInit {
   }
 
   addProductGroup() {
-    var productGroup = new ProductGroup();
+    const productGroup = new ProductGroup();
 
     this.productGroupService
       .createProductGroup(this.project, productGroup)
       .subscribe(
         (res) => {
           productGroup._id = res._id;
-          var formGroup = this.addProductGroupItem();
+          const formGroup = this.addProductGroupItem();
           this.addEventsProductGroupItem(formGroup);
           formGroup.get('_id').setValue(productGroup._id);
 
           this.project.productGroupTimeLine.push(productGroup);
         },
         (err) => {
-          console.log('Error : ' + err);
+          console.error(err);
         }
       );
   }
 
   addProduct(i: any) {
-    var productGroup = this.project.productGroupTimeLine[i];
-    var product = new Product();
+    const productGroup = this.project.productGroupTimeLine[i];
+    const product = new Product();
 
     this.productService
       .createProduct(this.project, productGroup, product)
       .subscribe(
         (res) => {
           product._id = res._id;
-          var formGroup = this.addProductItem(
+
+          let formGroup = this.addProductItem(
             this.project.productGroupTimeLine[i]
           );
           formGroup = this.addEventsProductItem(formGroup);
           formGroup.get('_id').setValue(product._id);
 
           this.project.productGroupTimeLine[i].products.push(product);
+          Cache.invokeCache();
         },
         (err) => {
-          console.log('Error : ' + err);
+          console.error(err);
         }
       );
   }
@@ -926,15 +871,15 @@ export class ProjectWizardComponent implements OnInit {
     });
 
     formgroup.get('description').valueChanges.subscribe(() => {
-      var pgFormGroup = formgroup.parent.parent;
+      const pgFormGroup = formgroup.parent.parent;
 
       if (pgFormGroup != null) {
-        var pg = _.find(this.project.productGroupTimeLine, {
+        const pg = _.find(this.project.productGroupTimeLine, {
           _id: pgFormGroup.get('_id').value,
         });
 
         if (pg != null) {
-          var product = _.find(pg.products, {
+          const product = _.find(pg.products, {
             _id: formgroup.get('_id').value,
           });
           if (product != null) {
@@ -946,15 +891,15 @@ export class ProjectWizardComponent implements OnInit {
     });
 
     formgroup.get('subtitle').valueChanges.subscribe(() => {
-      var pgFormGroup = formgroup.parent.parent;
+      const pgFormGroup = formgroup.parent.parent;
 
       if (pgFormGroup != null) {
-        var pg = _.find(this.project.productGroupTimeLine, {
+        const pg = _.find(this.project.productGroupTimeLine, {
           _id: pgFormGroup.get('_id').value,
         });
 
         if (pg != null) {
-          var product = _.find(pg.products, {
+          const product = _.find(pg.products, {
             _id: formgroup.get('_id').value,
           });
           if (product != null) {
@@ -966,15 +911,15 @@ export class ProjectWizardComponent implements OnInit {
     });
 
     formgroup.get('price').valueChanges.subscribe(() => {
-      var pgFormGroup = formgroup.parent.parent;
+      const pgFormGroup = formgroup.parent.parent;
 
       if (pgFormGroup != null) {
-        var pg = _.find(this.project.productGroupTimeLine, {
+        const pg = _.find(this.project.productGroupTimeLine, {
           _id: pgFormGroup.get('_id').value,
         });
 
         if (pg != null) {
-          var product = _.find(pg.products, {
+          const product = _.find(pg.products, {
             _id: formgroup.get('_id').value,
           });
 
@@ -987,15 +932,15 @@ export class ProjectWizardComponent implements OnInit {
     });
 
     formgroup.get('makeThisYourLookURL').valueChanges.subscribe(() => {
-      var pgFormGroup = formgroup.parent.parent;
+      const pgFormGroup = formgroup.parent.parent;
 
       if (pgFormGroup != null) {
-        var pg = _.find(this.project.productGroupTimeLine, {
+        const pg = _.find(this.project.productGroupTimeLine, {
           _id: pgFormGroup.get('_id').value,
         });
 
         if (pg != null) {
-          var product = _.find(pg.products, {
+          const product = _.find(pg.products, {
             _id: formgroup.get('_id').value,
           });
 
@@ -1013,19 +958,19 @@ export class ProjectWizardComponent implements OnInit {
   }
 
   getProductImageArray(i: any, j: any) {
-    var test1 = this.projectFormGroup.get('productGroups') as FormArray;
-    var test2 = test1.controls[i].get('products') as FormGroup;
+    const test1 = this.projectFormGroup.get('productGroups') as FormArray;
+    const test2 = test1.controls[i].get('products') as FormGroup;
     return test2.controls[j].get('images');
   }
 
   getProductImageArrayControls(i: any, j: any) {
-    var test1 = this.projectFormGroup.get('productGroups') as FormArray;
-    var test2 = test1.controls[i].get('products') as FormGroup;
+    const test1 = this.projectFormGroup.get('productGroups') as FormArray;
+    const test2 = test1.controls[i].get('products') as FormGroup;
     return (test2.controls[j].get('images') as FormArray).controls;
   }
 
   getProductGroupControls() {
-    var formArray = this.projectFormGroup.get('productGroups') as FormArray;
+    const formArray = this.projectFormGroup.get('productGroups') as FormArray;
     return formArray.controls;
   }
 
@@ -1034,13 +979,6 @@ export class ProjectWizardComponent implements OnInit {
       i
     ].get('products') as FormArray;
   }
-
-  // onNumberProductGroups() {
-  //   for (let index = 0; index < this.numberProductGroups; index++) {
-  //     this.project.productGroups.push(new ProductGroup());
-  //     this.addProductGroupItem();
-  //   }
-  // }
 
   getProductsFormGroup(productGroupIndex: any) {
     return (this.projectFormGroup.get('productGroups') as FormArray).controls[
@@ -1053,19 +991,6 @@ export class ProjectWizardComponent implements OnInit {
       productGroupIndex
     ].get('products') as FormGroup).controls;
   }
-
-  onTempBreak() {}
-
-  // getCategories() {
-  //   this.categoryService.getCategories().subscribe(
-  //     (res) => {
-  //       this.categories = res;
-  //     },
-  //     (err) => {
-  //       console.log('Error retrieving categories : ' + err.ToString());
-  //     }
-  //   );
-  // }
 
   preview() {
     const dialogConfig = new MatDialogConfig();
@@ -1085,4 +1010,5 @@ export class ProjectWizardComponent implements OnInit {
   onResetCopyToClipboardText() {
     this.copyClipboardText = 'Copy to clipboard';
   }
+
 }
