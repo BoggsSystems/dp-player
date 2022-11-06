@@ -28,16 +28,14 @@ import * as _ from 'lodash';
 import {
   NotificationDialogComponent
 } from "../notification-dialog/notification-dialog.component";
+import { Cache, RequestArguments } from '../../shared/helpers/cache';
+import { Cloudinary } from '../../shared/helpers/cloudinary';
 
 interface TablesSettings {
   [key: string]: any;
 }
 
 interface SortSettings {
-  [key: string]: any;
-}
-
-interface RequestArguments {
   [key: string]: any;
 }
 
@@ -114,7 +112,7 @@ export class DashboardComponent implements OnInit {
   isFiltered = false;
   filterValue = '';
   sortBy = 'updatedAt';
-  sortDirection = -1;
+  sortDirection = 'desc';
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   @ViewChild('campaignPaginator') campaignPaginator: MatPaginator;
@@ -193,7 +191,7 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  getProjects() {
+  async getProjects() {
     if (sessionStorage.getItem('my-projects') !== null) {
       const cachedResponse: any = sessionStorage.getItem('my-projects');
       const data = JSON.parse(cachedResponse);
@@ -203,10 +201,9 @@ export class DashboardComponent implements OnInit {
         .getMyProjects()
         .subscribe(
           (res: any) => {
-            this.modifyThumbnailUrl(res);
+            Cloudinary.resizeThumbnail(res);
             sessionStorage.setItem('my-projects', JSON.stringify(res));
             this.renderProjects(res);
-            const numberOfPages: number = res.length / 5;
             return this.populateProjects();
           },
           (error) => {
@@ -216,64 +213,17 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  populateProjects(
-    page: number = 0, pageSize: number = 5, sorted: boolean = true, sortBy: string = 'updatedAt', sortDirection: string = 'desc'
-  ) {
-    const args: RequestArguments = {};
-    args.page = page;
-    args.pageSize = pageSize;
-
-    if (sorted) {
-      args.sorted = sorted;
-      args.sortby = sortBy;
-      args.sortdir = sortDirection;
+  async populateProjects(args: RequestArguments = {
+    page: 0,
+    pageSize: 5
+  }) {
+    let projectsDetails;
+    if (arguments.length && Object.keys(args).length) {
+      projectsDetails = await Cache.createProjectDetails(this.projectService, args);
+      return this.renderProjects(projectsDetails);
     }
-
-    if (this.filterValue) {
-      args.filter = this.filterValue;
-    }
-
-    this.projectService
-      .populateMyProject(args)
-      .subscribe(
-        (res: any) => {
-          this.modifyThumbnailUrl(res);
-          const numberOfProjects: number = res.length;
-          const currentTable: any = this.isFiltered && this.filterValue !== ''
-              ? sessionStorage.getItem('cached-results') : sessionStorage.getItem('my-projects');
-          let data: any = JSON.parse(currentTable);
-          /* Sort retrieved sessionStorage data in sync with table sort
-           * default sort: sort by updatedBy, desc
-           */
-          data = this.sortData(data);
-          const startIndex: number = page * pageSize;
-          let iterator = 0;
-          for (let i: number = startIndex; i < numberOfProjects + startIndex; i++) {
-            data[i] = res[iterator];
-            ++iterator;
-          }
-          if (this.isFiltered && this.filterValue !== '') {
-            sessionStorage.setItem('cached-results', JSON.stringify(data));
-          } else {
-            sessionStorage.setItem('my-projects', JSON.stringify(data));
-          }
-          this.renderProjects(data);
-        }
-      );
-  }
-
-  sortData(data: any, sortBy: string = this.sortBy, sortDirection: number = this.sortDirection, sortType: string = 'date') {
-    const orders = sortDirection > 0 ? 'asc' : 'desc';
-    let sortCondition;
-    switch (sortType) {
-      case (`date`):
-        sortCondition = (o: any) => new Date(o[sortBy]);
-        break;
-      default:
-        sortCondition = (o: any) => o[sortBy].toLowerCase();
-        break;
-    }
-    return _.orderBy(data, sortCondition, [orders]);
+    projectsDetails = await Cache.createProjectDetails(this.projectService);
+    return this.renderProjects(projectsDetails);
   }
 
   onTableChange(event: any, source: string) {
@@ -290,9 +240,9 @@ export class DashboardComponent implements OnInit {
 
       if (sessionStorage.getItem('sort-settings')) {
         const settings = JSON.parse(sessionStorage.getItem('sort-settings'));
-        this.populateProjects(this.projectsPage, this.projectsPageSize, true, settings.active, settings.direction);
+        this.populateProjects({page: this.projectsPage, pageSize: this.projectsPageSize, sortBy: settings.active, sortDirection: settings.direction});
       } else {
-        this.populateProjects(this.projectsPage, this.projectsPageSize);
+        this.populateProjects({page: this.projectsPage, pageSize: this.projectsPageSize});
       }
       Object.assign(ProjectsTable, {
         page: this.projectsPage,
@@ -326,11 +276,11 @@ export class DashboardComponent implements OnInit {
     e.active = sortBy;
     sessionStorage.setItem('sort-settings', JSON.stringify(e));
     if (this.filterValue === '') {
-      sessionStorage.setItem('my-projects', JSON.stringify(sortedData));
+      Cache.createCache(JSON.stringify(sortedData));
     } else {
       sessionStorage.setItem('cached-results', JSON.stringify(sortedData));
     }
-    this.populateProjects(undefined, undefined, true, sortBy, e.direction);
+    this.populateProjects({page: this.projectsPage, pageSize: this.projectsPageSize, sortBy, sortDirection: e.direction});
   }
 
   getSortBase(tableValue: string) {
@@ -421,22 +371,6 @@ export class DashboardComponent implements OnInit {
     this.campaignsDataSource.sort = this.campaignSorter;
   }
 
-  modifyThumbnailUrl(response: any) {
-    response.forEach((project: any) => {
-      if ('thumbnail' in project) {
-        const url = project.thumbnail.url;
-        const queryTerm = 'upload/';
-        const queryLength = queryTerm.length;
-        const uploadsIndex = url.indexOf(queryTerm);
-        const paramsIndex = uploadsIndex + queryLength;
-        const imgHeight = 50;
-        const imgWidth = 50;
-        const params = `c_fill,h_${imgHeight},w_${imgWidth}/`;
-        project.thumbnail.url = url.substr(0, paramsIndex) + params + url.substr(paramsIndex);
-      }
-    });
-  }
-
   projectsHelp() {
     const dialogRef = this.dialog.open(ProjectsHelpComponent, {
       width: '100%',
@@ -458,7 +392,7 @@ export class DashboardComponent implements OnInit {
     this.isFiltered = true;
     this.filterValue = filterValue;
     sessionStorage.setItem('cached-results', JSON.stringify(this.dataSource.filteredData));
-    this.populateProjects();
+    // this.populateProjects();
   }
 
   applyCampaignsFilter(event: Event) {

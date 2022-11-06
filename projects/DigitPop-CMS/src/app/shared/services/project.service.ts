@@ -75,14 +75,14 @@ export class ProjectService {
   }
 
   populateMyProject(args: any = {}) {
-    let page: number = 0,
-      pageSize: number = 5,
-      sorted: boolean = false,
-      sortby: string = '',
-      sortdir: string = '',
-      filter: string = '';
+    let page = 0;
+    let pageSize = 5;
+    let sorted = false;
+    let sortBy = '';
+    let sortDirection = '';
+    let filter = '';
 
-    for (let key in args) {
+    for (const key of Object.keys(args)) {
       switch (key) {
         case 'page':
           page = args[key];
@@ -93,11 +93,11 @@ export class ProjectService {
         case 'sorted':
           sorted = args[key];
           break;
-        case 'sortby':
-          sortby = args[key];
-          break
-        case 'sortdir':
-          sortdir = args[key];
+        case 'sortBy':
+          sortBy = args[key];
+          break;
+        case 'sortDirection':
+          sortDirection = args[key];
           break;
         case 'filter':
           filter = args[key];
@@ -109,7 +109,7 @@ export class ProjectService {
     reqUrl = `${environment.apiUrl}/api/projects/populateproject?page=${page}&pageSize=${pageSize}`;
 
     if (sorted) {
-      reqUrl += `&sortby=${sortby}&sortdir=${sortdir}`;
+      reqUrl += `&sortby=${sortBy}&sortdir=${sortDirection}`;
     }
 
     if (filter) {
@@ -118,7 +118,8 @@ export class ProjectService {
 
     return this.httpClient
       .get(reqUrl)
-      .pipe(publishReplay(1), refCount());
+      .pipe(publishReplay(1), refCount())
+      .toPromise();
   }
 
   getPublishedProjects() {
