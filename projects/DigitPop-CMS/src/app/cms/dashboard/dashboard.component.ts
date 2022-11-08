@@ -85,6 +85,8 @@ export class DashboardComponent implements OnInit {
     'impressionCount',
     'budgetAmount',
     'active',
+    'createdAt',
+    'updatedAt',
     'campaignEdit',
   ];
 

@@ -259,6 +259,28 @@
                 <td mat-cell *matCellDef="let element">{{ element.audienceId }}</td>
             </ng-container>
 
+          <ng-container matColumnDef="createdAt">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                    <span matTooltip="Date of when the shoppable video project was created.">
+                        Created
+                    </span>
+            </th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.createdAt | date }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="updatedAt">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                    <span matTooltip="Last time the shoppable video project was updated.">
+                        Updated
+                    </span>
+            </th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.updatedAt | date }}
+            </td>
+          </ng-container>
+
             <ng-container matColumnDef="active">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>
                     <span matTooltip="Status of campaign. Active/Inactive.">
