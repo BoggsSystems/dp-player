@@ -379,7 +379,6 @@ export class DashboardComponent implements OnInit {
   }
 
   applyFilter(event: Event) {
-    console.log(`applying filter`);
     const filterValue = (event.target as HTMLInputElement).value;
 
     const data: any = filterValue.trim().toLowerCase();
