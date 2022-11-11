@@ -108,7 +108,7 @@ mat-progress-bar .mat-progress-bar-buffer {
 	position: relative;
 	border-radius: 16px;
 	background-color: rgba(36,36,36,1);
-	padding: 60px 30px 30px;
+	padding: 30px;
 }
 
 .dpop-modal .mat-dialog-content {
@@ -122,7 +122,7 @@ mat-progress-bar .mat-progress-bar-buffer {
 	height: 24px;
 	text-align: center;
 	line-height: 23px;
-	font-size: 14px; 
+	font-size: 14px;
 	position: absolute;
 	top: 10px; right: 10px;
 	border-radius: 50%;
@@ -154,7 +154,7 @@ mat-progress-bar .mat-progress-bar-buffer {
 	margin-bottom: 15px;
 }
 
-.dpop-modal .mat-form-field-appearance-legacy.mat-form-field-can-float.mat-form-field-should-float .mat-form-field-label, 
+.dpop-modal .mat-form-field-appearance-legacy.mat-form-field-can-float.mat-form-field-should-float .mat-form-field-label,
 .dpop-modal .mat-form-field-appearance-legacy.mat-form-field-can-float .mat-input-server:focus + .mat-form-field-label-wrapper .mat-form-field-label {
 	transform: translateY(-35px) scale(0.85) perspective(100px) translateZ(0.001px) !important;
 	-ms-transform: translateY(-35px) scale(0.85) !important;
@@ -175,7 +175,7 @@ mat-progress-bar .mat-progress-bar-buffer {
 }
 
 .dpop-modal .mat-form-field {
-	display: block; 
+	display: block;
 }
 
 .dpop-modal .mat-form-field-wrapper {
@@ -232,5 +232,5 @@ mat-progress-bar .mat-progress-bar-buffer {
 	background: rgba(255,33,105,);
 	color: rgba(255,255,255,1);
 	border-radius: 32px;
-	width: 100%; 
+	width: 100%;
 }

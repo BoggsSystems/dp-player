@@ -1,13 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { first } from 'rxjs/operators';
-import { MatDialogRef } from '@angular/material/dialog';
-import { AuthenticationService } from '../shared/services/auth-service.service';
-import { BillsbyService } from '../shared/services/billsby.service';
+import {Component, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
+import {FormGroup} from '@angular/forms';
+import {MatDialogRef} from '@angular/material/dialog';
 
 @Component({
-  selector: 'DigitPop-logout',
+  selector: 'digit-pop-logout',
   templateUrl: './logout.component.html',
   styleUrls: ['./logout.component.scss'],
 })
@@ -18,17 +15,13 @@ export class LogoutComponent implements OnInit {
   returnUrl: string;
   error = '';
 
-  constructor(
-    public dialogRef: MatDialogRef<LogoutComponent>,
-    public router:Router
-  ) {
+  constructor(public dialogRef: MatDialogRef<LogoutComponent>, public router: Router) {
   }
 
-  ngOnInit(){
-
+  ngOnInit() {
   }
 
-  logout(){
+  logout() {
     localStorage.removeItem("currentuser");
     localStorage.removeItem("XchaneCurrentUser");
     localStorage.removeItem("currentrole");
@@ -36,8 +29,7 @@ export class LogoutComponent implements OnInit {
     this.dialogRef.close();
   }
 
-  close(){
+  close() {
     this.dialogRef.close();
   }
-  // convenience getter for easy access to form fields
 }
