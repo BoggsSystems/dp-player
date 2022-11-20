@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {AfterViewInit, Component, OnInit} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Campaign } from '../models/campaign';
 import { MatGridListModule } from '@angular/material/grid-list';
@@ -7,18 +7,25 @@ import { MatDialog } from '@angular/material/dialog';
 import { EngagementService } from '../shared/services/engagement.service';
 import { CampaignService } from '../shared/services/campaign.service';
 import { environment } from '../../environments/environment.staging';
+import {CrossDomainMessaging} from '../shared/helpers/cd-messaging';
 
 @Component({
   selector: 'app-quiz',
   templateUrl: './quiz.component.html',
   styleUrls: ['./quiz.component.scss'],
 })
-export class QuizComponent implements OnInit {
+
+export class QuizComponent implements OnInit, AfterViewInit {
   campaign: Campaign;
   answers: any[];
   campaignId: any;
   engagementId: any;
   data: any;
+  messagingOrigin: any;
+  isIOS = false;
+  isSafari = false;
+  iOSVersion = 0;
+  detectIos = true;
 
   constructor(
     private route: ActivatedRoute,
@@ -28,7 +35,7 @@ export class QuizComponent implements OnInit {
     private router: Router
   ) {
     // Logic to determine if we're editing an existing project or creating a new one
-    var nav = this.router.getCurrentNavigation();
+    const nav = this.router.getCurrentNavigation();
 
     if (
       nav != null &&
@@ -37,26 +44,36 @@ export class QuizComponent implements OnInit {
       nav.extras.state.campaignId != null &&
       nav.extras.state.engagementId != null
     ) {
-      this.campaignId = this.router.getCurrentNavigation().extras.state.campaignId;
-      this.engagementId = this.router.getCurrentNavigation().extras.state.engagementId;
-
+      this.campaignId = nav.extras.state.campaignId;
+      this.engagementId = nav.extras.state.engagementId;
       this.getCampaign(this.campaignId);
     }
 
-    // const navigation = this.router.getCurrentNavigation();
-    // const state = navigation.extras.state as {campaignId: string};
-    // this.campaignId = state.campaignId;
+    if (nav != null && nav.extras != null && nav.extras.state.messagingOrigin != null) {
+      this.messagingOrigin = nav.extras.state.messagingOrigin;
+    }
   }
 
   ngOnInit(): void {
-    //this.getCampaign(this.campaignId);
-    // this.route.data.subscribe((data) => {
-    //   this.data = data;
-    // });
-    // this.route.params.subscribe((params) => {
-    //   this.campaignId = params['id'];
-    //   this.getCampaign(this.campaignId);
-    // });
+    const targetWindow = window.parent;
+    addEventListener('message', this.initCommunications.bind(this), false);
+    return targetWindow.postMessage({received: true}, this.messagingOrigin);
+  }
+
+  initCommunications(event: any) {
+    if (event.data != null && event.data.initCommunications) {
+      this.detectIos = false;
+    }
+  }
+
+  ngAfterViewInit() {
+    if (this.detectIos) {
+      this.isIOS = CrossDomainMessaging.isIOS();
+      if (this.isIOS) {
+        this.isSafari = CrossDomainMessaging.isSafari();
+        this.iOSVersion = CrossDomainMessaging.getVersion();
+      }
+    }
   }
 
   getCampaign(campaignId: string) {
@@ -67,14 +84,14 @@ export class QuizComponent implements OnInit {
           this.buildAnswerArray();
         },
         (err) => {
-          console.log('Error retrieving ad');
+          console.error('Error retrieving ad');
         }
       );
     }
   }
 
   buildAnswerArray() {
-    var answerBuffer = [];
+    const answerBuffer = [];
     answerBuffer.push(this.campaign.verificationWrongAnswer1);
     answerBuffer.push(this.campaign.verificationWrongAnswer2);
     answerBuffer.push(this.campaign.verificationWrongAnswer3);
@@ -84,9 +101,9 @@ export class QuizComponent implements OnInit {
   }
 
   shuffle(array: any) {
-    var currentIndex = array.length,
-      temporaryValue,
-      randomIndex;
+    let currentIndex = array.length;
+    let temporaryValue;
+    let randomIndex;
 
     // While there remain elements to shuffle...
     while (0 !== currentIndex) {
@@ -104,57 +121,19 @@ export class QuizComponent implements OnInit {
   }
 
   onAnswer(answer: any) {
-    //if (answer == this.campaign.verificationAnswer) {
     this.engagementService
       .verificationAnswer(answer, this.engagementId, this.campaignId)
-      .subscribe(
-        (res) => {
-          // Evaluate if the answer was correct
-
-
-          console.log("In answer callback, homeUrl is : " + environment.homeUrl);
-          var targetWindow = window.parent;
-          targetWindow.postMessage(res, `${environment.homeUrl}`);
-
-          // If correct then pass message to parent container
-          // if (res.correct) {
-
-          //     var targetWindow = window.parent;
-
-
-          // } else {
-
-          //    // If not correct then create new engagement and start again
-          //    const confirmDialog = this.dialog.open(AnswerDialogComponent, {
-          //     data: {
-          //       title: 'Incorrect Answer',
-          //       message: 'Incorrect Answer, do you want to try again?',
-          //     },
-          //   });
-
-          //   confirmDialog.afterClosed().subscribe((result) => {
-          //     if (result === true) {
-          //     } else {
-          //     }
-          //   });
-
-          // }
-
-        },
-        (err) => {
-          console.log('Error retrieving ad');
+      .subscribe((res: any) => {
+        const targetWindow = window.parent;
+        if (!this.detectIos) {
+          return targetWindow.postMessage(res, this.messagingOrigin);
         }
-      );
-
-    var answerObj = new Object();
-
-    // answer.engagementId = $rootScope.uiConfig.engagementId;
-    // answer.campaignId = $rootScope.uiConfig.campaignId;
-    // answer.answer = $scope.campaign.verificationAnswer;
-    // } else {
-    //   var targetWindow = window.parent;
-    //   alert('Incorrect Answer.  Tap screen to start again.');
-    //   console.log('Incorrect Answer');
-    // }
+        if (this.isIOS && this.iOSVersion <= 14) {
+          return targetWindow.postMessage(res, environment.iOSFallbackUrl);
+        }
+        return targetWindow.postMessage(res, environment.homeUrl);
+      }, (err: any) => {
+        console.error(err);
+      });
   }
 }

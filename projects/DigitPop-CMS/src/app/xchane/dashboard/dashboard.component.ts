@@ -293,7 +293,10 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   }
 
   receiveMessage(event: any) {
-    console.log('In dashboard, receiveMessage, received event : ' + event);
+    if (event.data != null && event.data.received) {
+      const iframeWindow = (document.querySelector('iframe.iframe') as HTMLIFrameElement).contentWindow;
+      iframeWindow.postMessage({success: true, initCommunications: true}, environment.playerUrl);
+    }
 
     if (
       event.data != null &&
