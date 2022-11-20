@@ -90,6 +90,7 @@ export const Cache = {
   },
 
   invokeCache: (key: string = 'my-projects') => {
+    sessionStorage.removeItem('my-campaigns');
     sessionStorage.removeItem(key);
   },
 

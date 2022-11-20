@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {FormGroup} from '@angular/forms';
 import {MatDialogRef} from '@angular/material/dialog';
+import {Cache} from '../shared/helpers/cache';
 
 @Component({
   selector: 'digit-pop-logout',
@@ -22,6 +23,7 @@ export class LogoutComponent implements OnInit {
   }
 
   logout() {
+    Cache.invokeCache();
     localStorage.removeItem("currentuser");
     localStorage.removeItem("XchaneCurrentUser");
     localStorage.removeItem("currentrole");
