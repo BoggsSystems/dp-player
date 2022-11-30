@@ -44,6 +44,7 @@ import {MatRadioModule} from '@angular/material/radio';
 import { XchaneJwtInterceptor } from './xchane/services/xchane.jwt.interceptor';
 import { ImagesLazyloadModule } from './shared/lazyload-imgs/lazyload.module';
 import { SignupComponent } from './signup/signup.component';
+import { VideosGridComponent } from './videos-grid/videos-grid.component';
 
 
 export const HTTP_CMS_AUTH = new InjectionToken('http_cms_auth');
@@ -58,7 +59,8 @@ export const HTTP_NO_INTERCEPTORS = new InjectionToken('http_no_interceptors');
     RegisterComponent,
     HomeComponent,
     LogoutComponent,
-    SignupComponent
+    SignupComponent,
+    VideosGridComponent
   ],
   imports: [
     BrowserModule,
