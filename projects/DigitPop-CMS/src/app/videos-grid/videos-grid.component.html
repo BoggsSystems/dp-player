@@ -1,31 +1,35 @@
-<div class="videos-grid" fxFlex fxLayoutAlign="space-between start" fxLayoutGap>
-  <div class="video-element" fxFlex="310px" fxLayout="column"
+<div class="videos-grid">
+  <div *ngFor="let video of videos" class="video-element" fxFlex="100%"
+       fxLayout="column"
        fxLayoutGap="10px">
     <a (mouseenter)="previewVideo($event)" class="thumbnail" href="">
       <div class="preview-backdrop"></div>
-      <video poster="https://i.ytimg.com/vi/V431fCwUweM/hq720.jpg?sqp=-oaymwEcCOgCEMoBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLBcet20TRE8JZQsomqRmCcxcgiYU">
+      <video
+        poster="{{video.thumbnail.url}}">
         <source
-          src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.webm"
-          type="video/webm"
+          src="{{video.media.url}}"
+          type="video/mp4"
         />
       </video>
       <img alt="video title" height="170"
-           src="https://i.ytimg.com/vi/V431fCwUweM/hq720.jpg?sqp=-oaymwEcCOgCEMoBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLBcet20TRE8JZQsomqRmCcxcgiYUQ"
-           width="310">
+           src="{{video.thumbnail.url}}">
       <mat-progress-bar mode="determinate" value="40"></mat-progress-bar>
     </a>
     <div class="details">
       <div fxLayout="row" fxLayoutAlign="space-between center">
         <div>
-          <a aria-label="category title" class="category" href="https://localhost:4200">Clothing</a>
-          <time class="duration" datetime="03m 30s">03:30</time>
+          <a aria-label="category title" class="category"
+             href="https://localhost:4200">Clothing</a>
+          <time class="duration"
+                datetime="03m 30s">{{video.media.duration}}</time>
         </div>
         <time datetime="Nov 6 2022">Nov 6, 2022</time>
       </div>
-      <a aria-label="nihil perferendis quae quam quidem quo rem sapiente vel, velit voluptatibus! Dolor harum incidunt laboriosam." class="title"
-         href="https://localhost:4200">
-        nihil perferendis quae quam quidem quo rem sapiente vel, velit
-        voluptatibus! Dolor harum incidunt laboriosam.
+      <a
+        attr.aria-labelledby="{{video.name}}"
+        class="title"
+        href="https://localhost:4200">
+        {{video.name}}
       </a>
     </div>
   </div>

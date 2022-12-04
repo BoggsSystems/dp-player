@@ -1,17 +1,43 @@
 'use strict';
 import {Component, OnInit} from '@angular/core';
+import {VideosGridService} from '../shared/services/videos-grid.service';
+import {ProjectMedia} from '../shared/models/ProjectMedia';
 
 @Component({
   selector: 'digit-pop-videos-grid',
   templateUrl: './videos-grid.component.html',
   styleUrls: ['./videos-grid.component.scss']
 })
+
 export class VideosGridComponent implements OnInit {
 
-  constructor() {
+  categories: string[] = [];
+  videos: ProjectMedia[] = [];
+
+  constructor(private videosService: VideosGridService) {
+    this.categories.push('Clothing', 'Golf');
   }
 
   ngOnInit(): void {
+    this.getVideos();
+  }
+
+  buildGrid: () => void = async () => {
+    console.log(this.videos);
+  }
+
+  getVideos: () => void = async () => {
+    return this.videosService
+      .getVideos(this.categories)
+      .subscribe(
+        (response) => {
+          this.videos = response;
+          this.buildGrid();
+        },
+        (error: Error) => {
+          console.error(error);
+        }
+      );
   }
 
   previewVideo = (event: Event) => {
