@@ -26,7 +26,6 @@ export class VideosGridComponent implements OnInit {
   }
 
   buildGrid: () => void = async () => {
-    this.secondsToMMSS(this.videos);
   }
 
   getCategories: () => void = () => {
@@ -41,6 +40,7 @@ export class VideosGridComponent implements OnInit {
 
   setCategory: (category: string) => void = (category: string) => {
     this.selectedCategories = category === 'All' ? this.categories : [category];
+    this.getVideos();
   }
 
   getVideos: () => void = async () => {
@@ -52,18 +52,6 @@ export class VideosGridComponent implements OnInit {
       }, (error: Error) => {
         console.error(error);
       });
-  }
-
-  secondsToMMSS = (videos: ProjectMedia[]) => {
-    const padWithZero = (time: number) => time.toString().padStart(2, '0');
-    const timestamp = (seconds: number) => {
-      const minutes = (seconds - (seconds % 60)) / 60;
-      const remainingSeconds = Math.round(seconds % 60);
-      return `${padWithZero(minutes)}:${padWithZero(remainingSeconds)}`;
-    };
-    videos.map(video => {
-      video.media.duration = timestamp(+video.media.duration);
-    });
   }
 
   previewVideo = (event: Event) => {
