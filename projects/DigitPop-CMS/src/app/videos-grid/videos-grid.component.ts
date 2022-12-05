@@ -1,6 +1,8 @@
 'use strict';
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
+import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {VideosGridService} from '../shared/services/videos-grid.service';
+import {PreviewComponent} from '../cms/preview/preview.component';
 import {ProjectMedia} from '../shared/models/ProjectMedia';
 import {Category} from '../shared/models/category';
 
@@ -20,8 +22,9 @@ export class VideosGridComponent implements OnInit {
   videosLoaded = false;
   videosLimit = 10;
   videosCount: number[];
+  monthNames: string[] = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-  constructor(private videosService: VideosGridService) {
+  constructor(private videosService: VideosGridService, private dialog: MatDialog) {
     this.videosCount = Array(this.videosLimit).fill(0).map((x, i) => i);
   }
 
@@ -77,4 +80,17 @@ export class VideosGridComponent implements OnInit {
     video.load();
   }
 
+  openPlayer = (event: Event, id: string) => {
+    event.preventDefault();
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.data = {id};
+    const dialogRef = this.dialog.open(PreviewComponent, dialogConfig);
+  }
+
+  prettyDate = (d: Date) => {
+    const date = new Date(d);
+    return `${this.monthNames[date.getMonth()]}, ${date.getDate()} - ${date.getFullYear()}`;
+
+  }
 }

@@ -14,7 +14,7 @@
        fxLayout="column"
        fxLayoutGap="10px">
     <a class="thumbnail" href="">
-      <img height="170" src="">
+      <img alt="" height="170" src="">
     </a>
     <div class="details">
       <div fxLayout="row" fxLayoutAlign="space-between start">
@@ -39,7 +39,9 @@
   <div *ngFor="let video of videos" class="video-element" fxFlex="100%"
        fxLayout="column"
        fxLayoutGap="10px">
-    <a (mouseenter)="previewVideo($event)" class="thumbnail" href="">
+    <a (click)="openPlayer($event, video._id)"
+       (mouseenter)="previewVideo($event)" class="thumbnail"
+       href="">
       <div class="preview-backdrop"></div>
       <video
         poster="{{video.thumbnail.url}}">
@@ -50,22 +52,21 @@
       </video>
       <img alt="video title" height="170"
            src="{{video.thumbnail.url}}">
-      <mat-progress-bar mode="determinate" value="40"></mat-progress-bar>
     </a>
     <div class="details">
       <div fxLayout="row" fxLayoutAlign="space-between start">
         <div fxLayout="row" fxLayoutAlign="start start">
           <a aria-label="category title" class="category"
-             href="https://localhost:4200">{{video.category}}</a>
-          <time class="duration"
-                datetime="03m 30s">{{video.media.duration}}</time>
+             href="">{{video.category}}</a>
+          <time class="duration">{{video.media.duration}}</time>
         </div>
-        <time datetime="Nov 6 2022">Nov 6, 2022</time>
+        <time>{{prettyDate(video.createdAt)}}</time>
       </div>
       <a
+        (click)="openPlayer($event, video._id)"
         attr.aria-labelledby="{{video.name}}"
         class="title"
-        href="https://localhost:4200">
+        href="">
         {{video.name}}
       </a>
     </div>

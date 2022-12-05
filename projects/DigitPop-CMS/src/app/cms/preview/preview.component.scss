@@ -7,7 +7,7 @@
   height: 100%;
   width: 100%;
   display: grid;
-  grid-template-columns: repeat(12,1fr);
+  grid-template-columns: repeat(12, 1fr);
   grid-template-rows: repeat(10, 1fr);
 }
 
@@ -18,10 +18,10 @@
   height: 100%;
 }
 
-.close-button{
+.close-button {
   float: right;
-  top:-24px;
-  right:-24px;
+  top: -24px;
+  right: -24px;
 }
 
 .close-icon {
@@ -32,8 +32,8 @@
   transform: rotate(180deg);
 }
 
-::ng-deep .icon-outside .close-button{
+::ng-deep .icon-outside .close-button {
   float: right;
-  top:-52px;
-  right:-52px;
+  top: -52px;
+  right: -52px;
 }

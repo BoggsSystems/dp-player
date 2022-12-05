@@ -16,7 +16,7 @@
   animation-iteration-count: infinite;
   animation-name: shimmer;
   animation-timing-function: linear;
-  background: #f6f7f8 linear-gradient(to right, #eeeeee 8%, #bbbbbb 18%, #eeeeee 33%);
+  background: #f6f7f8 linear-gradient(to right, rgba(238, 238, 238, 0.65) 8%, #bbbbbb 18%, rgba(238, 238, 238, 0.65) 33%);
   background-size: 800px 104px;
   position: relative;
 }
