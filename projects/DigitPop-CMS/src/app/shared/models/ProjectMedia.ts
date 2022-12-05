@@ -1,4 +1,5 @@
 export class ProjectMedia {
+  count: number;
   _id: string;
   name: string;
   createdAt: Date;

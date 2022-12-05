@@ -45,9 +45,10 @@
       </a>
     </div>
   </div>
-  <div class="load-more" fxLayout fxLayoutAlign="center">
-    <button (click)="loadMoreVideos()" color="primary" mat-flat-button>Load
-      More
+  <div *ngIf="categoryVideosCount > (page+1) * videosLimit" class="load-more" fxLayout
+       fxLayoutAlign="center">
+    <button (click)="loadMoreVideos()" color="primary" mat-flat-button>
+      Load More
     </button>
   </div>
 </div>

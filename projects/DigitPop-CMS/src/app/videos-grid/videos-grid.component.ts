@@ -18,6 +18,7 @@ export class VideosGridComponent implements OnInit {
   selectedCategories: string[] = [];
   categories: string[] = [];
   activeCategories: Category[] = [];
+  categoryVideosCount: number;
   videos: ProjectMedia[] = [];
   videosLoaded = false;
   MoreVideosLoaded = false;
@@ -28,6 +29,7 @@ export class VideosGridComponent implements OnInit {
 
   constructor(private videosService: VideosGridService, private dialog: MatDialog) {
     this.videosCount = Array(this.videosLimit).fill(0).map((x, i) => i);
+    this.categoryVideosCount = 0;
   }
 
   ngOnInit(): void {
@@ -59,6 +61,7 @@ export class VideosGridComponent implements OnInit {
     return this.videosService
       .getVideos(this.selectedCategories, this.page, this.videosLimit)
       .subscribe((response) => {
+        this.categoryVideosCount = response[0].count;
         this.videos = isAppend ? [...this.videos, ...response] : response;
         this.buildGrid();
       }, (error: Error) => {
@@ -93,6 +96,7 @@ export class VideosGridComponent implements OnInit {
   }
 
   loadMoreVideos = () => {
+    this.videosCount = Array(this.categoryVideosCount - ((this.page + 1) * this.videosLimit)).fill(0).map((x, i) => i);
     this.MoreVideosLoaded = false;
     this.page++;
     this.getVideos(true);
