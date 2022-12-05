@@ -1,3 +1,26 @@
+@keyframes shimmer {
+  0% {
+    background-position: -800px 0
+  }
+  100% {
+    background-position: 800px 0
+  }
+}
+
+@mixin lazy-load() {
+  cursor: default;
+  pointer-events: none;
+  color: transparent !important;
+  animation-duration: 2s;
+  animation-fill-mode: forwards;
+  animation-iteration-count: infinite;
+  animation-name: shimmer;
+  animation-timing-function: linear;
+  background: #f6f7f8 linear-gradient(to right, #eeeeee 8%, #bbbbbb 18%, #eeeeee 33%);
+  background-size: 800px 104px;
+  position: relative;
+}
+
 .categories {
   overflow: hidden;
   padding: 10px 30px;
@@ -51,6 +74,38 @@ mat-radio-group {
   }
 }
 
+.videos-grid.lazy-loader {
+  img {
+    @include lazy-load();
+  }
+
+  .category {
+    @include lazy-load();
+  }
+
+  .duration {
+    color: transparent;
+    @include lazy-load();
+  }
+
+  time {
+    border-radius: 5px;
+    @include lazy-load();
+  }
+
+  .title span {
+    display: inline-flex;
+    width: 100%;
+    height: 40%;
+    border-radius: 2px;
+    @include lazy-load();
+
+    &:last-of-type {
+      width: 45%;
+    }
+  }
+}
+
 .videos-grid {
   display: grid !important;
   align-items: center;
@@ -63,11 +118,15 @@ mat-radio-group {
   margin-bottom: 20px;
 
   .thumbnail {
+    text-decoration: none;
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(25px);
     display: flex;
     justify-content: center;
     position: relative;
     height: 170px;
     transition: transform 100ms ease-in;
+    border: none;
     border-radius: 10px;
     overflow: hidden;
 
@@ -102,6 +161,7 @@ mat-radio-group {
       object-fit: cover;
       width: 100%;
       height: 170px;
+      border: none;
       border-radius: 10px;
     }
 
@@ -144,6 +204,12 @@ mat-radio-group {
       opacity: 0.65;
       color: white;
       font-weight: bold;
+
+      &.lazy-load {
+        display: block;
+        min-width: 40px;
+        min-height: 1rem;
+      }
     }
 
     time.duration {

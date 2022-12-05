@@ -17,8 +17,12 @@ export class VideosGridComponent implements OnInit {
   categories: string[] = [];
   activeCategories: Category[] = [];
   videos: ProjectMedia[] = [];
+  videosLoaded = false;
+  videosLimit = 10;
+  videosCount: number[];
 
   constructor(private videosService: VideosGridService) {
+    this.videosCount = Array(this.videosLimit).fill(0).map((x, i) => i);
   }
 
   ngOnInit(): void {
@@ -26,6 +30,7 @@ export class VideosGridComponent implements OnInit {
   }
 
   buildGrid: () => void = async () => {
+    this.videosLoaded = true;
   }
 
   getCategories: () => void = () => {

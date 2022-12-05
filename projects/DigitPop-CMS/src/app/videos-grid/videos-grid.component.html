@@ -9,7 +9,33 @@
   </mat-radio-group>
 </div>
 
-<div class="videos-grid">
+<div *ngIf="!videosLoaded" class="videos-grid lazy-loader">
+  <div *ngFor="let count of videosCount" class="video-element" fxFlex="100%"
+       fxLayout="column"
+       fxLayoutGap="10px">
+    <a class="thumbnail" href="">
+      <img height="170" src="">
+    </a>
+    <div class="details">
+      <div fxLayout="row" fxLayoutAlign="space-between start">
+        <div fxLayout="row" fxLayoutAlign="start start">
+          <a aria-label="category title" class="category"
+             href="">Category</a>
+          <time class="duration">00:00</time>
+        </div>
+        <time datetime="">Mon 0, 0000</time>
+      </div>
+      <a
+        class="title"
+        href="">
+        <span>Video</span><br>
+        <span>Title</span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<div [hidden]="!videosLoaded" class="videos-grid">
   <div *ngFor="let video of videos" class="video-element" fxFlex="100%"
        fxLayout="column"
        fxLayoutGap="10px">
@@ -27,8 +53,8 @@
       <mat-progress-bar mode="determinate" value="40"></mat-progress-bar>
     </a>
     <div class="details">
-      <div fxLayout="row" fxLayoutAlign="space-between center">
-        <div>
+      <div fxLayout="row" fxLayoutAlign="space-between start">
+        <div fxLayout="row" fxLayoutAlign="start start">
           <a aria-label="category title" class="category"
              href="https://localhost:4200">{{video.category}}</a>
           <time class="duration"
