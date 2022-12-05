@@ -20,8 +20,10 @@ export class VideosGridComponent implements OnInit {
   activeCategories: Category[] = [];
   videos: ProjectMedia[] = [];
   videosLoaded = false;
+  MoreVideosLoaded = false;
   videosLimit = 10;
   videosCount: number[];
+  page = 0;
   monthNames: string[] = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
   constructor(private videosService: VideosGridService, private dialog: MatDialog) {
@@ -34,6 +36,7 @@ export class VideosGridComponent implements OnInit {
 
   buildGrid: () => void = async () => {
     this.videosLoaded = true;
+    this.MoreVideosLoaded = true;
   }
 
   getCategories: () => void = () => {
@@ -48,14 +51,15 @@ export class VideosGridComponent implements OnInit {
 
   setCategory: (category: string) => void = (category: string) => {
     this.selectedCategories = category === 'All' ? this.categories : [category];
+    this.page = 0;
     this.getVideos();
   }
 
-  getVideos: () => void = async () => {
+  getVideos: (isAppend?: boolean) => void = async (isAppend: boolean = false) => {
     return this.videosService
-      .getVideos(this.selectedCategories)
+      .getVideos(this.selectedCategories, this.page, this.videosLimit)
       .subscribe((response) => {
-        this.videos = response;
+        this.videos = isAppend ? [...this.videos, ...response] : response;
         this.buildGrid();
       }, (error: Error) => {
         console.error(error);
@@ -88,9 +92,14 @@ export class VideosGridComponent implements OnInit {
     const dialogRef = this.dialog.open(PreviewComponent, dialogConfig);
   }
 
+  loadMoreVideos = () => {
+    this.MoreVideosLoaded = false;
+    this.page++;
+    this.getVideos(true);
+  }
+
   prettyDate = (d: Date) => {
     const date = new Date(d);
     return `${this.monthNames[date.getMonth()]}, ${date.getDate()} - ${date.getFullYear()}`;
-
   }
 }

@@ -104,6 +104,10 @@ mat-radio-group {
       width: 45%;
     }
   }
+
+  .load-more button {
+    @include lazy-load();
+  }
 }
 
 .videos-grid {
@@ -111,7 +115,7 @@ mat-radio-group {
   align-items: center;
   grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
   gap: 20px;
-  padding: 10px 30px;
+  padding: 10px 30px 30px;
 }
 
 .video-element {
@@ -240,4 +244,8 @@ mat-radio-group {
     text-overflow: ellipsis;
     white-space: normal;
   }
+}
+
+.load-more {
+  grid-column: 1/-1;
 }

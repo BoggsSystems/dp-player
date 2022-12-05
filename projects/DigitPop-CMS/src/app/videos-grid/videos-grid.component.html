@@ -9,33 +9,7 @@
   </mat-radio-group>
 </div>
 
-<div *ngIf="!videosLoaded" class="videos-grid lazy-loader">
-  <div *ngFor="let count of videosCount" class="video-element" fxFlex="100%"
-       fxLayout="column"
-       fxLayoutGap="10px">
-    <a class="thumbnail" href="">
-      <img alt="" height="170" src="">
-    </a>
-    <div class="details">
-      <div fxLayout="row" fxLayoutAlign="space-between start">
-        <div fxLayout="row" fxLayoutAlign="start start">
-          <a aria-label="category title" class="category"
-             href="">Category</a>
-          <time class="duration">00:00</time>
-        </div>
-        <time datetime="">Mon 0, 0000</time>
-      </div>
-      <a
-        class="title"
-        href="">
-        <span>Video</span><br>
-        <span>Title</span>
-      </a>
-    </div>
-  </div>
-</div>
-
-<div [hidden]="!videosLoaded" class="videos-grid">
+<div *ngIf="videosLoaded" [hidden]="!videosLoaded" class="videos-grid">
   <div *ngFor="let video of videos" class="video-element" fxFlex="100%"
        fxLayout="column"
        fxLayoutGap="10px">
@@ -70,5 +44,41 @@
         {{video.name}}
       </a>
     </div>
+  </div>
+  <div class="load-more" fxLayout fxLayoutAlign="center">
+    <button (click)="loadMoreVideos()" color="primary" mat-flat-button>Load
+      More
+    </button>
+  </div>
+</div>
+
+<div *ngIf="!videosLoaded || !MoreVideosLoaded" class="videos-grid lazy-loader">
+  <div *ngFor="let count of videosCount" class="video-element" fxFlex="100%"
+       fxLayout="column"
+       fxLayoutGap="10px">
+    <a class="thumbnail" href="">
+      <img alt="" height="170" src="">
+    </a>
+    <div class="details">
+      <div fxLayout="row" fxLayoutAlign="space-between start">
+        <div fxLayout="row" fxLayoutAlign="start start">
+          <a aria-label="category title" class="category"
+             href="">Category</a>
+          <time class="duration">00:00</time>
+        </div>
+        <time datetime="">Mon 0, 0000</time>
+      </div>
+      <a
+        class="title"
+        href="">
+        <span>Video</span><br>
+        <span>Title</span>
+      </a>
+    </div>
+  </div>
+  <div class="load-more" fxLayout fxLayoutAlign="center">
+    <button (click)="loadMoreVideos()" color="primary" mat-flat-button>Load
+      More
+    </button>
   </div>
 </div>

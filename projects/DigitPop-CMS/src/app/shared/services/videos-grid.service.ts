@@ -19,17 +19,19 @@ export class VideosGridService {
   constructor(private httpClient: HttpClient) {
   }
 
-  getVideos = (categories: string[]): Observable<ProjectMedia[]> => {
-    this.cachedVideo$ = this.cacheMap.has(categories.toString()) ? this.cacheMap.get(categories.toString()) : null;
+  getVideos = (categories: string[], page: number, limit: number): Observable<ProjectMedia[]> => {
+    let params = new HttpParams();
+    params = categories.length ? params.append('categories', categories.join(',')) : null;
+    params = params.append('page', page.toString());
+    params = params.append('limit', limit.toString());
+    this.cachedVideo$ = this.cacheMap.has(params.toString()) ? this.cacheMap.get(params.toString()) : null;
     if (!this.cachedVideo$) {
-      let params = new HttpParams();
-      params = categories.length ? params.append('categories', categories.join(',')) : null;
       this.cachedVideo$ = this.httpClient.get(this.endpoint, {params})
         .pipe(map((response: any) => {
           response = Cloudinary.resizeThumbnail(response, 353, 170);
           return this.secondsToMMSS(response);
         }), shareReplay(1));
-      this.cacheMap.set(categories.toString(), this.cachedVideo$);
+      this.cacheMap.set(params.toString(), this.cachedVideo$);
     }
     return this.cachedVideo$;
   }
