@@ -1,3 +1,14 @@
+<div class="categories">
+  <mat-radio-group fxLayout="row" fxLayoutAlign="start start"
+                   fxLayoutGap="7px">
+    <mat-radio-button (click)="setCategory('All')">All</mat-radio-button>
+    <mat-radio-button
+      (click)="setCategory(category.name)"
+      *ngFor="let category of activeCategories"
+      [value]="category._id">{{category.name}}</mat-radio-button>
+  </mat-radio-group>
+</div>
+
 <div class="videos-grid">
   <div *ngFor="let video of videos" class="video-element" fxFlex="100%"
        fxLayout="column"
@@ -19,7 +30,7 @@
       <div fxLayout="row" fxLayoutAlign="space-between center">
         <div>
           <a aria-label="category title" class="category"
-             href="https://localhost:4200">Clothing</a>
+             href="https://localhost:4200">{{video.category}}</a>
           <time class="duration"
                 datetime="03m 30s">{{video.media.duration}}</time>
         </div>

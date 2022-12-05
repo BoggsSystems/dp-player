@@ -1,43 +1,69 @@
 'use strict';
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {VideosGridService} from '../shared/services/videos-grid.service';
 import {ProjectMedia} from '../shared/models/ProjectMedia';
+import {Category} from '../shared/models/category';
 
 @Component({
   selector: 'digit-pop-videos-grid',
   templateUrl: './videos-grid.component.html',
-  styleUrls: ['./videos-grid.component.scss']
+  styleUrls: ['./videos-grid.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 
 export class VideosGridComponent implements OnInit {
 
+  selectedCategories: string[] = [];
   categories: string[] = [];
+  activeCategories: Category[] = [];
   videos: ProjectMedia[] = [];
 
   constructor(private videosService: VideosGridService) {
-    this.categories.push('Clothing', 'Golf');
   }
 
   ngOnInit(): void {
-    this.getVideos();
+    this.getCategories();
   }
 
   buildGrid: () => void = async () => {
-    console.log(this.videos);
+    this.secondsToMMSS(this.videos);
+  }
+
+  getCategories: () => void = () => {
+    return this.videosService
+      .getActiveCategories()
+      .subscribe((response: Category[]) => {
+        this.activeCategories = response;
+        this.categories = this.selectedCategories = this.activeCategories.map(category => category.name);
+        this.getVideos();
+      });
+  }
+
+  setCategory: (category: string) => void = (category: string) => {
+    this.selectedCategories = category === 'All' ? this.categories : [category];
   }
 
   getVideos: () => void = async () => {
     return this.videosService
-      .getVideos(this.categories)
-      .subscribe(
-        (response) => {
-          this.videos = response;
-          this.buildGrid();
-        },
-        (error: Error) => {
-          console.error(error);
-        }
-      );
+      .getVideos(this.selectedCategories)
+      .subscribe((response) => {
+        this.videos = response;
+        this.buildGrid();
+      }, (error: Error) => {
+        console.error(error);
+      });
+  }
+
+  secondsToMMSS = (videos: ProjectMedia[]) => {
+    const padWithZero = (time: number) => time.toString().padStart(2, '0');
+    const timestamp = (seconds: number) => {
+      const minutes = (seconds - (seconds % 60)) / 60;
+      const remainingSeconds = Math.round(seconds % 60);
+      return `${padWithZero(minutes)}:${padWithZero(remainingSeconds)}`;
+    };
+    videos.map(video => {
+      video.media.duration = timestamp(+video.media.duration);
+    });
   }
 
   previewVideo = (event: Event) => {
