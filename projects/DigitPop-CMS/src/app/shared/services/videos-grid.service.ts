@@ -28,6 +28,7 @@ export class VideosGridService {
     if (!this.cachedVideo$) {
       this.cachedVideo$ = this.httpClient.get(this.endpoint, {params})
         .pipe(map((response: any) => {
+          response = response.filter((video: any) => video.hasOwnProperty('media'));
           response = Cloudinary.resizeThumbnail(response, 353, 170);
           return this.secondsToMMSS(response);
         }), shareReplay(1));
