@@ -16,5 +16,10 @@ export class PreviewComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // this.autoPlay();
+  }
+
+  autoPlay(): void {
+    console.log(this.iFrameSrc);
   }
 }

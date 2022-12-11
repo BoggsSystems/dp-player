@@ -113,9 +113,33 @@ mat-radio-group {
 .videos-grid {
   display: grid !important;
   align-items: center;
-  grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
-  gap: 20px;
+  justify-content: space-between;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 100%));
+  gap: 1%;
   padding: 10px 30px 30px;
+}
+
+.videos-grid.justify-start {
+  justify-content: start;
+  gap: 1%;
+}
+
+@media (min-width: 640px) {
+  .videos-grid {
+    grid-template-columns: repeat(auto-fit, minmax(275px, 48%));
+  }
+}
+
+@media (min-width: 1024px) {
+  .videos-grid {
+    grid-template-columns: repeat(auto-fit, minmax(275px, 32%));
+  }
+}
+
+@media (min-width: 1280px) {
+  .videos-grid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 280px));
+  }
 }
 
 .video-element {
