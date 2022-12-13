@@ -1,4 +1,23 @@
 <mat-dialog-content class="container">
-  <iframe [src]="iFrameSrc | safe" class="iframe"
-          style="position:fixed; top:5%; left:0px; bottom:0px; right:0px; width:90%; height:90%; border:none; margin:0 auto; padding:0; overflow:hidden; z-index:999999; border-radius: 20px"></iframe>
+  <iframe
+    [src]="iFrameSrc | safe"
+    allow="autoplay"
+    class="iframe"
+    style="
+      position:fixed;
+      top:5%;
+      left:0;
+      bottom:0;
+      right:0;
+      width:90%;
+      height:90%;
+      border:none;
+      margin:0 auto;
+      padding:0;
+      overflow:hidden;
+      z-index:999999;
+      border-radius: 20px
+    "
+  >
+  </iframe>
 </mat-dialog-content>

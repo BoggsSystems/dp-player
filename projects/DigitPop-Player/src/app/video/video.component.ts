@@ -1,37 +1,25 @@
 import {
-  Component,
-  OnInit,
-  ViewChild,
-  ElementRef,
-  AfterViewInit,
-  HostListener,
-  ViewContainerRef,
+  AfterViewInit, Component, ElementRef, OnInit, ViewChild,
 } from '@angular/core';
 import {
-  ActivatedRoute,
-  Params,
-  Router,
-  NavigationExtras,
+  ActivatedRoute, NavigationExtras, Params, Router,
 } from '@angular/router';
-import { Project } from '../models/project';
-import { MatIconModule } from '@angular/material/icon';
-import { MatDialog } from '@angular/material/dialog';
-import { ImageCarouselComponent } from '../image-carousel/image-carousel.component';
-import { TestBed } from '@angular/core/testing';
-import { CdkScrollableModule } from '@angular/cdk/scrolling';
-import { MainHelpComponent } from '../help/main-help/main-help.component';
-import { environment } from '../../environments/environment';
-import { Subscription, timer } from 'rxjs';
-import { SubscriptionInfo, SubscriptionDetails } from '../models/subscription';
-import { AdService } from '../shared/services/ad.service';
-import { UserService } from '../shared/services/user.service';
-import { BillsbyService } from '../shared/services/billsby.service';
-import { ProductGroup } from '../models/productGroup';
-import { Product } from '../models/product';
+import {Project} from '../models/project';
+import {MatDialog} from '@angular/material/dialog';
+import {
+  ImageCarouselComponent
+} from '../image-carousel/image-carousel.component';
+import {MainHelpComponent} from '../help/main-help/main-help.component';
+import {environment} from '../../environments/environment';
+import {SubscriptionDetails, SubscriptionInfo} from '../models/subscription';
+import {AdService} from '../shared/services/ad.service';
+import {UserService} from '../shared/services/user.service';
+import {BillsbyService} from '../shared/services/billsby.service';
+import {ProductGroup} from '../models/productGroup';
+import {Product} from '../models/product';
 
 enum VideoType {
-  Regular = 1,
-  Cpcc,
+  Regular = 1, Cpcc,
 }
 
 @Component({
@@ -52,31 +40,24 @@ export class VideoComponent implements OnInit, AfterViewInit {
   viewState: any;
   subscription: any;
   videoType: VideoType;
-  showVideo = false;
+  showVideo = true;
+  videoMuted = false;
+  showSoundIcon = false;
   adReady = false;
   showThumbnail = false;
   showCanvas = false;
   showQuizButton = false;
-  showBackToGroup = false;
   disablePrevious = true;
   disableNext = true;
   preview = false;
   params: Params;
   pgIndex: any;
-
-  constructor(
-    private router: Router,
-    public dialog: MatDialog,
-    private route: ActivatedRoute,
-    private adService: AdService,
-    private userService: UserService,
-    private billsByService: BillsbyService
-  ) {
-    console.log('In constructor');
-  }
-
   @ViewChild('videoPlayer') videoPlayer: ElementRef;
   @ViewChild('canvas') canvas: ElementRef;
+
+  constructor(private router: Router, public dialog: MatDialog, private route: ActivatedRoute, private adService: AdService, private userService: UserService, private billsByService: BillsbyService) {
+  }
+
   ngOnInit(): void {
     this.videoType = VideoType.Regular;
 
@@ -85,85 +66,56 @@ export class VideoComponent implements OnInit, AfterViewInit {
 
     this.route.params.subscribe((params) => {
       this.params = params;
-      this.adId = params['id'];
+      this.adId = params.id;
 
-      if (params['engagementId'] != null && params['campaignId']) {
-        this.engagementId = params['engagementId'];
-        this.campaignId = params['campaignId'];
+      if (params.engagementId != null && params.campaignId) {
+        this.engagementId = params.engagementId;
+        this.campaignId = params.campaignId;
         this.videoType = VideoType.Cpcc;
       }
-
-      console.log('About to evaluate preview param....');
-      if (params['preview'] != null) {
-        console.log('Found preview param : ' + params['preview']);
-        this.preview = params['preview'];
+      if (params.preview != null) {
+        this.preview = params.preview;
       }
     });
 
-    // If there is a campaign and engagement id then go into DigitPop mode
-    // Display Quiz
-    // - Set flag that is a swtich between regular video and DigitPop video
-    // Just go by the campaign id and the engagement not null?
-    // Need to complete video even if they click through because people will just
-    // click through to complete the ads.
-    // If we could get feedback that a purchase was made then ad can be complete,
-    // but we won't have that for the first release
-    // Disable seeking forward during CPCV
-
-    console.log('Ad id is : ' + this.adId);
-
     if (this.adId != null) {
-      this.adService.getAd(this.adId).subscribe(
-        (res) => {
-          this.ad = res as Project;
+      this.adService.getAd(this.adId).subscribe((adService) => {
+        this.ad = adService as Project;
 
-          if (this.ad.active || this.preview) {
-            this.adReady = true;
-            this.showThumbnail = true;
-            this.userService.setTitle(this.ad.name);
+        if (this.ad.active || this.preview) {
+          this.adReady = true;
+          this.userService.setTitle(this.ad.name);
 
-            this.userService.getUserSubscription(this.ad.createdBy).subscribe(
-              (res) => {
-                var result = res as SubscriptionInfo;
+          this.userService.getUserSubscription(this.ad.createdBy).subscribe((userSubscription) => {
+            const result = userSubscription as SubscriptionInfo;
+            this.onStartVideo();
 
-                this.billsByService
-                  .getSubscriptionDetails(result.sid)
-                  .subscribe(
-                    (res) => {
-                      this.subscription = res as SubscriptionDetails;
+            this.billsByService
+              .getSubscriptionDetails(result.sid)
+              .subscribe((res) => {
+                this.subscription = res as SubscriptionDetails;
 
-                      this.userService.getUserIcon(this.ad.createdBy).subscribe(
-                        (res) => {
-                          this.userService.setUserIcon(res);
-                        },
-                        (err) => {
-                          console.log('Error retrieving user icon');
-                        }
-                      );
-                    },
-                    (err) => {
-                      console.log('Error retrieving subscription details');
-                    }
-                  );
-              },
-              (err) => {
-                console.log('Error retrieving subscription info');
-              }
-            );
-          }
-        },
-        (err) => {
-          console.log('Error retrieving ad');
+                this.userService.getUserIcon(this.ad.createdBy).subscribe((res) => {
+                  this.userService.setUserIcon(res);
+                }, (err) => {
+                  console.error(`Error retrieving user icon: ${err.toString()}`);
+                });
+              }, (err) => {
+                console.error(`Error retrieving subscription details: ${err.toString()}`);
+              });
+          }, (err) => {
+            console.error(`Error retrieving subscription info: ${err.toString()}`);
+          });
         }
-      );
+      }, (err) => {
+        console.error(`Error retrieving ad: ${err.toString()}`);
+      });
     }
   }
 
   help() {
     const dialogRef = this.dialog.open(MainHelpComponent, {
-      hasBackdrop: true,
-      width: '100%',
-      height: '90%',
+      hasBackdrop: true, width: '100%', height: '90%',
     });
 
     dialogRef.afterClosed().subscribe(() => {
@@ -172,68 +124,40 @@ export class VideoComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    //this.setSize();
     this.videoPlayer.nativeElement.height = this.innerHeight;
     this.videoPlayer.nativeElement.width = this.innerWidth;
-
-    // UNCOMMENT THE FOLLOWING
-    // if (this.videoPlayer.nativeElement.requestFullscreen) {
-    //   this.videoPlayer.nativeElement.requestFullscreen();
-    // } else if (this.videoPlayer.nativeElement.msRequestFullscreen) {
-    //   this.videoPlayer.nativeElement.msRequestFullscreen();
-    // } else if (this.videoPlayer.nativeElement.webkitRequestFullscreen) {
-    //   this.videoPlayer.nativeElement.webkitRequestFullscreen();
-    // }
-  }
-
-  getAd(id: any) {
-    this.adService.getAd(this.adId).subscribe(
-      (res) => {
-        this.ad = res as Project;
-      },
-      (err) => {
-        console.log('Error retrieving ad');
-      }
-    );
   }
 
   onStartVideo() {
-    var targetWindow = window.parent;
+    const targetWindow = window.parent;
     targetWindow.postMessage('start', `${environment.homeUrl}`);
-
-    console.log('In onStartVideo, preview value : ' + this.preview);
-    console.log('In onStartVideo, subscription value : ' + this.subscription);
-
     if (!this.preview && this.subscription != null) {
-      this.adService.createView(this.adId, this.subscription.cycleId).subscribe(
-        (res) => {
-          console.log(res);
-        },
-        (err) => {
-          console.log('Error creating view');
-        }
-      );
+      this.adService.createView(this.adId, this.subscription.cycleId).subscribe((res) => {
+        console.log(res);
+      }, (err) => {
+        console.error(err);
+      });
 
     }
 
     this.showThumbnail = false;
     this.setSize();
     this.showVideo = true;
+
+    if (!this.videoMuted && false) { // Remove false to mute by default
+      this.toggleVideoMute();
+    }
     this.videoPlayer.nativeElement.play();
   }
 
-  disableLogic() {
-    if (this.pgIndex == 0) {
-      this.disablePrevious = true;
-    } else {
-      this.disablePrevious = false;
-    }
+  toggleVideoMute() {
+    this.videoPlayer.nativeElement.muted = !this.videoPlayer.nativeElement.muted;
+    this.videoMuted = !this.videoMuted;
+  }
 
-    if (this.pgIndex + 2 > this.ad.productGroupTimeLine.length) {
-      this.disableNext = true;
-    } else {
-      this.disableNext = false;
-    }
+  disableLogic() {
+    this.disablePrevious = this.pgIndex === 0;
+    this.disableNext = this.pgIndex + 2 > this.ad.productGroupTimeLine.length;
   }
 
   onPreviousProductGroup() {
@@ -242,9 +166,7 @@ export class VideoComponent implements OnInit, AfterViewInit {
     }
 
     this.pgIndex -= 1;
-
     this.disableLogic();
-
     this.currentProductGroup = this.ad.productGroupTimeLine[this.pgIndex];
   }
 
@@ -258,9 +180,7 @@ export class VideoComponent implements OnInit, AfterViewInit {
     }
 
     this.pgIndex += 1;
-
     this.disableLogic();
-
     this.currentProductGroup = this.ad.productGroupTimeLine[this.pgIndex];
   }
 
@@ -277,7 +197,7 @@ export class VideoComponent implements OnInit, AfterViewInit {
   }
 
   onExit() {
-    var targetWindow = window.parent;
+    const targetWindow = window.parent;
     this.showThumbnail = true;
     this.showCanvas = false;
 
@@ -289,18 +209,6 @@ export class VideoComponent implements OnInit, AfterViewInit {
   }
 
   onBuyNow() {
-    // if (!this.preview) {
-    //   this.adService.increaseProductActionCount(this.currentProduct).subscribe(
-    //     (res: any) => {
-    //       console.log('Action Click!');
-    //       console.log(res);
-    //     },
-    //     (err: any) => {
-    //       console.log('Error retrieving ad');
-    //     }
-    //   );
-    // }
-
     window.open(this.currentProduct.makeThisYourLookURL, '_blank');
   }
 
@@ -309,75 +217,28 @@ export class VideoComponent implements OnInit, AfterViewInit {
   }
 
   onProductClick(product: Product) {
-    if (!this.preview) {
-      // this.adService.increaseProductClickCount(product).subscribe(
-      //   (res: any) => {
-      //     console.log('Product Click!');
-      //     console.log(res);
-      //   },
-      //   (err: any) => {
-      //     console.log('Error retrieving ad');
-      //   }
-      // );
-    }
-
     this.currentProduct = product;
     this.selectedImage = product.images[0];
     this.viewState = 'Product';
   }
 
   onShowProduct() {
+    this.showSoundIcon = false;
     this.videoPlayer.nativeElement.pause();
-
-    // if (this.test == false) {
-    //   this.testMultipleProductGroups();
-    // }
-
-    this.pgIndex = this.getProductGroupFromTime(
-      this.videoPlayer.nativeElement.currentTime
-    );
+    this.pgIndex = this.getProductGroupFromTime(this.videoPlayer.nativeElement.currentTime);
 
     this.disableLogic();
 
-    if (
-      this.ad.productGroupTimeLine.length == 1 &&
-      this.ad.productGroupTimeLine[0].products.length == 1
-    ) {
+    if (this.ad.productGroupTimeLine.length === 1 && this.ad.productGroupTimeLine[0].products.length === 1) {
       this.viewState = 'Product';
     } else {
       this.viewState = 'ProductGroup';
     }
 
     this.currentProductGroup = this.ad.productGroupTimeLine[this.pgIndex];
-
-    // if (!this.preview) {
-    //   this.adService
-    //     .increaseProductGroupPauseCount(this.currentProductGroup)
-    //     .subscribe(
-    //       (res: any) => {
-    //         console.log('Action Click!');
-    //         console.log(res);
-    //       },
-    //       (err: any) => {
-    //         console.log('Error retrieving ad');
-    //       }
-    //     );
-    // }
-
-    // for (let i = 0; i < 10; i++) {
-    //   var test = this.ad.productGroupTimeLine[0].products[0];
-    //   test.description =
-    //     'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin felis nulla, pellentesque id justo pharetra, mollis sollicitudin lorem. Pellentesque auctor arcu mi, non mattis risus luctus in. Nunc vitae hendrerit urna. Nullam lacus turpis, lacinia ac fringilla vitae, tempus quis sapien. Proin in bibendum lorem. Phasellus eget consequat odio. Vivamus malesuada dui iaculis odio luctus fermentum sed nec nulla. Phasellus eu mattis ante, et condimentum dui. Quisque semper, leo vitae laoreet porttitor, urna lacus sollicitudin nulla, eget ornare libero neque non lacus.Aenean placerat quam nec odio placerat, id condimentum ex ultrices. Fusce molestie dui quis nulla dignissim dignissim. Maecenas quis sollicitudin dui. Maecenas molestie a odio id placerat. Maecenas euismod nunc nisl, ut viverra felis fermentum vel. Duis quis vestibulum ligula. Vivamus posuere nec libero id laoreet. Ut rutrum fermentum sem, ac condimentum felis tempus quis. Curabitur nisi ex, blandit ac congue ac, mollis eu dolor. Nullam elit sapien, fermentum at ullamcorper eu, consectetur id tellus. Phasellus a egestas tellus. Suspendisse dapibus felis vel erat dictum tincidunt.';
-    //   this.currentProductGroup.products.push(test);
-    // }
-
     this.currentProduct = this.ad.productGroupTimeLine[0].products[0];
 
-    if (
-      this.currentProduct != null &&
-      this.currentProduct.images != null &&
-      this.currentProduct.images.length > 0
-    ) {
+    if (this.currentProduct != null && this.currentProduct.images != null && this.currentProduct.images.length > 0) {
       this.selectedImage = this.currentProduct.images[0];
     }
 
@@ -389,17 +250,10 @@ export class VideoComponent implements OnInit, AfterViewInit {
   }
 
   onEnded() {
-
-    console.log("In onEnded");
-
-    if (this.params['engagementId'] != null && this.params['campaignId']) {
-
-      console.log("Setting Show Quiz Button ");
+    if (this.params.engagementId != null && this.params.campaignId) {
       this.showQuizButton = true;
       this.onShowProduct();
     } else {
-
-      console.log("NOT Setting Show Quiz Button ");
       this.onShowProduct();
     }
   }
@@ -408,69 +262,57 @@ export class VideoComponent implements OnInit, AfterViewInit {
 
     this.showQuizButton = false;
     const navigationExtras: NavigationExtras = {
-      state: { campaignId: this.campaignId, engagementId: this.engagementId },
+      state: {campaignId: this.campaignId, engagementId: this.engagementId},
     };
 
-     this.router.navigate(['/quiz'], navigationExtras);
+    this.router.navigate(['/quiz'], navigationExtras);
 
   }
 
   onResumeVideo() {
     this.showCanvas = false;
     this.showVideo = true;
+    // this.showSoundIcon = true;
     this.videoPlayer.nativeElement.play();
   }
 
   setSize() {
-    var w = window.innerWidth;
-    var h = window.innerHeight;
+    const w = window.innerWidth;
+    const h = window.innerHeight;
 
-    var isW = w >= h * 1.7778;
+    const isW = w >= h * 1.7778;
 
-    var vw = isW ? w : Math.round(h * 1.7778);
-    var vh = isW ? Math.round(w * 0.5625) : h;
-    var vol = Math.round((w - vw) / 2);
-    var vot = Math.round((h - vh) / 2);
+    const vw = isW ? w : Math.round(h * 1.7778);
+    const vh = isW ? Math.round(w * 0.5625) : h;
+    const vol = Math.round((w - vw) / 2);
+    const vot = Math.round((h - vh) / 2);
 
     this.videoPlayer.nativeElement.width = vw;
     this.videoPlayer.nativeElement.height = vh;
-    //console.log("setSize() :  Width : " + vw + " Height : " + vh);
     this.videoPlayer.nativeElement.style.setProperty('left', vol + 'px');
     this.videoPlayer.nativeElement.style.setProperty('top', vot + 'px');
   }
 
   drawCanvas() {
-    var w = window.innerWidth;
-    var h = window.innerHeight;
+    const w = window.innerWidth;
+    const h = window.innerHeight;
 
-    var isW = w >= h * 1.7778;
+    const isW = w >= h * 1.7778;
 
-    var vw = isW ? w : Math.round(h * 1.7778);
-    var vh = isW ? Math.round(w * 0.5625) : h;
-    var vol = Math.round((w - vw) / 2);
-    var vot = Math.round((h - vh) / 2);
-
-    // this.videoPlayer.nativeElement.width = vw;
-    // this.videoPlayer.nativeElement.height = vh;
+    const vw = isW ? w : Math.round(h * 1.7778);
+    const vh = isW ? Math.round(w * 0.5625) : h;
+    const vol = Math.round((w - vw) / 2);
+    const vot = Math.round((h - vh) / 2);
 
     this.canvas.nativeElement.width = vw;
     this.canvas.nativeElement.height = vh;
-    var ratio =
-      this.videoPlayer.nativeElement.videoWidth /
-      this.videoPlayer.nativeElement.videoHeight;
 
-    // this.canvas.nativeElement.width = this.videoPlayer.nativeElement.width;
-    // this.canvas.nativeElement.height = this.videoPlayer.nativeElement.height;
+    const ratio = this.videoPlayer.nativeElement.videoWidth / this.videoPlayer.nativeElement.videoHeight;
     this.canvas.nativeElement.style.setProperty('left', vol + 'px');
     this.canvas.nativeElement.style.setProperty('top', vot + 'px');
 
-    var ctx = this.canvas.nativeElement.getContext('2d');
-
-    var isIOS =
-      window.navigator.userAgent.match(/iPhone/i) ||
-      window.navigator.userAgent.match(/iPad/i) ||
-      window.navigator.userAgent.match(/Macintosh/i);
-    console.log('Video Is iOS : ' + isIOS);
+    const ctx = this.canvas.nativeElement.getContext('2d');
+    const isIOS = window.navigator.userAgent.match(/iPhone/i) || window.navigator.userAgent.match(/iPad/i) || window.navigator.userAgent.match(/Macintosh/i);
 
     if (isIOS != null) {
       ctx.globalAlpha = 0.2;
@@ -478,30 +320,20 @@ export class VideoComponent implements OnInit, AfterViewInit {
       ctx.filter = 'blur(20px) brightness(50%)';
     }
 
-
-    ctx.drawImage(
-      this.videoPlayer.nativeElement,
-      (vw - this.canvas.nativeElement.height * ratio) / 2,
-      vot,
-      this.canvas.nativeElement.height * ratio,
-      this.canvas.nativeElement.height
-    );
+    ctx.drawImage(this.videoPlayer.nativeElement, vot, (vw - this.canvas.nativeElement.height * ratio) / 2, this.canvas.nativeElement.height * ratio, this.canvas.nativeElement.height);
   }
 
 
   getProductGroupFromTime(time: any) {
-    if (this.ad.productGroupTimeLine.length == 1) {
+    if (this.ad.productGroupTimeLine.length === 1) {
       return 0;
     }
 
-    for (var i = 0; i < this.ad.productGroupTimeLine.length; i++) {
+    for (let i = 0; i < this.ad.productGroupTimeLine.length; i++) {
       if (this.ad.productGroupTimeLine[i + 1] == null) {
         return i;
       } else {
-        if (
-          this.ad.productGroupTimeLine[i].time < time &&
-          time < this.ad.productGroupTimeLine[i + 1].time
-        ) {
+        if (this.ad.productGroupTimeLine[i].time < time && time < this.ad.productGroupTimeLine[i + 1].time) {
           return i;
         }
       }
@@ -522,11 +354,8 @@ export class VideoComponent implements OnInit, AfterViewInit {
   }
 
   openDialog(): void {
-
     const dialogRef = this.dialog.open(ImageCarouselComponent, {
-      hasBackdrop: true,
-      width: '100%',
-      height: 'auto',
+      hasBackdrop: true, width: '100%', height: 'auto',
     });
 
     dialogRef.componentInstance.url = this.selectedImage.url;
