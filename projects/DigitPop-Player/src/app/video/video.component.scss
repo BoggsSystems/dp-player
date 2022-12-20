@@ -14,20 +14,20 @@
     font-weight: 300;
     background-color: transparent;
     color: white;
-    font-family: Ubuntu;
+    font-family: Ubuntu, sans-serif;
   }
 
-  .productImageThumbnail {
+  .product-thumbnail {
     width: 30px;
     height: 30px;
   }
 
-  .productImageThumbnailGrid {
+  .product-image-thumbnails {
     grid-column: 9/12;
     grid-row: 9/16;
   }
 
-  .productInfoBuyNow {
+  .product-buy-now {
     grid-column: 2/6;
     grid-row: 14/16;
     height: 100%;
@@ -36,19 +36,19 @@
     background-color: #000000;
     color: #5abeff;
     font-size: 20px;
-    font-family: Ubuntu;
+    font-family: Ubuntu, sans-serif;
     font-weight: 500;
     display: table-cell;
     vertical-align: middle;
   }
 
-  .productInfoPrice {
+  .product-price {
     grid-column: 8/12;
     grid-row: 8/8;
     font-size: 18px;
   }
 
-  .productInfoSubTitle {
+  .product-subtitle {
     grid-column: 2/7;
     grid-row: 8/8;
     font-size: 12px;
@@ -61,14 +61,14 @@
     word-wrap: break-word;
   }
 
-  .productImageMain {
+  .product-main-image {
     grid-column: 2/10;
     grid-row: 9/16;
     max-width: 100%;
     max-height: 100%;
   }
 
-  .pgProductsList {
+  .pg-products-list {
     grid-row: 10/26;
     grid-column: 2/12;
     width: 100%;
@@ -80,28 +80,15 @@
     grid-row: 3/5;
   }
 
-  .button_start_grid {
+  .button-start-grid {
     grid-column: 2/3;
     grid-row: 2/3;
-  }
-
-  .button_start_grid_product {
-    grid-column: 45/46;
-    grid-row: 1/2;
   }
 
   .title {
     font-size: 20px;
     color: #ffffff;
     grid-column: 12/46;
-    margin-left: 20px;
-    grid-row: 2/3;
-  }
-
-  .title_product {
-    font-size: 20px;
-    color: #ffffff;
-    grid-column: 1/48;
     margin-left: 20px;
     grid-row: 2/3;
   }
@@ -114,8 +101,7 @@
     grid-template-rows: 75px;
   }
 
-  // New
-  .productInfoBuyNow {
+  .product-buy-now {
     grid-column: 2/6;
     grid-row: 10/12;
     height: 100%;
@@ -124,32 +110,25 @@
     background-color: #000000;
     color: #5abeff;
     font-size: 16px;
-    font-family: Ubuntu;
+    font-family: Ubuntu, sans-serif;
     font-weight: 500;
     display: table-cell;
     vertical-align: middle;
   }
 
-  .productImageThumbnail {
+  .product-thumbnail {
     width: 25%;
     height: auto;
   }
 
-  .productImageMain {
+  .product-main-image {
     grid-column: 6/9;
     grid-row: 8/16;
     width: 100%;
     height: auto;
   }
 
-  .title_product {
-    font-size: 20px;
-    color: #ffffff;
-    grid-column: 4/36;
-    grid-row: 1/2;
-  }
-
-  .pgProductsList {
+  .pg-products-list {
     grid-row: 8/24;
     grid-column: 2/12;
     width: 100%;
@@ -161,12 +140,7 @@
     grid-row: 3/5;
   }
 
-  .button_start_grid {
-    grid-column: 45/46;
-    grid-row: 1/2;
-  }
-
-  .button_start_grid_product {
+  .button-start-grid {
     grid-column: 45/46;
     grid-row: 1/2;
   }
@@ -180,7 +154,7 @@
 }
 
 @media only screen and (min-width: 551px) and (max-width: 768px) {
-  .productImageThumbnailGrid {
+  .product-image-thumbnails {
     grid-column: 9/12;
     grid-row: 8/22;
   }
@@ -193,16 +167,16 @@
     font-weight: 300;
     background-color: transparent;
     color: white;
-    font-family: Ubuntu;
+    font-family: Ubuntu, sans-serif;
   }
 
-  .productInfoPrice {
+  .product-price {
     grid-column: 5/6;
     grid-row: 8/10;
     font-size: 18px;
   }
 
-  .productInfoSubTitle {
+  .product-subtitle {
     grid-column: 2/5;
     grid-row: 8/10;
     font-size: 12px;
@@ -214,8 +188,7 @@
     -webkit-line-clamp: 2;
   }
 
-  // New
-  .productInfoBuyNow {
+  .product-buy-now {
     grid-column: 2/6;
     grid-row: 10/12;
     height: 100%;
@@ -224,7 +197,7 @@
     background-color: #000000;
     color: #5abeff;
     font-size: 16px;
-    font-family: Ubuntu;
+    font-family: Ubuntu, sans-serif;
     font-weight: 500;
     display: table-cell;
     vertical-align: middle;
@@ -249,73 +222,67 @@
     background: url("../../assets/images/button_icons.png");
   }
 
-  .button_resume > div {
+  .button-resume > div {
     background-position: -144px top;
   }
 
-  .button_resume:not(.disabled):active > div {
+  .button-resume:not(.disabled):active > div {
     background-position: -144px bottom;
   }
 
-  .button_locate > div {
+  .button-locate > div {
     background-position: -192px top;
   }
 
-  .button_locate:not(.disabled):active > div {
+  .button-locate:not(.disabled):active > div {
     background-position: -192px bottom;
   }
 
-  .button_prev > div {
+  .button-prev > div {
     background-position: -288px top;
   }
 
-  .button_prev:not(.disabled):active > div {
+  .button-prev:not(.disabled):active > div {
     background-position: -288px bottom;
   }
 
-  .button_next > div {
+  .button-next > div {
     background-position: -240px top;
   }
 
-  .button_next:not(.disabled):active > div {
+  .button-next:not(.disabled):active > div {
     background-position: -240px bottom;
   }
 
-  .button_up > div {
+  .button-up > div {
     background-position: -336px top;
   }
 
-  .button_up:not(.disabled):active > div {
+  .button-up:not(.disabled):active > div {
     background-position: -336px bottom;
   }
 
-  .button_start > div {
+  .button-start > div {
     background-position: -480px top;
   }
 
-  .button_start:not(.disabled):active > div {
+  .button-start:not(.disabled):active > div {
     background-position: -240px bottom;
   }
 
-  .button_all > div {
+  .button-all > div {
     background-position: -48px top;
   }
 
-  .button_all:not(.disabled):active > div {
+  .button-all:not(.disabled):active > div {
     background-position: -48px bottom;
-  }
-
-  .button_share > div i.fa {
-    font-size: 24px;
-    margin-top: 11px;
-    opacity: 0.9;
   }
 
   .social-share-button {
     font-size: 14px;
   }
 
-  .productTemplate {
+  .product-template {
     display: grid;
     grid-template-columns: 75px 175px;
     grid-template-rows: 16px 75px;
@@ -323,14 +290,14 @@
     overflow: hidden;
   }
 
-  .productTemplate_Image {
+  .product-template-image {
     grid-column: 1/2;
     grid-row: 1/3;
     width: 75px;
     height: auto;
   }
 
-  .productTemplate_Name_Container {
+  .product-template-name {
     margin-left: 5px;
     grid-column: 2/3;
     grid-row: 1/2;
@@ -342,14 +309,14 @@
     overflow: hidden;
   }
 
-  .productTemplate_Description_Container {
+  .product-template-description-container {
     margin-left: 5px;
     grid-column: 2/3;
     grid-row: 2/3;
     height: 75px;
   }
 
-  .productTemplate_Description {
+  .product-template-description {
     width: 150px;
     display: -webkit-box;
     -webkit-box-orient: vertical;
@@ -375,16 +342,16 @@
     font-weight: 300;
     background-color: transparent;
     color: white;
-    font-family: Ubuntu;
+    font-family: Ubuntu, sans-serif;
   }
 
-  .productInfoPrice {
+  .product-price {
     grid-column: 5/6;
     grid-row: 8/10;
     font-size: 22px;
   }
 
-  .productInfoSubTitle {
+  .product-subtitle {
     grid-column: 2/5;
     grid-row: 8/10;
     font-size: 16px;
@@ -396,13 +363,12 @@
     -webkit-line-clamp: 2;
   }
 
-  .productImageThumbnailGrid {
+  .product-image-thumbnails {
     grid-column: 9/12;
     grid-row: 8/22;
   }
 
-  // New
-  .productInfoBuyNow {
+  .product-buy-now {
     grid-column: 2/6;
     grid-row: 10/12;
     height: 100%;
@@ -411,7 +377,7 @@
     background-color: #000000;
     color: #5abeff;
     font-size: 16px;
-    font-family: Ubuntu;
+    font-family: Ubuntu, sans-serif;
     font-weight: 500;
     display: table-cell;
     vertical-align: middle;
@@ -434,83 +400,77 @@
     background: url("../../assets/images/button_icons.png");
   }
 
-  .button_resume > div {
+  .button-resume > div {
     background-position: -144px top;
   }
 
-  .button_resume:not(.disabled):active > div {
+  .button-resume:not(.disabled):active > div {
     background-position: -144px bottom;
   }
 
-  .button_locate > div {
+  .button-locate > div {
     background-position: -192px top;
   }
 
-  .button_locate:not(.disabled):active > div {
+  .button-locate:not(.disabled):active > div {
     background-position: -192px bottom;
   }
 
-  .button_prev > div {
+  .button-prev > div {
     background-position: -288px top;
   }
 
-  .button_prev:not(.disabled):active > div {
+  .button-prev:not(.disabled):active > div {
     background-position: -288px bottom;
   }
 
-  .button_next > div {
+  .button-next > div {
     background-position: -240px top;
   }
 
-  .button_next:not(.disabled):active > div {
+  .button-next:not(.disabled):active > div {
     background-position: -240px bottom;
   }
 
-  .button_up > div {
+  .button-up > div {
     background-position: -336px top;
   }
 
-  .button_up:not(.disabled):active > div {
+  .button-up:not(.disabled):active > div {
     background-position: -336px bottom;
   }
 
-  .button_start > div {
+  .button-start > div {
     background-position: -480px top;
   }
 
-  .button_start:not(.disabled):active > div {
+  .button-start:not(.disabled):active > div {
     background-position: -240px bottom;
   }
 
-  .button_all > div {
+  .button-all > div {
     background-position: -48px top;
   }
 
-  .button_all:not(.disabled):active > div {
+  .button-all:not(.disabled):active > div {
     background-position: -48px bottom;
   }
 
-  .button_share > div i.fa {
-    font-size: 24px;
-    margin-top: 11px;
-    opacity: 0.9;
-  }
-
-  .productTemplate {
+  .product-template {
     display: grid;
     grid-template-columns: 80px 160px;
     grid-template-rows: 20px 80px;
     margin-bottom: 10px;
   }
 
-  .productTemplate_Image {
+  .product-template-image {
     grid-column: 1/2;
     grid-row: 1/3;
     width: 80px;
     height: auto;
   }
 
-  .productTemplate_Name_Container {
+  .product-template-name {
     margin-left: 10px;
     grid-column: 2/3;
     grid-row: 1/2;
@@ -522,14 +482,14 @@
     overflow: hidden;
   }
 
-  .productTemplate_Description_Container {
+  .product-template-description-container {
     margin-left: 10px;
     grid-column: 2/3;
     grid-row: 2/3;
     height: 80px;
   }
 
-  .productTemplate_Description {
+  .product-template-description {
     width: 160px;
     display: -webkit-box;
     -webkit-box-orient: vertical;
@@ -573,16 +533,16 @@
     font-weight: 300;
     background-color: transparent;
     color: white;
-    font-family: Ubuntu;
+    font-family: Ubuntu, sans-serif;
   }
 
-  .productInfoPrice {
+  .product-price {
     grid-column: 5/6;
     grid-row: 8/10;
     font-size: 22px;
   }
 
-  .productInfoSubTitle {
+  .product-subtitle {
     grid-column: 2/5;
     grid-row: 8/10;
     font-size: 16px;
@@ -594,13 +554,12 @@
     -webkit-line-clamp: 2;
   }
 
-  .productImageThumbnailGrid {
+  .product-image-thumbnails {
     grid-column: 9/12;
     grid-row: 8/22;
   }
 
-  // New
-  .productInfoBuyNow {
+  .product-buy-now {
     grid-column: 2/6;
     grid-row: 10/12;
     height: 100%;
@@ -609,89 +568,83 @@
     background-color: #000000;
     color: #5abeff;
     font-size: 16px;
-    font-family: Ubuntu;
+    font-family: Ubuntu, sans-serif;
     font-weight: 500;
     display: table-cell;
     vertical-align: middle;
   }
 
-  .button_resume > div {
+  .button-resume > div {
     background-position: -144px top;
   }
 
-  .button_resume:not(.disabled):active > div {
+  .button-resume:not(.disabled):active > div {
     background-position: -144px bottom;
   }
 
-  .button_locate > div {
+  .button-locate > div {
     background-position: -192px top;
   }
 
-  .button_locate:not(.disabled):active > div {
+  .button-locate:not(.disabled):active > div {
     background-position: -192px bottom;
   }
 
-  .button_prev > div {
+  .button-prev > div {
     background-position: -288px top;
   }
 
-  .button_prev:not(.disabled):active > div {
+  .button-prev:not(.disabled):active > div {
     background-position: -288px bottom;
   }
 
-  .button_next > div {
+  .button-next > div {
     background-position: -240px top;
   }
 
-  .button_next:not(.disabled):active > div {
+  .button-next:not(.disabled):active > div {
     background-position: -240px bottom;
   }
 
-  .button_up > div {
+  .button-up > div {
     background-position: -336px top;
   }
 
-  .button_up:not(.disabled):active > div {
+  .button-up:not(.disabled):active > div {
     background-position: -336px bottom;
   }
 
-  .button_start > div {
+  .button-start > div {
     background-position: -480px top;
   }
 
-  .button_start:not(.disabled):active > div {
+  .button-start:not(.disabled):active > div {
     background-position: -240px bottom;
   }
 
-  .button_all > div {
+  .button-all > div {
     background-position: -48px top;
   }
 
-  .button_all:not(.disabled):active > div {
+  .button-all:not(.disabled):active > div {
     background-position: -48px bottom;
   }
 
-  .button_share > div i.fa {
-    font-size: 24px;
-    margin-top: 11px;
-    opacity: 0.9;
-  }
-
-  .productTemplate {
+  .product-template {
     display: grid;
     grid-template-columns: 120px 200px;
     grid-template-rows: 20px 100px;
     margin-bottom: 10px;
   }
 
-  .productTemplate_Image {
+  .product-template-image {
     grid-column: 1/2;
     grid-row: 1/3;
     width: 100px;
     height: auto;
   }
 
-  .productTemplate_Name_Container {
+  .product-template-name {
     margin-left: 10px;
     grid-column: 2/3;
     grid-row: 1/2;
@@ -703,14 +656,14 @@
     overflow: hidden;
   }
 
-  .productTemplate_Description_Container {
+  .product-template-description-container {
     margin-left: 10px;
     grid-column: 2/3;
     grid-row: 2/3;
     height: 100px;
   }
 
-  .productTemplate_Description {
+  .product-template-description {
     width: 175px;
     display: -webkit-box;
     -webkit-box-orient: vertical;
@@ -744,88 +697,82 @@
     background: url("../../assets/images/button_icons.png");
   }
 
-  .productImageThumbnailGrid {
+  .product-image-thumbnails {
     grid-column: 9/11;
     grid-row: 8/22;
   }
 
-  .button_resume > div {
+  .button-resume > div {
     background-position: -144px top;
   }
 
-  .button_resume:not(.disabled):active > div {
+  .button-resume:not(.disabled):active > div {
     background-position: -144px bottom;
   }
 
-  .button_locate > div {
+  .button-locate > div {
     background-position: -192px top;
   }
 
-  .button_locate:not(.disabled):active > div {
+  .button-locate:not(.disabled):active > div {
     background-position: -192px bottom;
   }
 
-  .button_prev > div {
+  .button-prev > div {
     background-position: -288px top;
   }
 
-  .button_prev:not(.disabled):active > div {
+  .button-prev:not(.disabled):active > div {
     background-position: -288px bottom;
   }
 
-  .button_next > div {
+  .button-next > div {
     background-position: -240px top;
   }
 
-  .button_next:not(.disabled):active > div {
+  .button-next:not(.disabled):active > div {
     background-position: -240px bottom;
   }
 
-  .button_up > div {
+  .button-up > div {
     background-position: -336px top;
   }
 
-  .button_up:not(.disabled):active > div {
+  .button-up:not(.disabled):active > div {
     background-position: -336px bottom;
   }
 
-  .button_start > div {
+  .button-start > div {
     background-position: -480px top;
   }
 
-  .button_start:not(.disabled):active > div {
+  .button-start:not(.disabled):active > div {
     background-position: -240px bottom;
   }
 
-  .button_all > div {
+  .button-all > div {
     background-position: -48px top;
   }
 
-  .button_all:not(.disabled):active > div {
+  .button-all:not(.disabled):active > div {
     background-position: -48px bottom;
   }
 
-  .button_share > div i.fa {
-    font-size: 24px;
-    margin-top: 11px;
-    opacity: 0.9;
-  }
-
-  .productTemplate {
+  .product-template {
     display: grid;
     grid-template-columns: 120px 200px;
     grid-template-rows: 20px 100px;
     margin-bottom: 10px;
   }
 
-  .productTemplate_Image {
+  .product-template-image {
     grid-column: 1/2;
     grid-row: 1/3;
     width: 100px;
     height: auto;
   }
 
-  .productTemplate_Name_Container {
+  .product-template-name {
     margin-left: 10px;
     grid-column: 2/3;
     grid-row: 1/2;
@@ -837,14 +784,14 @@
     overflow: hidden;
   }
 
-  .productTemplate_Description_Container {
+  .product-template-description-container {
     margin-left: 10px;
     grid-column: 2/3;
     grid-row: 2/3;
     height: 100px;
   }
 
-  .productTemplate_Description {
+  .product-template-description {
     width: 175px;
     display: -webkit-box;
     -webkit-box-orient: vertical;
@@ -852,7 +799,7 @@
     overflow: hidden;
   }
 
-  .productInfoSubTitle {
+  .product-subtitle {
     grid-column: 2/5;
     grid-row: 8/10;
     font-size: 25px;
@@ -864,7 +811,7 @@
     -webkit-line-clamp: 2;
   }
 
-  .productInfoPrice {
+  .product-price {
     grid-column: 5/6;
     grid-row: 8/10;
     font-size: 25px;
@@ -878,10 +825,10 @@
     font-weight: 300;
     background-color: transparent;
     color: white;
-    font-family: Ubuntu;
+    font-family: Ubuntu, sans-serif;
   }
 
-  .productInfoBuyNow {
+  .product-buy-now {
     grid-column: 2/6;
     grid-row: 10/12;
     height: 100%;
@@ -890,7 +837,7 @@
     background-color: #000000;
     color: #5abeff;
     font-size: 16px;
-    font-family: Ubuntu;
+    font-family: Ubuntu, sans-serif;
     font-weight: 500;
     display: table-cell;
     vertical-align: middle;
@@ -922,88 +869,82 @@
     background: url("../../assets/images/button_icons.png");
   }
 
-  .productImageThumbnailGrid {
+  .product-image-thumbnails {
     grid-column: 9/11;
     grid-row: 8/22;
   }
 
-  .button_resume > div {
+  .button-resume > div {
     background-position: -144px top;
   }
 
-  .button_resume:not(.disabled):active > div {
+  .button-resume:not(.disabled):active > div {
     background-position: -144px bottom;
   }
 
-  .button_locate > div {
+  .button-locate > div {
     background-position: -192px top;
   }
 
-  .button_locate:not(.disabled):active > div {
+  .button-locate:not(.disabled):active > div {
     background-position: -192px bottom;
   }
 
-  .button_prev > div {
+  .button-prev > div {
     background-position: -288px top;
   }
 
-  .button_prev:not(.disabled):active > div {
+  .button-prev:not(.disabled):active > div {
     background-position: -288px bottom;
   }
 
-  .button_next > div {
+  .button-next > div {
     background-position: -240px top;
   }
 
-  .button_next:not(.disabled):active > div {
+  .button-next:not(.disabled):active > div {
     background-position: -240px bottom;
   }
 
-  .button_up > div {
+  .button-up > div {
     background-position: -336px top;
   }
 
-  .button_up:not(.disabled):active > div {
+  .button-up:not(.disabled):active > div {
     background-position: -336px bottom;
   }
 
-  .button_start > div {
+  .button-start > div {
     background-position: -480px top;
   }
 
-  .button_start:not(.disabled):active > div {
+  .button-start:not(.disabled):active > div {
     background-position: -240px bottom;
   }
 
-  .button_all > div {
+  .button-all > div {
     background-position: -48px top;
   }
 
-  .button_all:not(.disabled):active > div {
+  .button-all:not(.disabled):active > div {
     background-position: -48px bottom;
   }
 
-  .button_share > div i.fa {
-    font-size: 24px;
-    margin-top: 11px;
-    opacity: 0.9;
-  }
-
-  .productTemplate {
+  .product-template {
     display: grid;
     grid-template-columns: 160px 300px;
     grid-template-rows: 30px 150px;
     margin-bottom: 10px;
   }
 
-  .productTemplate_Image {
+  .product-template-image {
     grid-column: 1/2;
     grid-row: 1/3;
     width: 150px;
     height: auto;
   }
 
-  .productTemplate_Name_Container {
+  .product-template-name {
     margin-left: 10px;
     grid-column: 2/3;
     grid-row: 1/2;
@@ -1015,14 +956,14 @@
     overflow: hidden;
   }
 
-  .productTemplate_Description_Container {
+  .product-template-description-container {
     margin-left: 10px;
     grid-column: 2/3;
     grid-row: 2/3;
     height: 150px;
   }
 
-  .productTemplate_Description {
+  .product-template-description {
     width: 275px;
     display: -webkit-box;
     -webkit-box-orient: vertical;
@@ -1030,7 +971,7 @@
     overflow: hidden;
   }
 
-  .productInfoSubTitle {
+  .product-subtitle {
     grid-column: 2/5;
     grid-row: 8/10;
     font-size: 25px;
@@ -1042,7 +983,7 @@
     -webkit-line-clamp: 2;
   }
 
-  .productInfoPrice {
+  .product-price {
     grid-column: 5/6;
     grid-row: 8/10;
     font-size: 25px;
@@ -1056,11 +997,10 @@
     font-weight: 300;
     background-color: transparent;
     color: white;
-    font-family: Ubuntu;
+    font-family: Ubuntu, sans-serif;
   }
 
-  // New
-  .productInfoBuyNow {
+  .product-buy-now {
     grid-column: 2/6;
     grid-row: 10/12;
     height: 100%;
@@ -1069,7 +1009,7 @@
     background-color: #000000;
     color: #5abeff;
     font-size: 16px;
-    font-family: Ubuntu;
+    font-family: Ubuntu, sans-serif;
     font-weight: 500;
     display: table-cell;
     vertical-align: middle;
@@ -1077,7 +1017,7 @@
 }
 
 @media only screen and (max-height: 412px) and (max-width: 550px) {
-  .productInfoBuyNow {
+  .product-buy-now {
     grid-column: 2/6;
     grid-row: 28/30;
     height: 100%;
@@ -1086,7 +1026,7 @@
     background-color: #000000;
     color: #5abeff;
     font-size: 14px;
-    font-family: Ubuntu;
+    font-family: Ubuntu, sans-serif;
     font-weight: 500;
     display: table-cell;
     vertical-align: middle;
@@ -1094,7 +1034,7 @@
 }
 
 @media only screen and (max-height: 412px) and (min-width: 550px) {
-  .productInfoBuyNow {
+  .product-buy-now {
     grid-column: 2/6;
     grid-row: 10/12;
     height: 100%;
@@ -1103,7 +1043,7 @@
     background-color: #000000;
     color: #5abeff;
     font-size: 14px;
-    font-family: Ubuntu;
+    font-family: Ubuntu, sans-serif;
     font-weight: 500;
     display: table-cell;
     vertical-align: middle;
@@ -1111,7 +1051,7 @@
 }
 
 @media only screen and (min-height: 413px) and (max-height: 565px) and (max-width: 550px) {
-  .productInfoBuyNow {
+  .product-buy-now {
     grid-column: 2/6;
     grid-row: 10/12;
     height: 100%;
@@ -1120,7 +1060,7 @@
     background-color: #000000;
     color: #5abeff;
     font-size: 16px;
-    font-family: Ubuntu;
+    font-family: Ubuntu, sans-serif;
     font-weight: 500;
     display: table-cell;
     vertical-align: middle;
@@ -1128,7 +1068,7 @@
 }
 
 @media only screen and (min-height: 565px) and (max-width: 550px) {
-  .productInfoBuyNow {
+  .product-buy-now {
     grid-column: 2/6;
     grid-row: 16/18;
     height: 100%;
@@ -1137,7 +1077,7 @@
     background-color: #000000;
     color: #5abeff;
     font-size: 20px;
-    font-family: Ubuntu;
+    font-family: Ubuntu, sans-serif;
     font-weight: 500;
     display: table-cell;
     vertical-align: middle;
@@ -1145,7 +1085,7 @@
 }
 
 @media only screen and (min-height: 565px) and (min-width: 551px) {
-  .productInfoBuyNow {
+  .product-buy-now {
     grid-column: 2/6;
     grid-row: 10/12;
     height: 100%;
@@ -1154,7 +1094,7 @@
     background-color: #000000;
     color: #5abeff;
     font-size: 20px;
-    font-family: Ubuntu;
+    font-family: Ubuntu, sans-serif;
     font-weight: 500;
     display: table-cell;
     vertical-align: middle;
@@ -1162,17 +1102,9 @@
 }
 
 .play-ad-video {
-  //position: absolute;
   z-index: 99;
   height: 100vh;
   width: 100vw;
-}
-
-.iconPosition {
-  position: relative;
-  top: -38px;
-  left: 10px;
-  transform: scale(1.5, 1.5);
 }
 
 .button-quiz-grid {
@@ -1180,27 +1112,27 @@
   grid-row: 1/2;
 }
 
-.button_locate_grid {
+.button-locate-grid {
   grid-column: 40/41;
   grid-row: 1/2;
 }
 
-.button_prev_grid {
+.button-prev-grid {
   grid-column: 41/42;
   grid-row: 1/2;
 }
 
-.button_next_grid {
+.button-next-grid {
   grid-column: 43/44;
   grid-row: 1/2;
 }
 
-.button_up_grid {
+.button-up-grid {
   grid-column: 44/45;
   grid-row: 1/2;
 }
 
-.button_all_grid {
+.button-all-grid {
   grid-column: 42/43;
   grid-row: 1/2;
 }
@@ -1209,16 +1141,7 @@
   opacity: 0.3;
 }
 
-.button_share > div {
-  background: none;
-}
-
-.button_share_grid {
-  grid-column: 46/47;
-  grid-row: 1/2;
-}
-
-.button_help_grid {
+.button-help-grid {
   grid-column: 47/48;
   grid-row: 1/2;
 }
@@ -1284,35 +1207,12 @@
   height: 25px;
 }
 
-.aligncenter {
-  text-align: center;
-}
-
 .canvas {
   z-index: 101;
 }
 
 .container {
   background-color: #202020;
-}
-
-.element {
-  backdrop-filter: grayscale(0.5) opacity(0.8) /* ...and on and on... */
-;
-}
-
-// Background Blur using backdrop-filter
-.blur {
-  z-index: 102;
-  background: rgba(
-      255,
-      255,
-      255,
-      0.2
-  ); // Make sure this color has an opacity of less than 1
-  backdrop-filter: blur(8px); // This be the blur
-  height: 300px;
-  width: 300px;
 }
 
 .main-product-grid {
@@ -1331,39 +1231,15 @@
   display: none !important;
 }
 
-.productGrid {
-  grid-column: 1/13;
-  grid-row: 5/25;
-}
-
-.playicon {
-  background-color: transparent;
-  color: white;
-}
-
-.button_go_to_quiz_grid {
-  grid-column: 2/3;
-  grid-row: 1/2;
-}
-
 .button-resume-grid {
   grid-column: 2/3;
   grid-row: 1/2;
 }
 
-.button_style {
-  background-color: transparent;
-  border: none;
-}
-
-.pgProductsList_Image {
-  height: 100px;
-  width: auto;
-}
-
-.productsFlexContainer {
+.products-container {
   display: flex;
   flex-flow: row wrap;
+  row-gap: 10px;
 }
 
 .example-viewport {
@@ -1376,18 +1252,14 @@
   background-color: #cdcdcd !important;
 }
 
-.flapjack {
-  background-color: #5abeff;
-}
-
-.allPgthumbnail {
+.all-pg-thumbnail {
   position: relative;
   width: 200px;
   height: 200px;
   overflow: hidden;
 }
 
-.allPgthumbnail img {
+.all-pg-thumbnail img {
   position: absolute;
   left: 50%;
   top: 50%;
@@ -1398,7 +1270,7 @@
   transform: translate(-50%, -50%);
 }
 
-.allProductGroupTemplate {
+.all-products {
   display: grid;
   grid-template-columns: 200px;
   grid-template-rows: 50px 250px;
@@ -1407,7 +1279,7 @@
   margin-bottom: 10px;
 }
 
-.allProductGroupTitle {
+.all-pg-title {
   grid-row: 1/2;
   grid-column: 1/2;
   width: 100%;
@@ -1415,31 +1287,13 @@
   font-size: 26px;
 }
 
-.allProductGroupImage {
+.all-products-image {
   grid-row: 2/3;
   grid-column: 1/2;
   height: 200px;
 }
 
-.pgTemplate {
-  margin: 10px;
-}
-
-#main_error {
-  font-size: 30px;
-}
-
-#main_error .img-responsive {
-  max-width: 80%;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  -webkit-transform: translate(-50%, -50%);
-  -moz-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
-}
-
-#quizButton {
+#go-to-quiz {
   animation: quizScaleAnimation 5s ease-in-out infinite alternate;
   -webkit-animation: quizScaleAnimation 5s ease-in-out infinite alternate;
 }
