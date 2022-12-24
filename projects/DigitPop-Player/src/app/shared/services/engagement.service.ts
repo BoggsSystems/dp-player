@@ -1,35 +1,24 @@
-import { Inject, Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { XchaneUser } from '../models/xchane.user';
-import { environment } from 'projects/DigitPop-CMS/src/environments/environment';
-import { HTTP_XCHANE_AUTH } from 'projects/DigitPop-CMS/src/app/app.module';
+import {Injectable} from '@angular/core';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {XchaneUser} from '../models/xchane.user';
+import {environment} from 'projects/DigitPop-CMS/src/environments/environment';
 
 const httpOptions = {
-  headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+  headers: new HttpHeaders({'Content-Type': 'application/json'}),
 };
 
-@Injectable({ providedIn: 'root' })
+@Injectable({providedIn: 'root'})
 export class EngagementService {
-  constructor(private http: HttpClient) {}
-
-  createEngagement(xchaneUser: XchaneUser) {
-    var x = `${environment.apiUrl}`;
-    console.log(x);
-
-    return this.http.post<any>(
-      `${environment.apiUrl}/api/engagement/`,
-      xchaneUser,
-      httpOptions
-    );
-
-    //return this.http.post('/api/engagement/', xchaneUser, httpOptions);
+  constructor(private http: HttpClient) {
   }
 
-  verificationAnswer(answer: any, engagementId: any, campaignId: any) {
+  createEngagement(xchaneUser: XchaneUser) {
+    return this.http.post<any>(`${environment.apiUrl}/api/engagement/`, xchaneUser, httpOptions);
+  }
+
+  verificationAnswer(answer: any, engagementId: any, campaignId: any, isUser: boolean = true) {
     return this.http.post<any>(`${environment.apiUrl}/api/engagements/answer`, {
-      answer: answer,
-      engagementId: engagementId,
-      campaignId: campaignId
+      answer, engagementId, campaignId, isUser
     });
   }
 

@@ -1,41 +1,41 @@
 import {
   Component,
-  OnInit,
-  OnDestroy,
-  OnChanges,
-  SimpleChanges,
-  HostListener,
-  ViewChild,
   ElementRef,
+  HostListener,
+  OnDestroy,
+  OnInit,
+  ViewChild,
 } from '@angular/core';
-import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {
   HashLocationStrategy,
   Location,
   LocationStrategy,
 } from '@angular/common';
-import { environment } from '../../environments/environment';
-import { MatDialogConfig, MatDialog } from '@angular/material/dialog';
-import { PreviewComponent } from '../cms/preview/preview.component';
+import {environment} from '../../environments/environment';
+import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
+import {PreviewComponent} from '../cms/preview/preview.component';
 import {
-  trigger,
-  state,
-  style,
-  transition,
   animate,
   animation,
   AnimationBuilder,
   sequence,
+  state,
+  style,
+  transition,
+  trigger,
 } from '@angular/animations';
-import { FixedSizeTableVirtualScrollStrategy } from 'ng-table-virtual-scroll';
-import { Platform } from '@angular/cdk/platform';
-import { first } from 'rxjs/operators';
+import {Platform} from '@angular/cdk/platform';
 import {User} from '../shared/models/user'
-import {UserService} from '../../../../DigitPop-Player/src/app/shared/services/user.service';
-import { AuthenticationService } from '../shared/services/auth-service.service';
-import { SignupComponent } from '../signup/signup.component';
-import { MetricsService } from 'projects/DigitPop-CMS/src/app/shared/services/metrics.service';
-import { Metric } from '../shared/models/metric';
+import {
+  UserService
+} from '../../../../DigitPop-Player/src/app/shared/services/user.service';
+import {AuthenticationService} from '../shared/services/auth-service.service';
+import {SignupComponent} from '../signup/signup.component';
+import {
+  MetricsService
+} from 'projects/DigitPop-CMS/src/app/shared/services/metrics.service';
+import {Metric} from '../shared/models/metric';
 
 interface customWindow extends Window {
   billsbyData: any;
@@ -45,15 +45,14 @@ declare const window: customWindow;
 declare let Calendly: any;
 
 @Component({
-  selector: 'DigitPop-home',
+  selector: 'digit-pop-home',
   templateUrl: './home.component.html',
   providers: [
     Location,
-    { provide: LocationStrategy, useClass: HashLocationStrategy },
+    {provide: LocationStrategy, useClass: HashLocationStrategy},
   ],
   animations: [
     trigger('openClose', [
-      // ...
       state(
         'open',
         style({
@@ -84,12 +83,15 @@ declare let Calendly: any;
   ],
   styleUrls: ['./home.component.scss'],
 })
+
 export class HomeComponent implements OnInit, OnDestroy {
   location: Location;
   iFrameSrc: any;
   fadeAnimation: any;
   loading = false;
   users: User[];
+  @ViewChild('embeddedFrame') embeddedFrame: ElementRef;
+  @ViewChild('embeddedIFrame') embeddedIFrame: ElementRef;
 
   constructor(
     private router: Router,
@@ -102,31 +104,15 @@ export class HomeComponent implements OnInit, OnDestroy {
     private metricsService: MetricsService,
     private authService: AuthenticationService
   ) {
-    window['billsbyData'] = {
-      email: "fake@eamil.net",
-      customFields: [
-        {
-        customFieldId: 'password',
-        value: "[11111]"
-        }
-      ]
-    };
-
-
     this.location = location;
-
-    console.log("API URL is : " + environment.apiUrl);
     this.iFrameSrc = `${environment.playerUrl}/ad/60518dfbe73b860004205e72`;
     this.fadeAnimation = animation(
       [
-        style({ opacity: '{{ start }}' }),
-        animate('{{ time }}', style({ opacity: '{{ end }}' })),
+        style({opacity: '{{ start }}'}),
+        animate('{{ time }}', style({opacity: '{{ end }}'})),
       ],
-      { params: { time: '1000ms', start: 0, end: 1 } }
+      {params: {time: '1000ms', start: 0, end: 1}}
     );
-
-    console.log('User Agent : ' + window.navigator.userAgent);
-    console.log('iOSVersion is : ' + this.iOSVersion());
   }
 
   @HostListener('window:orientationchange', ['$event'])
@@ -224,15 +210,13 @@ export class HomeComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(PreviewComponent, dialogConfig);
   }
 
-  @ViewChild('embeddedFrame') embeddedFrame: ElementRef;
-  @ViewChild('embeddedIFrame') embeddedIFrame: ElementRef;
   ngOnInit(): void {
     Calendly.initBadgeWidget({
-        url: 'https://calendly.com/digitpop/15min',
-        text: 'Schedule a Demo',
-        color: '#ff216a',
-        textColor: '#ffffff',
-        branding: true
+      url: 'https://calendly.com/digitpop/15min',
+      text: 'Schedule a Demo',
+      color: '#ff216a',
+      textColor: '#ffffff',
+      branding: true
     });
     window.addEventListener('message', this.receiveMessage.bind(this), false);
 
@@ -259,11 +243,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   receiveMessage(event: any) {
-    console.log('In dashboard, receiveMessage, received event : ' + event);
-
     if (event.data === 'exit') {
-      console.log('Received EXIT message from player.');
-
       var isIOS =
         window.navigator.userAgent.match(/iPhone/i) ||
         window.navigator.userAgent.match(/iPad/i); // ||
@@ -283,8 +263,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 
         this.embeddedIFrame.nativeElement.style.setProperty('width', '100%');
         this.embeddedIFrame.nativeElement.style.setProperty('height', '100%');
-
-        console.log('WHY');
       } else if (window.navigator.userAgent.match(/Macintosh/i)) {
         console.log('Close action in Macintosh SMOSH');
         this.embeddedFrame.nativeElement.style.setProperty(
@@ -320,36 +298,17 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
 
     if (event.data === 'start') {
-      console.log('Received START message from player.');
-
       var isIOS =
         window.navigator.userAgent.match(/iPhone/i) ||
-        window.navigator.userAgent.match(/iPad/i); //||
-      //window.navigator.userAgent.match(/Macintosh/i);
-      console.log('Video Is iOS : ' + isIOS);
+        window.navigator.userAgent.match(/iPad/i);
 
       if (isIOS != null) {
-        console.log('IOS Animation open ');
-        console.log('iOSVersion is : ' + this.iOSVersion());
-
-        var isIOS13 = window.navigator.userAgent.match(/iPhone OS 13/i);
-        console.log('isIOS13 is : ' + isIOS);
-
         this.embeddedFrame.nativeElement.style.setProperty('position', 'fixed');
         this.embeddedFrame.nativeElement.style.setProperty('left', 0 + 'px');
         this.embeddedFrame.nativeElement.style.setProperty('top', 0 + 'px');
 
-        console.log('Setting size properties.  Width : ' + window.innerWidth);
-        console.log('Setting size properties.  Height : ' + window.innerHeight);
-
-        var version = this.iOSVersion();
-        console.log('iOSVersion IS : ' + version);
-
+        const version = this.iOSVersion();
         if (version >= 13 && version < 14) {
-          console.log(
-            'Version is greater than or equal to 13 and less than 14'
-          );
-
           this.embeddedIFrame.nativeElement.style.setProperty(
             'width',
             window.innerWidth + 'px'
@@ -370,20 +329,13 @@ export class HomeComponent implements OnInit, OnDestroy {
             window.innerHeight + 'px'
           );
         } else if (version == 14) {
-          console.log('Version is NOT less than 14');
           this.embeddedFrame.nativeElement.style.setProperty('width', '100%');
-
           this.embeddedFrame.nativeElement.style.setProperty('height', '100%');
         } else if (version < 13) {
-          console.log('ALERT User Agent : ' + window.navigator.userAgent);
-          console.log('Open in new window');
           window.open(this.iFrameSrc);
         }
       } else if (window.navigator.userAgent.match(/Macintosh/i)) {
-        console.log('Open action in Macintosh TOSH');
-
         if (window.navigator.userAgent.match(/Safari/i)) {
-          console.log('Sarari Mac Open in new window');
           //window.open(this.iFrameSrc);
         } else {
           this.embeddedFrame.nativeElement.style.setProperty(
@@ -403,7 +355,6 @@ export class HomeComponent implements OnInit, OnDestroy {
           );
         }
       } else {
-        console.log('Animation open ');
         const startAnimation = this._builder.build([
           sequence([
             animate(
@@ -426,19 +377,16 @@ export class HomeComponent implements OnInit, OnDestroy {
           ]),
         ]);
 
-        // use the returned factory object to create a player
         const player = startAnimation.create(this.embeddedFrame.nativeElement);
-
         player.play();
       }
     }
   }
 
-  clicktrial(){
-    let element: HTMLElement = document.getElementById("checkout") as HTMLElement;
+  clicktrial() {
+    const element: HTMLElement = document.getElementById('checkout') as HTMLElement;
     element.click();
-    console.log("Trial clicked");
-    return {message:'trial mode'}
+    return {message: 'trial mode'};
   }
 
   openSignup() {
@@ -480,10 +428,10 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     this.authService.createUser(user).subscribe(
       (res) => {
-        if(res){
+        if (res) {
 
           console.log("USER CREATED " + res);
-          localStorage.setItem("currentrole",'Business');
+          localStorage.setItem("currentrole", 'Business');
           //localStorage.setItem("trial",'true');
 
           // const navigationExtras: NavigationExtras = {

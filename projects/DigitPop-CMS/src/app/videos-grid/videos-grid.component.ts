@@ -1,17 +1,18 @@
 'use strict';
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
-import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
+import {
+  MatDialog, MatDialogConfig, MatDialogRef
+} from '@angular/material/dialog';
 import {VideosGridService} from '../shared/services/videos-grid.service';
 import {EngagementService} from '../shared/services/engagement.service';
 import {PreviewComponent} from '../cms/preview/preview.component';
 import {ProjectMedia} from '../shared/models/ProjectMedia';
 import {Category} from '../shared/models/category';
-import {environment} from '../../environments/environment';
-import {PlayerComponent} from '../xchane/player/player.component';
-import {OkDialogComponent} from '../cms/ok-dialog/ok-dialog.component';
 import {
-  throwError as observableThrowError
-} from 'rxjs/internal/observable/throwError';
+  AnswerDialogComponent
+} from '../xchane/answer-dialog/answer-dialog.component';
+import {PlayerComponent} from '../xchane/player/player.component';
+import {timer} from 'rxjs';
 
 @Component({
   selector: 'digit-pop-videos-grid',
@@ -21,7 +22,6 @@ import {
 })
 
 export class VideosGridComponent implements OnInit {
-
   selectedCategories: string[] = [];
   categories: string[] = [];
   activeCategories: Category[] = [];
@@ -32,15 +32,23 @@ export class VideosGridComponent implements OnInit {
   videosLimit = 10;
   videosCount: number[];
   page = 0;
+  id: string;
+  campaignId: string;
+  popupDialogRef: MatDialogRef<PlayerComponent>;
   monthNames: string[] = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  scoreBubbleIsOpen: boolean;
+  canToggle: boolean;
 
   constructor(private videosService: VideosGridService, private engagementService: EngagementService, private dialog: MatDialog) {
+    this.scoreBubbleIsOpen = false;
+    this.canToggle = false;
     this.videosCount = Array(this.videosLimit).fill(0).map((x, i) => i);
     this.categoryVideosCount = 0;
   }
 
   ngOnInit(): void {
     this.getCategories();
+    window.addEventListener('message', this.handlePostQuizMessage.bind(this), false);
   }
 
   buildGrid: () => void = async () => {
@@ -94,39 +102,18 @@ export class VideosGridComponent implements OnInit {
     video.load();
   }
 
-  openPlayer = (event: Event, id: string, campaignId: string) => {
-    // this.engagementService
-    //   .createEngagement(this.authService.currentUserValue, category)
-    //   .subscribe((data: any) => {
-    //     // REFACTOR WITH NEW PLAYER
-    //     this.iFrameSrc = `${environment.playerUrl}/ad/` + data.project + '/engagement/' + data._id + '/campaign/' + data.campaign;
-    //
-    //     // Store current campaign?  May need if there is a retry
-    //
-    //     this.popupDialogRef = this.dialog.open(PlayerComponent, {
-    //       autoFocus: true, hasBackdrop: true, closeOnNavigation: false,
-    //     });
-    //     this.popupDialogRef.componentInstance.iFrameSrc = this.iFrameSrc;
-    //
-    //     console.log('iFrameSrc :' + this.iFrameSrc);
-    //     return true;
-    //   }, (error: any) => {
-    //     const confirmDialog = this.dialog.open(OkDialogComponent, {
-    //       data: {
-    //         title: 'No ads currently available',
-    //         message: 'There are no additional ads at the moment. Try back later.',
-    //       },
-    //     });
-    //     return observableThrowError(error);
-    //   });
+  openPlayer = (id: string, campaignId: string, event: Event | null = null) => {
+    if (event) {
+      event.preventDefault();
+    }
 
-    // this.engagementService.createEngagement()
+    this.id = id;
+    this.campaignId = campaignId;
 
-    event.preventDefault();
     const dialogConfig = new MatDialogConfig();
-
     dialogConfig.data = {id, campaignId, isUser: false};
-    const dialogRef = this.dialog.open(PreviewComponent, dialogConfig);
+
+    this.popupDialogRef = this.dialog.open(PreviewComponent, dialogConfig);
   }
 
   loadMoreVideos = () => {
@@ -139,5 +126,68 @@ export class VideosGridComponent implements OnInit {
   prettyDate = (d: Date) => {
     const date = new Date(d);
     return `${this.monthNames[date.getMonth()]}, ${date.getDate()} - ${date.getFullYear()}`;
+  }
+
+  handlePostQuizMessage = (event: any) => {
+    if (event.data.action === 'postQuiz') {
+      this.popupDialogRef.close();
+
+      const isCorrect = event.data.isCorrect;
+      let confirmDialog: any;
+
+      if (!isCorrect) {
+        confirmDialog = this.dialog.open(AnswerDialogComponent, {
+          data: {
+            title: 'Incorrect Answer',
+            message: 'Incorrect Answer, would you like to try again?',
+          },
+        });
+
+        return confirmDialog.afterClosed().subscribe((result: boolean) => {
+          confirmDialog.close();
+
+          if (result === true) {
+            this.openPlayer(this.id, this.campaignId);
+          }
+        });
+      }
+
+      this.canToggle = true;
+      this.scoreBubbleToggle();
+      this.canToggle = false;
+
+      // if (event.data != null && event.data.received) {
+      //   const iframeWindow = (document.querySelector('iframe.iframe') as HTMLIFrameElement).contentWindow;
+      //   iframeWindow.postMessage({success: true, initCommunications: true}, environment.playerUrl);
+      // }
+      //
+      // if (
+      //   event.data != null &&
+      //   event.data.complete != null &&
+      //   event.data.correct != null
+      // ) {
+      //   this.popupDialogRef.close();
+      //
+      //   if (event.data.correct) {
+      //
+      //     this.refreshUser();
+      //   } else {
+      //
+      //   }
+      // }
+    }
+  }
+
+  scoreBubbleToggle = () => {
+    if (this.canToggle) {
+      this.scoreBubbleIsOpen = !this.scoreBubbleIsOpen;
+
+      if (this.scoreBubbleIsOpen) {
+        const scoreBubbleTimer = timer(2000);
+        scoreBubbleTimer.subscribe((x: any) => {
+          this.scoreBubbleIsOpen = !this.scoreBubbleIsOpen;
+        });
+      }
+    }
   }
 }

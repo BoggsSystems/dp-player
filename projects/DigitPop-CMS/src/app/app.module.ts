@@ -45,6 +45,7 @@ import { XchaneJwtInterceptor } from './xchane/services/xchane.jwt.interceptor';
 import { ImagesLazyloadModule } from './shared/lazyload-imgs/lazyload.module';
 import { SignupComponent } from './signup/signup.component';
 import { VideosGridComponent } from './videos-grid/videos-grid.component';
+import { QuizAnimationComponent } from './quiz-animation/quiz-animation.component';
 
 
 export const HTTP_CMS_AUTH = new InjectionToken('http_cms_auth');
@@ -60,7 +61,8 @@ export const HTTP_NO_INTERCEPTORS = new InjectionToken('http_no_interceptors');
     HomeComponent,
     LogoutComponent,
     SignupComponent,
-    VideosGridComponent
+    VideosGridComponent,
+    QuizAnimationComponent
   ],
   imports: [
     BrowserModule,

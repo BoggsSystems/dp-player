@@ -1,9 +1,3 @@
-.video-player-nav {
-  display: grid;
-  grid-template-columns: repeat(48, 1fr);
-  grid-template-rows: 75px;
-} // Done
-
 @mixin product-description($gridColumn: 2/6, $gridRow: 12/22, $fontSize: 14px) {
   margin-top: 10px;
   grid-column: $gridColumn;
@@ -13,12 +7,12 @@
   background-color: transparent;
   color: #fff;
   font-family: Ubuntu, sans-serif;
-} // Done
+}
 
 @mixin product-image-thumbnails($gridColumn: 9/12, $gridRow: 8/22) {
   grid-column: $gridColumn;
   grid-row: $gridRow;
-} // Done
+}
 
 @mixin product-buy-now($gridColumn: 2/6, $gridRow: 10/12, $fontSize: 16px) {
   grid-column: $gridColumn;
@@ -33,15 +27,15 @@
   font-weight: 500;
   display: table-cell;
   vertical-align: middle;
-} // Done
+}
 
 @mixin product-price($gridColumn: 5/6, $gridRow: 8/10, $fontSize: 25px) {
   grid-column: $gridColumn;
   grid-row: $gridRow;
   font-size: $fontSize;
-} // Done
+}
 
-@mixin product-subtitle ($gridColumn: 2/5, $gridRow: 8/10, $fontSize: 16px) {
+@mixin product-subtitle($gridColumn: 2/5, $gridRow: 8/10, $fontSize: 16px) {
   grid-column: $gridColumn;
   grid-row: $gridRow;
   font-size: $fontSize;
@@ -51,37 +45,84 @@
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
-} // Done
+}
 
-@mixin product-main-image ($gridColumn, $gridRow) {
+@mixin product-main-image($gridColumn, $gridRow) {
   grid-column: $gridColumn;
   grid-row: $gridRow;
-} //Done
+}
 
-@mixin pg-products-list ($gridColumn: 2/12, $gridRow) {
+@mixin pg-products-list($gridColumn: 2/12, $gridRow) {
+  grid-column: $gridColumn;
+  grid-row: $gridRow;
   width: 100%;
   height: 100%;
-  grid-column: $gridColumn;
-  grid-row: $gridRow;
-} //Done
+}
 
 @mixin button-start-grid($gridColumn, $gridRow) {
   color: #fff;
   grid-column: $gridColumn;
   grid-row: $gridRow;
-} //Done
+}
 
 @mixin title($gridColumn: 4/36, $gridRow: 1/2, $fontSize: 20px) {
   grid-column: $gridColumn;
   grid-row: $gridRow;
   font-size: $fontSize;
   color: #fff;
-} //Done
+}
+
+@mixin product-template($gridTemplateColumns: 120px 200px, $gridTemplateRows: 20px 100px) {
+  display: grid;
+  grid-template-columns: $gridTemplateColumns;
+  grid-template-rows: $gridTemplateRows;
+  margin-bottom: 10px;
+}
+
+@mixin product-template-image($width: 100px) {
+  grid-column: 1/2;
+  grid-row: 1/3;
+  width: $width;
+  height: auto;
+}
+
+@mixin product-template-name($marginLeft: 10px, $height: 20px, $fontSize: 12px) {
+  margin-left: $marginLeft;
+  grid-column: 2/3;
+  grid-row: 1/2;
+  height: $height;
+  font-size: $fontSize;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+}
+
+@mixin product-template-description-container($marginLeft: 10px, $height: 100px) {
+  margin-left: $marginLeft;
+  grid-column: 2/3;
+  grid-row: 2/3;
+  height: $height;
+}
+
+@mixin product-template-description($width: 175px, $webkitLineClamp: 5) {
+  $width: $width;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: $webkitLineClamp;
+  overflow: hidden;
+}
+
+.video-player-nav {
+  display: grid;
+  grid-template-columns: repeat(48, 1fr);
+  grid-template-rows: 75px;
+}
 
 .nav {
   grid-column: 1/13;
   grid-row: 3/5;
-} // Done
+}
 
 .button-base {
   width: 68px;
@@ -91,220 +132,199 @@
   background: url("../../assets/images/button_base.png") center top no-repeat;
   font-size: 10px;
   text-align: center;
-} // Done
+}
 
 .button-base > div {
   width: 48px;
   height: 48px;
   margin: 0 10px;
   background: url("../../assets/images/button_icons.png");
-} // Done
+}
 
 .button-resume > div {
   background-position: -144px top;
-} // Done
+}
 
 .button-resume:not(.disabled):active > div {
   background-position: -144px bottom;
-} // Done
+}
 
 .button-locate:not(.disabled):active > div {
   background-position: -192px bottom;
-} // Done
+}
 
 .button-prev > div {
   background-position: -288px top;
-} // Done
+}
+
+.button-prev:not(.disabled):active > div {
+  background-position: -288px bottom;
+}
+
+.button-next > div {
+  background-position: -240px top;
+}
+
+.button-next:not(.disabled):active > div {
+  background-position: -240px bottom;
+}
+
+.button-up > div {
+  background-position: -336px top;
+}
+
+.button-up:not(.disabled):active > div {
+  background-position: -336px bottom;
+}
+
+.button-start > div {
+  background-position: -480px top;
+}
+
+.button-start:not(.disabled):active > div {
+  background-position: -240px bottom;
+}
+
+.button-all > div {
+  background-position: -48px top;
+}
+
+.button-all:not(.disabled):active > div {
+  background-position: -48px bottom;
+}
 
 @media only screen and (max-width: 550px) {
 
   .video-player-nav {
     grid-template-rows: 75px 75px;
-  } // Done
+  }
 
   .product-description {
     @include product-description($gridColumn: 2/12, $gridRow: 18/24);
-  } // Done
+  }
 
   .product-thumbnail {
     width: 30px;
     height: 30px;
-  } // Done
+  }
 
   .product-image-thumbnails {
-    @include product-image-thumbnails($gridRow: 9/16); //Done
+    @include product-image-thumbnails($gridRow: 9/16);
   }
 
   .product-buy-now {
     @include product-buy-now($fontSize: 20px);
-  } // Done
+  }
 
   .product-price {
     @include product-price($gridColumn: 8/12, $gridRow: 8/8, $fontSize: 18px);
-  } //Done
+  }
 
   .product-subtitle {
     @include product-subtitle($gridColumn: 2/7, $gridRow: 8/8, $fontSize: 12px);
     word-wrap: break-word;
-  } // Done
+  }
 
   .product-main-image {
     @include product-main-image($gridColumn: 2/10, $gridRow: 9/16);
     max-width: 100%;
     max-height: 100%;
-  } // Done
+  }
 
   .pg-products-list {
     @include pg-products-list($gridRow: 10/26);
-  } // Done
+  }
 
   .button-start-grid {
     @include button-start-grid($gridColumn: 2/3, $gridRow: 2/3);
-  } // Done
+  }
 
   .title {
-    @include title($gridColumn: 12/46, $gridRow: 2/3);
     margin-left: 20px;
-  } // Done
+    @include title($gridColumn: 12/46, $gridRow: 2/3);
+  }
 }
 
 @media only screen and (min-width: 551px) {
 
   .product-buy-now {
     @include product-buy-now();
-  } // Done
+  }
 
   .product-thumbnail {
     width: 25%;
     height: auto;
-  } // Done
+  }
 
   .product-main-image {
     @include product-main-image($gridColumn: 6/9, $gridRow: 8/16);
     width: 100%;
     height: auto;
-  } // Done
+  }
 
   .pg-products-list {
-    @include pg-products-list($gridRow: "10/26");
-  } // Done
+    @include pg-products-list($gridRow: 8/24);
+  }
 
   .button-start-grid {
     @include button-start-grid($gridColumn: 45/46, $gridRow: 1/2);
-  } // Done
+  }
 
   .title {
     @include title();
-  } // Done
+  }
 }
 
 @media only screen and (min-width: 551px) and (max-width: 768px) {
   .product-image-thumbnails {
     @include product-image-thumbnails();
-  } // Done
+  }
 
   .product-description {
     @include product-description();
-  } // Done
+  }
 
   .product-price {
     @include product-price($fontSize: 18px);
-  } //Done
+  }
 
   .product-subtitle {
     @include product-subtitle($fontSize: 12px);
-  } // Done
+  }
 
   .product-buy-now {
     @include product-buy-now();
-  } // Done
+  }
 
   .button-locate > div {
     background-position: -192px top;
-  } // Done
+  }
 }
 
 @media only screen and (max-width: 768px) {
-  .button-prev:not(.disabled):active > div {
-    background-position: -288px bottom;
-  }
-
-  .button-next > div {
-    background-position: -240px top;
-  }
-
-  .button-next:not(.disabled):active > div {
-    background-position: -240px bottom;
-  }
-
-  .button-up > div {
-    background-position: -336px top;
-  }
-
-  .button-up:not(.disabled):active > div {
-    background-position: -336px bottom;
-  }
-
-  .button-start > div {
-    background-position: -480px top;
-  }
-
-  .button-start:not(.disabled):active > div {
-    background-position: -240px bottom;
-  }
-
-  .button-all > div {
-    background-position: -48px top;
-  }
-
-  .button-all:not(.disabled):active > div {
-    background-position: -48px bottom;
-  }
-
   .social-share-button {
     font-size: 14px;
   }
 
   .product-template {
-    display: grid;
-    grid-template-columns: 75px 175px;
-    grid-template-rows: 16px 75px;
-    margin-bottom: 10px;
+    @include product-template($gridTemplateColumns: 75px 175px, $gridTemplateRows: 16px 75px);
     overflow: hidden;
   }
 
   .product-template-image {
-    grid-column: 1/2;
-    grid-row: 1/3;
-    width: 75px;
-    height: auto;
+    @include product-template-image($width: 75px);
   }
 
   .product-template-name {
-    margin-left: 5px;
-    grid-column: 2/3;
-    grid-row: 1/2;
-    height: 14px;
-    font-size: 12px;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 1;
-    overflow: hidden;
+    @include product-template-name($marginLeft: 5px, $height: 14px, $fontSize: 12px);
   }
 
   .product-template-description-container {
-    margin-left: 5px;
-    grid-column: 2/3;
-    grid-row: 2/3;
-    height: 75px;
+    @include product-template-description-container($marginLeft: 5px, $height: 75px);
   }
 
   .product-template-description {
-    width: 150px;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 3;
-    overflow: hidden;
+    @include product-template-description($width: 150px, $webkitLineClamp: 3);
     font-size: 10px;
   }
 }
@@ -312,103 +332,46 @@
 @media only screen and (min-width: 769px) and (max-width: 897px) {
   .title {
     @include title($fontSize: 25px);
-  } // Done
+  }
 
   .product-description {
     @include product-description();
-  } // Done
+  }
 
   .product-price {
     @include product-price($fontSize: 22px);
-  } //Done
+  }
 
   .product-subtitle {
     @include product-subtitle();
-  } // Done
+  }
 
   .product-image-thumbnails {
     @include product-image-thumbnails();
-  } // Done
+  }
 
   .product-buy-now {
     @include product-buy-now();
-  } // Done
-
-  .button-prev:not(.disabled):active > div {
-    background-position: -288px bottom;
-  }
-
-  .button-next > div {
-    background-position: -240px top;
-  }
-
-  .button-next:not(.disabled):active > div {
-    background-position: -240px bottom;
-  }
-
-  .button-up > div {
-    background-position: -336px top;
-  }
-
-  .button-up:not(.disabled):active > div {
-    background-position: -336px bottom;
-  }
-
-  .button-start > div {
-    background-position: -480px top;
-  }
-
-  .button-start:not(.disabled):active > div {
-    background-position: -240px bottom;
-  }
-
-  .button-all > div {
-    background-position: -48px top;
-  }
-
-  .button-all:not(.disabled):active > div {
-    background-position: -48px bottom;
   }
 
   .product-template {
-    display: grid;
-    grid-template-columns: 80px 160px;
-    grid-template-rows: 20px 80px;
-    margin-bottom: 10px;
+    @include product-template($gridTemplateColumns: 80px 160px, $gridTemplateRows: 20px 80px);
   }
 
   .product-template-image {
-    grid-column: 1/2;
-    grid-row: 1/3;
-    width: 80px;
-    height: auto;
+    @include product-template-image($width: 80px);
   }
 
   .product-template-name {
-    margin-left: 10px;
-    grid-column: 2/3;
-    grid-row: 1/2;
-    height: 16px;
-    font-size: 12px;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 1;
-    overflow: hidden;
+    @include product-template-name($height: 16px);
   }
 
   .product-template-description-container {
-    margin-left: 10px;
-    grid-column: 2/3;
-    grid-row: 2/3;
-    height: 80px;
+    @include product-template-description-container($height: 80px);
   }
 
   .product-template-description {
-    width: 160px;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 4;
-    overflow: hidden;
+    @include product-template-description($width: 160px, $webkitLineClamp: 4);
     font-size: 10px;
     vertical-align: top;
   }
@@ -417,340 +380,169 @@
 @media only screen and (min-width: 897px) and (max-width: 1059px) {
   .title {
     @include title($gridColumn: 4/30, $fontSize: 32px);
-  } // Done
+  }
 
   .product-description {
     @include product-description();
-  } // Done
+  }
 
   .product-price {
     @include product-price($fontSize: 22px);
-  } //Done
+  }
 
   .product-subtitle {
     @include product-subtitle();
-  } // Done
+  }
 
   .product-image-thumbnails {
     @include product-image-thumbnails();
-  } // Done
+  }
 
   .product-buy-now {
     @include product-buy-now();
-  } // Done
-
-  .button-prev:not(.disabled):active > div {
-    background-position: -288px bottom;
-  }
-
-  .button-next > div {
-    background-position: -240px top;
-  }
-
-  .button-next:not(.disabled):active > div {
-    background-position: -240px bottom;
-  }
-
-  .button-up > div {
-    background-position: -336px top;
-  }
-
-  .button-up:not(.disabled):active > div {
-    background-position: -336px bottom;
-  }
-
-  .button-start > div {
-    background-position: -480px top;
-  }
-
-  .button-start:not(.disabled):active > div {
-    background-position: -240px bottom;
-  }
-
-  .button-all > div {
-    background-position: -48px top;
-  }
-
-  .button-all:not(.disabled):active > div {
-    background-position: -48px bottom;
   }
 
   .product-template {
-    display: grid;
-    grid-template-columns: 120px 200px;
-    grid-template-rows: 20px 100px;
-    margin-bottom: 10px;
+    @include product-subtitle();
   }
 
   .product-template-image {
-    grid-column: 1/2;
-    grid-row: 1/3;
-    width: 100px;
-    height: auto;
+    @include product-template-image();
   }
 
   .product-template-name {
-    margin-left: 10px;
-    grid-column: 2/3;
-    grid-row: 1/2;
-    height: 20px;
-    font-size: 16px;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 1;
-    overflow: hidden;
+    @include product-template-name($fontSize: 16px);
   }
 
   .product-template-description-container {
-    margin-left: 10px;
-    grid-column: 2/3;
-    grid-row: 2/3;
-    height: 100px;
+    @include product-template-description-container();
   }
 
   .product-template-description {
-    width: 175px;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 5;
-    overflow: hidden;
+    @include product-template-description($width: 175px);
   }
 }
 
 @media only screen and (min-width: 1060px) and (max-width: 1366px) {
   .title {
-    @include title($gridColumn: 4/30,$fontSize: 40px);
-  } // Done
+    @include title($gridColumn: 4/30, $fontSize: 40px);
+  }
 
   .product-image-thumbnails {
     @include product-image-thumbnails($gridColumn: 9/11);
-  } // Done
-
-  .button-prev:not(.disabled):active > div {
-    background-position: -288px bottom;
-  }
-
-  .button-next > div {
-    background-position: -240px top;
-  }
-
-  .button-next:not(.disabled):active > div {
-    background-position: -240px bottom;
-  }
-
-  .button-up > div {
-    background-position: -336px top;
-  }
-
-  .button-up:not(.disabled):active > div {
-    background-position: -336px bottom;
-  }
-
-  .button-start > div {
-    background-position: -480px top;
-  }
-
-  .button-start:not(.disabled):active > div {
-    background-position: -240px bottom;
-  }
-
-  .button-all > div {
-    background-position: -48px top;
-  }
-
-  .button-all:not(.disabled):active > div {
-    background-position: -48px bottom;
   }
 
   .product-template {
-    display: grid;
-    grid-template-columns: 120px 200px;
-    grid-template-rows: 20px 100px;
-    margin-bottom: 10px;
+    @include product-subtitle();
   }
 
   .product-template-image {
-    grid-column: 1/2;
-    grid-row: 1/3;
-    width: 100px;
-    height: auto;
+    @include product-template-image();
   }
 
   .product-template-name {
-    margin-left: 10px;
-    grid-column: 2/3;
-    grid-row: 1/2;
-    height: 20px;
-    font-size: 16px;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 1;
-    overflow: hidden;
+    @include product-template-name($fontSize: 16px);
   }
 
   .product-template-description-container {
-    margin-left: 10px;
-    grid-column: 2/3;
-    grid-row: 2/3;
-    height: 100px;
+    @include product-template-description-container();
   }
 
   .product-template-description {
-    width: 175px;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 5;
-    overflow: hidden;
+    @include product-template-description();
   }
 
   .product-subtitle {
     @include product-subtitle($fontSize: 25px);
-  } //Done
+  }
 
   .product-price {
     @include product-price();
-  } //Done
+  }
 
   .product-description {
     @include product-description($fontSize: 18px);
-  } // Done
+  }
 
   .product-buy-now {
     @include product-buy-now();
-  } // Done
+  }
 }
 
 @media only screen and (min-width: 1367px) {
   .title {
-    @include title($gridColumn: 4/30,$fontSize: 40px);
-  } // Done
+    @include title($gridColumn: 4/30, $fontSize: 40px);
+  }
 
   .product-image-thumbnails {
     @include product-image-thumbnails($gridColumn: 9/11);
-  } // Done
-
-  .button-prev:not(.disabled):active > div {
-    background-position: -288px bottom;
-  }
-
-  .button-next > div {
-    background-position: -240px top;
-  }
-
-  .button-next:not(.disabled):active > div {
-    background-position: -240px bottom;
-  }
-
-  .button-up > div {
-    background-position: -336px top;
-  }
-
-  .button-up:not(.disabled):active > div {
-    background-position: -336px bottom;
-  }
-
-  .button-start > div {
-    background-position: -480px top;
-  }
-
-  .button-start:not(.disabled):active > div {
-    background-position: -240px bottom;
-  }
-
-  .button-all > div {
-    background-position: -48px top;
-  }
-
-  .button-all:not(.disabled):active > div {
-    background-position: -48px bottom;
   }
 
   .product-template {
-    display: grid;
-    grid-template-columns: 160px 300px;
-    grid-template-rows: 30px 150px;
-    margin-bottom: 10px;
+    @include product-template($gridTemplateColumns: 160px 300px, $gridTemplateRows: 30px 150px);
   }
 
   .product-template-image {
-    grid-column: 1/2;
-    grid-row: 1/3;
-    width: 150px;
-    height: auto;
+    @include product-template-image($width: 150px);
   }
 
   .product-template-name {
-    margin-left: 10px;
-    grid-column: 2/3;
-    grid-row: 1/2;
-    height: 30px;
-    font-size: 24px;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 1;
-    overflow: hidden;
+    @include product-template-name($height: 30px, $fontSize: 24px);
   }
 
   .product-template-description-container {
-    margin-left: 10px;
-    grid-column: 2/3;
-    grid-row: 2/3;
-    height: 150px;
+    @include product-template-description-container($height: 150px);
   }
 
   .product-template-description {
-    width: 275px;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 5;
-    overflow: hidden;
+    @include product-template-description($width: 275px);
   }
 
   .product-subtitle {
     @include product-subtitle($fontSize: 25px);
-  } // Done
+  }
 
   .product-price {
     @include product-price();
-  } //Done
+  }
 
   .product-description {
     @include product-description($fontSize: 18px);
-  } // Done
+  }
 
   .product-buy-now {
     @include product-buy-now($fontSize: 20px);
-  } // Done
+  }
 }
 
 @media only screen and (max-height: 412px) and (max-width: 550px) {
   .product-buy-now {
     @include product-buy-now($gridRow: 28/30, $fontSize: 14px);
-  } // Done
+  }
 }
 
 @media only screen and (max-height: 412px) and (min-width: 550px) {
   .product-buy-now {
     @include product-buy-now($fontSize: 14px);
-  } // Done
+  }
 }
 
 @media only screen and (min-height: 413px) and (max-height: 565px) and (max-width: 550px) {
   .product-buy-now {
     @include product-buy-now($fontSize: 20px);
-  } // Done
+  }
 }
 
 @media only screen and (min-height: 565px) and (max-width: 550px) {
   .product-buy-now {
     @include product-buy-now($gridRow: 16/18, $fontSize: 20px);
-  } // Done
+  }
 }
 
 @media only screen and (min-height: 565px) and (min-width: 551px) {
   .product-buy-now {
     @include product-buy-now($fontSize: 20px);
-  } // Done
+  }
 }
 
 .play-ad-video {
@@ -832,6 +624,7 @@
 .container {
   width: 100vw;
   height: 100vh;
+  background-color: #202020;
 }
 
 .video-thumbnail {
@@ -847,7 +640,6 @@
   max-height: 100%;
 }
 
-
 .sound-status {
   opacity: 0.65;
   cursor: pointer;
@@ -861,10 +653,6 @@
 
 .canvas {
   z-index: 101;
-}
-
-.container {
-  background-color: #202020;
 }
 
 .main-product-grid {

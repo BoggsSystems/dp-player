@@ -1,8 +1,6 @@
 import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Campaign} from '../models/campaign';
-import {MatGridListModule} from '@angular/material/grid-list';
-import {AnswerDialogComponent} from '../answer-dialog/answer-dialog.component';
 import {MatDialog} from '@angular/material/dialog';
 import {EngagementService} from '../shared/services/engagement.service';
 import {CampaignService} from '../shared/services/campaign.service';
@@ -26,9 +24,9 @@ export class QuizComponent implements OnInit, AfterViewInit {
   isSafari = false;
   iOSVersion = 0;
   detectIos = true;
+  isUser: boolean;
 
   constructor(private route: ActivatedRoute, private campaignService: CampaignService, public dialog: MatDialog, private engagementService: EngagementService, private router: Router) {
-    // Logic to determine if we're editing an existing project or creating a new one
     const nav = this.router.getCurrentNavigation();
     const checkNav = nav != null && nav.extras != null && nav.extras.state != null;
 
@@ -47,6 +45,8 @@ export class QuizComponent implements OnInit, AfterViewInit {
       this.engagementId = nav.extras.state.engagementId;
       this.getCampaign(this.campaignId);
     }
+
+    this.isUser = navState.isUser;
 
     if (navState.messagingOrigin != null) {
       this.messagingOrigin = nav.extras.state.messagingOrigin;
@@ -117,17 +117,22 @@ export class QuizComponent implements OnInit, AfterViewInit {
   }
 
   onAnswer(answer: any) {
-    this.engagementService
-      .verificationAnswer(answer, this.engagementId, this.campaignId)
+    return this.engagementService
+      .verificationAnswer(answer, this.engagementId, this.campaignId, this.isUser)
       .subscribe((res: any) => {
+        res = {action: 'postQuiz', isUser: this.isUser, isCorrect: res};
+
         const targetWindow = window.parent;
         if (!this.detectIos) {
-          return targetWindow.postMessage(res, this.messagingOrigin);
+          // return targetWindow.postMessage(res, this.messagingOrigin);
+          return targetWindow.postMessage(res, 'http://localhost:4200');
         }
         if (this.isIOS && this.iOSVersion <= 14) {
-          return targetWindow.postMessage(res, environment.iOSFallbackUrl);
+          // return targetWindow.postMessage(res, environment.iOSFallbackUrl);
+          return targetWindow.postMessage(res, 'http://localhost:4200');
         }
-        return targetWindow.postMessage(res, environment.homeUrl);
+        // return targetWindow.postMessage(res, environment.homeUrl);
+        return targetWindow.postMessage(res, 'http://localhost:4200');
       }, (err: any) => {
         console.error(err);
       });

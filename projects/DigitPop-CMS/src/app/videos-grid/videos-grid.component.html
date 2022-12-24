@@ -15,7 +15,7 @@
   <div *ngFor="let video of videos" class="video-element" fxFlex="100%"
        fxLayout="column"
        fxLayoutGap="10px">
-    <a (click)="openPlayer($event, video._id, video.campaignId)"
+    <a (click)="openPlayer(video._id, video.campaignId, $event)"
        (mouseenter)="previewVideo($event)" class="thumbnail"
        href="">
       <div class="preview-backdrop"></div>
@@ -86,3 +86,7 @@
     </button>
   </div>
 </div>
+<digit-pop-quiz-animation
+  [scoreBubbleIsOpen]="scoreBubbleIsOpen"
+>
+</digit-pop-quiz-animation>
