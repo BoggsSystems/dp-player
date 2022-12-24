@@ -1,6 +1,7 @@
 <mat-dialog-content class="container">
   <iframe
     [src]="iFrameSrc | safe"
+    [attr.data-campaignId] = "campaignId"
     allow="autoplay"
     class="iframe"
     style="
@@ -19,5 +20,6 @@
       border-radius: 20px
     "
   >
+<!--    <input [hidden]="campaignId" type="hidden" name="campaignId" [id]="campaignId">-->
   </iframe>
 </mat-dialog-content>

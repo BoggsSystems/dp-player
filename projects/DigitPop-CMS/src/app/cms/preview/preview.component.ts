@@ -9,17 +9,21 @@ import {environment} from 'projects/DigitPop-CMS/src/environments/environment';
 })
 export class PreviewComponent implements OnInit {
   iFrameSrc: any;
+  campaignId: string | boolean;
 
   constructor(public dialogRef: MatDialogRef<PreviewComponent>, @Inject(MAT_DIALOG_DATA) data: any) {
-    const source = `${environment.playerUrl}/ad/` + data.id + '/preview/true';
-    this.iFrameSrc = source;
+    this.iFrameSrc = `${environment.playerUrl}/ad/` + data.id + '/preview/true';
+    this.campaignId = data.campaignId ? data.campaignId : false;
+    addEventListener('message', (event) => {
+      this.respondToMessage(event.origin);
+    });
   }
 
   ngOnInit(): void {
-    // this.autoPlay();
   }
 
-  autoPlay(): void {
-    console.log(this.iFrameSrc);
+  respondToMessage(targetOrigin = '*') {
+    const iframe = document.querySelector('iframe.iframe') as HTMLIFrameElement;
+    iframe.contentWindow.postMessage({campaignId: this.campaignId}, targetOrigin);
   }
 }

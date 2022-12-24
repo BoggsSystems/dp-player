@@ -17,6 +17,7 @@ import {UserService} from '../shared/services/user.service';
 import {BillsbyService} from '../shared/services/billsby.service';
 import {ProductGroup} from '../models/productGroup';
 import {Product} from '../models/product';
+import {add} from 'lodash';
 
 enum VideoType {
   Regular = 1, Cpcc,
@@ -28,6 +29,7 @@ enum VideoType {
   styleUrls: ['./video.component.scss'],
 })
 export class VideoComponent implements OnInit, AfterViewInit {
+  isUser: boolean;
   adId: any;
   engagementId: any;
   campaignId: any;
@@ -56,6 +58,7 @@ export class VideoComponent implements OnInit, AfterViewInit {
   @ViewChild('canvas') canvas: ElementRef;
 
   constructor(private router: Router, public dialog: MatDialog, private route: ActivatedRoute, private adService: AdService, private userService: UserService, private billsByService: BillsbyService) {
+    this.isUser = false;
   }
 
   ngOnInit(): void {
@@ -72,6 +75,7 @@ export class VideoComponent implements OnInit, AfterViewInit {
         this.engagementId = params.engagementId;
         this.campaignId = params.campaignId;
         this.videoType = VideoType.Cpcc;
+        this.isUser = !!(this.campaignId && this.engagementId);
       }
       if (params.preview != null) {
         this.preview = params.preview;
@@ -111,6 +115,19 @@ export class VideoComponent implements OnInit, AfterViewInit {
         console.error(`Error retrieving ad: ${err.toString()}`);
       });
     }
+
+    if (!this.isUser) {
+      // TODO: change targetOrigin url for staging/live deployment
+      window.parent.postMessage({
+        init: true, action: 'getCampaignId'
+      }, 'http://localhost:4200');
+
+      addEventListener('message', (event) => {
+        if (event.data.campaignId) {
+          this.campaignId = event.data.campaignId;
+        }
+      });
+    }
   }
 
   help() {
@@ -130,14 +147,13 @@ export class VideoComponent implements OnInit, AfterViewInit {
 
   onStartVideo() {
     const targetWindow = window.parent;
-    targetWindow.postMessage('start', `${environment.homeUrl}`);
+    targetWindow.postMessage('start', `http://localhost:4200`);
     if (!this.preview && this.subscription != null) {
       this.adService.createView(this.adId, this.subscription.cycleId).subscribe((res) => {
         console.log(res);
       }, (err) => {
         console.error(err);
       });
-
     }
 
     this.showThumbnail = false;
@@ -250,6 +266,7 @@ export class VideoComponent implements OnInit, AfterViewInit {
   }
 
   onEnded() {
+    this.startQuiz();
     if (this.params.engagementId != null && this.params.campaignId) {
       this.showQuizButton = true;
       this.onShowProduct();
@@ -258,14 +275,19 @@ export class VideoComponent implements OnInit, AfterViewInit {
     }
   }
 
-  onQuizButtonPressed() {
-
+  startQuiz() {
     this.showQuizButton = false;
-    const navigationExtras: NavigationExtras = {
-      state: {campaignId: this.campaignId, engagementId: this.engagementId},
+    const navigationExtras: NavigationExtras = this.isUser ? {
+      state: {
+        isUser: true,
+        campaignId: this.campaignId,
+        engagementId: this.engagementId
+      },
+    } : {
+      state: {isUser: false, campaignId: this.campaignId},
     };
 
-    this.router.navigate(['/quiz'], navigationExtras);
+    return this.router.navigate(['/quiz'], navigationExtras);
 
   }
 

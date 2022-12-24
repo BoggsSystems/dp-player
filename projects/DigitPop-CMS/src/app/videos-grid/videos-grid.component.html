@@ -15,7 +15,7 @@
   <div *ngFor="let video of videos" class="video-element" fxFlex="100%"
        fxLayout="column"
        fxLayoutGap="10px">
-    <a (click)="openPlayer($event, video._id)"
+    <a (click)="openPlayer($event, video._id, video.campaignId)"
        (mouseenter)="previewVideo($event)" class="thumbnail"
        href="">
       <div class="preview-backdrop"></div>
@@ -39,7 +39,7 @@
         <time>{{prettyDate(video.createdAt)}}</time>
       </div>
       <a
-        (click)="openPlayer($event, video._id)"
+        (click)="openPlayer($event, video._id, video.campaignId)"
         attr.aria-labelledby="{{video.name}}"
         class="title"
         href="">

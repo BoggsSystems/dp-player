@@ -1,12 +1,12 @@
 import {AfterViewInit, Component, OnInit} from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Campaign } from '../models/campaign';
-import { MatGridListModule } from '@angular/material/grid-list';
-import { AnswerDialogComponent } from '../answer-dialog/answer-dialog.component';
-import { MatDialog } from '@angular/material/dialog';
-import { EngagementService } from '../shared/services/engagement.service';
-import { CampaignService } from '../shared/services/campaign.service';
-import { environment } from '../../environments/environment.staging';
+import {ActivatedRoute, Router} from '@angular/router';
+import {Campaign} from '../models/campaign';
+import {MatGridListModule} from '@angular/material/grid-list';
+import {AnswerDialogComponent} from '../answer-dialog/answer-dialog.component';
+import {MatDialog} from '@angular/material/dialog';
+import {EngagementService} from '../shared/services/engagement.service';
+import {CampaignService} from '../shared/services/campaign.service';
+import {environment} from '../../environments/environment.staging';
 import {CrossDomainMessaging} from '../shared/helpers/cd-messaging';
 
 @Component({
@@ -27,29 +27,28 @@ export class QuizComponent implements OnInit, AfterViewInit {
   iOSVersion = 0;
   detectIos = true;
 
-  constructor(
-    private route: ActivatedRoute,
-    private campaignService: CampaignService,
-    public dialog: MatDialog,
-    private engagementService: EngagementService,
-    private router: Router
-  ) {
+  constructor(private route: ActivatedRoute, private campaignService: CampaignService, public dialog: MatDialog, private engagementService: EngagementService, private router: Router) {
     // Logic to determine if we're editing an existing project or creating a new one
     const nav = this.router.getCurrentNavigation();
+    const checkNav = nav != null && nav.extras != null && nav.extras.state != null;
 
-    if (
-      nav != null &&
-      nav.extras != null &&
-      nav.extras.state != null &&
-      nav.extras.state.campaignId != null &&
-      nav.extras.state.engagementId != null
-    ) {
+    if (!checkNav) {
+      return;
+    }
+
+    const navState = nav.extras.state;
+    if (!navState.isUser && navState.campaignId) {
+      this.campaignId = navState.campaignId;
+      this.getCampaign(this.campaignId);
+    }
+
+    if (navState.isUser && navState.campaignId != null && navState.engagementId != null) {
       this.campaignId = nav.extras.state.campaignId;
       this.engagementId = nav.extras.state.engagementId;
       this.getCampaign(this.campaignId);
     }
 
-    if (nav != null && nav.extras != null && nav.extras.state.messagingOrigin != null) {
+    if (navState.messagingOrigin != null) {
       this.messagingOrigin = nav.extras.state.messagingOrigin;
     }
   }
@@ -57,7 +56,7 @@ export class QuizComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     const targetWindow = window.parent;
     addEventListener('message', this.initCommunications.bind(this), false);
-    return targetWindow.postMessage({received: true}, this.messagingOrigin);
+    return targetWindow.postMessage({received: true}, `http://localhost:4200`);
   }
 
   initCommunications(event: any) {
@@ -78,15 +77,12 @@ export class QuizComponent implements OnInit, AfterViewInit {
 
   getCampaign(campaignId: string) {
     if (campaignId != null) {
-      this.campaignService.getCampaign(campaignId).subscribe(
-        (res) => {
-          this.campaign = res as Campaign;
-          this.buildAnswerArray();
-        },
-        (err) => {
-          console.error('Error retrieving ad');
-        }
-      );
+      this.campaignService.getCampaign(campaignId).subscribe((res) => {
+        this.campaign = res as Campaign;
+        this.buildAnswerArray();
+      }, (err) => {
+        console.error('Error retrieving ad');
+      });
     }
   }
 

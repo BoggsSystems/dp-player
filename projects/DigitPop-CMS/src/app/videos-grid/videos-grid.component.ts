@@ -2,9 +2,16 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {VideosGridService} from '../shared/services/videos-grid.service';
+import {EngagementService} from '../shared/services/engagement.service';
 import {PreviewComponent} from '../cms/preview/preview.component';
 import {ProjectMedia} from '../shared/models/ProjectMedia';
 import {Category} from '../shared/models/category';
+import {environment} from '../../environments/environment';
+import {PlayerComponent} from '../xchane/player/player.component';
+import {OkDialogComponent} from '../cms/ok-dialog/ok-dialog.component';
+import {
+  throwError as observableThrowError
+} from 'rxjs/internal/observable/throwError';
 
 @Component({
   selector: 'digit-pop-videos-grid',
@@ -27,7 +34,7 @@ export class VideosGridComponent implements OnInit {
   page = 0;
   monthNames: string[] = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-  constructor(private videosService: VideosGridService, private dialog: MatDialog) {
+  constructor(private videosService: VideosGridService, private engagementService: EngagementService, private dialog: MatDialog) {
     this.videosCount = Array(this.videosLimit).fill(0).map((x, i) => i);
     this.categoryVideosCount = 0;
   }
@@ -87,11 +94,38 @@ export class VideosGridComponent implements OnInit {
     video.load();
   }
 
-  openPlayer = (event: Event, id: string) => {
+  openPlayer = (event: Event, id: string, campaignId: string) => {
+    // this.engagementService
+    //   .createEngagement(this.authService.currentUserValue, category)
+    //   .subscribe((data: any) => {
+    //     // REFACTOR WITH NEW PLAYER
+    //     this.iFrameSrc = `${environment.playerUrl}/ad/` + data.project + '/engagement/' + data._id + '/campaign/' + data.campaign;
+    //
+    //     // Store current campaign?  May need if there is a retry
+    //
+    //     this.popupDialogRef = this.dialog.open(PlayerComponent, {
+    //       autoFocus: true, hasBackdrop: true, closeOnNavigation: false,
+    //     });
+    //     this.popupDialogRef.componentInstance.iFrameSrc = this.iFrameSrc;
+    //
+    //     console.log('iFrameSrc :' + this.iFrameSrc);
+    //     return true;
+    //   }, (error: any) => {
+    //     const confirmDialog = this.dialog.open(OkDialogComponent, {
+    //       data: {
+    //         title: 'No ads currently available',
+    //         message: 'There are no additional ads at the moment. Try back later.',
+    //       },
+    //     });
+    //     return observableThrowError(error);
+    //   });
+
+    // this.engagementService.createEngagement()
+
     event.preventDefault();
     const dialogConfig = new MatDialogConfig();
 
-    dialogConfig.data = {id};
+    dialogConfig.data = {id, campaignId, isUser: false};
     const dialogRef = this.dialog.open(PreviewComponent, dialogConfig);
   }
 
