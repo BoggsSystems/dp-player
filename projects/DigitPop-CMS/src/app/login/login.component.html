@@ -1,5 +1,5 @@
 <div mat-dialog-content class="login-modal">
-  <button class="mat-dialog-close" [mat-dialog-close] cdkFocusInitial>&#10006;</button>
+  <button [hidden]="hideCloseButton" class="mat-dialog-close" [mat-dialog-close] cdkFocusInitial>&#10006;</button>
   <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
 
     <div class="form-group">

@@ -1,7 +1,9 @@
 'use strict';
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {
-  MatDialog, MatDialogConfig, MatDialogRef
+  MatDialog,
+  MatDialogConfig,
+  MatDialogRef
 } from '@angular/material/dialog';
 import {VideosGridService} from '../shared/services/videos-grid.service';
 import {EngagementService} from '../shared/services/engagement.service';
@@ -13,6 +15,7 @@ import {
 } from '../xchane/answer-dialog/answer-dialog.component';
 import {PlayerComponent} from '../xchane/player/player.component';
 import {timer} from 'rxjs';
+import {VisitorPopupComponent} from '../visitor-popup/visitor-popup.component';
 
 @Component({
   selector: 'digit-pop-videos-grid',
@@ -32,7 +35,7 @@ export class VideosGridComponent implements OnInit {
   videosLimit = 10;
   videosCount: number[];
   page = 0;
-  id: string;
+  projectId: string;
   campaignId: string;
   popupDialogRef: MatDialogRef<PlayerComponent>;
   monthNames: string[] = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -107,7 +110,7 @@ export class VideosGridComponent implements OnInit {
       event.preventDefault();
     }
 
-    this.id = id;
+    this.projectId = id;
     this.campaignId = campaignId;
 
     const dialogConfig = new MatDialogConfig();
@@ -147,38 +150,18 @@ export class VideosGridComponent implements OnInit {
           confirmDialog.close();
 
           if (result === true) {
-            this.openPlayer(this.id, this.campaignId);
+            this.openPlayer(this.projectId, this.campaignId);
           }
         });
       }
 
       this.canToggle = true;
-      this.scoreBubbleToggle();
+      this.scoreBubbleToggle(event.data.isUser);
       this.canToggle = false;
-
-      // if (event.data != null && event.data.received) {
-      //   const iframeWindow = (document.querySelector('iframe.iframe') as HTMLIFrameElement).contentWindow;
-      //   iframeWindow.postMessage({success: true, initCommunications: true}, environment.playerUrl);
-      // }
-      //
-      // if (
-      //   event.data != null &&
-      //   event.data.complete != null &&
-      //   event.data.correct != null
-      // ) {
-      //   this.popupDialogRef.close();
-      //
-      //   if (event.data.correct) {
-      //
-      //     this.refreshUser();
-      //   } else {
-      //
-      //   }
-      // }
     }
   }
 
-  scoreBubbleToggle = () => {
+  scoreBubbleToggle = (isUser: boolean) => {
     if (this.canToggle) {
       this.scoreBubbleIsOpen = !this.scoreBubbleIsOpen;
 
@@ -186,8 +169,24 @@ export class VideosGridComponent implements OnInit {
         const scoreBubbleTimer = timer(2000);
         scoreBubbleTimer.subscribe((x: any) => {
           this.scoreBubbleIsOpen = !this.scoreBubbleIsOpen;
+          if (!isUser) {
+            this.openVisitorPopup();
+          }
         });
       }
     }
+  }
+
+  openVisitorPopup = () => {
+    const dialogRef = this.dialog.open(VisitorPopupComponent, {
+      data: {
+        campaignId: this.campaignId,
+        projectId: this.projectId
+      },
+      panelClass: 'dpop-modal'
+    });
+
+    dialogRef.afterClosed().subscribe(() => {
+    });
   }
 }

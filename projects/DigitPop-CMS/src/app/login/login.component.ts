@@ -1,40 +1,36 @@
-import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { first } from 'rxjs/operators';
-import { MatDialogRef } from '@angular/material/dialog';
-import { AuthenticationService } from '../shared/services/auth-service.service';
-import { XchaneAuthenticationService } from '../shared/services/xchane-auth-service.service';
-import { BillsbyService } from '../shared/services/billsby.service';
-import { Role } from '../shared/models/role';
+import {Component, Input, OnInit} from '@angular/core';
+import {Router, ActivatedRoute} from '@angular/router';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {first} from 'rxjs/operators';
+import {MatDialogRef} from '@angular/material/dialog';
+import {AuthenticationService} from '../shared/services/auth-service.service';
+import {
+  XchaneAuthenticationService
+} from '../shared/services/xchane-auth-service.service';
+import {BillsbyService} from '../shared/services/billsby.service';
+import {Role} from '../shared/models/role';
+
 @Component({
-  selector: 'DigitPop-login',
+  selector: 'digit-pop-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
+
 export class LoginComponent implements OnInit {
+  @Input() hideCloseButton = false;
   loginForm: FormGroup;
   loading = false;
   submitted = false;
   returnUrl: string;
   error = '';
-  isCheckedConsumer :boolean;
-  isCheckedBusiness :boolean;
-  validRole:any;
+  isCheckedConsumer: boolean;
+  isCheckedBusiness: boolean;
+  validRole: any;
 
-  constructor(
-    public dialogRef: MatDialogRef<LoginComponent>,
-    private formBuilder: FormBuilder,
-    private route: ActivatedRoute,
-    private router: Router,
-    private authenticationService: AuthenticationService,
-    private xchaneAuthenticationService: XchaneAuthenticationService,
-    private billsbyService: BillsbyService
-    
-
-  ) {
-    if (this.authenticationService.currentUserValue) { 
-      this.router.navigate(['/']);}
+  constructor(public dialogRef: MatDialogRef<LoginComponent>, private formBuilder: FormBuilder, private route: ActivatedRoute, private router: Router, private authenticationService: AuthenticationService, private xchaneAuthenticationService: XchaneAuthenticationService, private billsbyService: BillsbyService) {
+    if (this.authenticationService.currentUserValue) {
+      this.router.navigate(['/']);
+    }
     this.validRole = Role.Consumer;
     // redirect to home if already logged in
     // if (this.authenticationService.currentUserValue) {
@@ -45,19 +41,23 @@ export class LoginComponent implements OnInit {
     // }
   }
 
-  onChange($event:any) {
-    if($event.source.value=="1"){
-      this.validRole=Role.Consumer;
+  // convenience getter for easy access to form fields
+  get f() {
+    return this.loginForm.controls;
+  }
+
+  onChange($event: any) {
+    if ($event.source.value == "1") {
+      this.validRole = Role.Consumer;
     }
-    if($event.source.value=="2"){
-      this.validRole=Role.Business;
+    if ($event.source.value == "2") {
+      this.validRole = Role.Business;
     }
- }
+  }
 
   ngOnInit() {
     this.loginForm = this.formBuilder.group({
-      email: ['', Validators.required],
-      password: ['', Validators.required],
+      email: ['', Validators.required], password: ['', Validators.required],
     });
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
 
@@ -72,11 +72,6 @@ export class LoginComponent implements OnInit {
     // }
   }
 
-  // convenience getter for easy access to form fields
-  get f() {
-    return this.loginForm.controls;
-  }
-
   onSubmit() {
     this.submitted = true;
 
@@ -86,32 +81,28 @@ export class LoginComponent implements OnInit {
     }
     // console.log("user:",this.f.email.value, this.f.password.value);
     this.loading = true;
-    if(this.validRole == "consumer") {
+    if (this.validRole == "consumer") {
       this.xchaneAuthenticationService
-      .loginXchaneUser(this.f.email.value, this.f.password.value)
-      .pipe(first())
-      .subscribe(
-        (res) => {
-          if(res){
-            localStorage.setItem("currentrole",'customer');
+        .loginXchaneUser(this.f.email.value, this.f.password.value)
+        .pipe(first())
+        .subscribe((res) => {
+          if (res) {
+            localStorage.setItem('currentRole', 'customer');
             this.dialogRef.close();
             this.router.navigate(['/xchane/dashboard']);
           } else {
             this.dialogRef.close();
           }
 
-        },
-        (err) => {
-               console.log('Update error : ' + err.toString());
-        }
-      )
-    } else if ( this.validRole == "Business") {
+        }, (err) => {
+          console.log('Update error : ' + err.toString());
+        })
+    } else if (this.validRole == "Business") {
       this.authenticationService
-      .login(this.f.email.value, this.f.password.value)
-      .pipe(first())
-      .subscribe(
-        (res: any) => {
-          console.log('LOGIN RESULT : ' , this.authenticationService.currentUserValue);
+        .login(this.f.email.value, this.f.password.value)
+        .pipe(first())
+        .subscribe((res: any) => {
+          console.log('LOGIN RESULT : ', this.authenticationService.currentUserValue);
           // this.billsbyService.getSubscriptionDetails().subscribe(
           //   (res: any) => {
           //     if (res.status != 'Cancelled') {
@@ -126,7 +117,7 @@ export class LoginComponent implements OnInit {
           //   }
           // );
 
-          localStorage.setItem("currentrole",'Business');
+          localStorage.setItem("currentRole", 'Business');
           this.dialogRef.close();
           this.router.navigate(['/cms/dashboard']);
 
@@ -139,12 +130,10 @@ export class LoginComponent implements OnInit {
           //   this.dialogRef.close();
           // }
 
-        },
-        (error: any) => {
+        }, (error: any) => {
           this.error = error;
           this.loading = false;
-        }
-      );
+        });
 
     } else {
       alert('Please select login user type')

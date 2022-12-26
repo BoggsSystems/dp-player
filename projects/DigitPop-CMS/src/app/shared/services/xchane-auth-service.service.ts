@@ -1,24 +1,22 @@
-import { Injectable, Inject } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { XchaneUser } from '../models/xchane.user';
-import { map,catchError } from 'rxjs/operators';
-import { environment } from 'projects/DigitPop-CMS/src/environments/environment';
-import { HTTP_XCHANE_AUTH } from '../../app.module';
+import {Inject, Injectable} from '@angular/core';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {BehaviorSubject, Observable} from 'rxjs';
+import {XchaneUser} from '../models/xchane.user';
+import {catchError, map} from 'rxjs/operators';
+import {environment} from 'projects/DigitPop-CMS/src/environments/environment';
+import {HTTP_XCHANE_AUTH} from '../../app.module';
 
 const httpOptions = {
-  headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+  headers: new HttpHeaders({'Content-Type': 'application/json'}),
 };
 
-@Injectable({ providedIn: 'root' })
+@Injectable({providedIn: 'root'})
 export class XchaneAuthenticationService {
-  private currentUserSubject: BehaviorSubject<XchaneUser>;
   public currentUser: Observable<XchaneUser>;
+  private currentUserSubject: BehaviorSubject<XchaneUser>;
 
   constructor(@Inject(HTTP_XCHANE_AUTH) private httpClient: HttpClient) {
-    this.currentUserSubject = new BehaviorSubject<XchaneUser>(
-      JSON.parse(localStorage.getItem('XchaneCurrentUser'))
-    );
+    this.currentUserSubject = new BehaviorSubject<XchaneUser>(JSON.parse(localStorage.getItem('XchaneCurrentUser')));
     this.currentUser = this.currentUserSubject.asObservable();
   }
 
@@ -36,12 +34,12 @@ export class XchaneAuthenticationService {
     return this.httpClient.get('/api/xchaneuser/');
   }
 
-  toggleXchaneUserCategory(category:any, xchaneUser:any) {
+  toggleXchaneUserCategory(category: any, xchaneUser: any) {
     return this.httpClient.put(`${environment.apiUrl}/api/xchaneuser/` + xchaneUser._id + '/togglecategory', category);
   }
 
 
-  removeXchaneUserCategory(category:any, xchaneUser:any) {
+  removeXchaneUserCategory(category: any, xchaneUser: any) {
 
     return this.httpClient.put('/api/xchaneuser/' + xchaneUser._id + '/removecategory', category);
   }
@@ -62,75 +60,69 @@ export class XchaneAuthenticationService {
 
     return this.httpClient
       .post<any>(`${environment.apiUrl}/api/xchaneuser/`, body, httpOptions)
-      .pipe(
-        map((res) => {
-          console.log('LOGIN RESULT : ' + JSON.stringify(res));
-          if (res.token) {
-            console.log('Successful login');
-            res.user.token = res.token;
-            console.log('Set token of user : ' + res.user.token);
-            // store user details and jwt token in local storage to keep user logged in between page refreshes
-            localStorage.setItem('XchaneCurrentUser', JSON.stringify(res.user));
-            console.log('Set current user in local storage');
-            this.currentUserSubject.next(res.user);
-          }  else if(res.msg) {
-            alert(res.msg);
-          }
-          console.log('Returning result user');
-          return res;
+      .pipe(map((res) => {
+        console.log('LOGIN RESULT : ' + JSON.stringify(res));
+        if (res.token) {
+          console.log('Successful login');
+          res.user.token = res.token;
+          console.log('Set token of user : ' + res.user.token);
+          // store user details and jwt token in local storage to keep user logged in between page refreshes
+          localStorage.setItem('XchaneCurrentUser', JSON.stringify(res.user));
+          console.log('Set current user in local storage');
+          this.currentUserSubject.next(res.user);
+        } else if (res.msg) {
+          alert(res.msg);
+        }
+        console.log('Returning result user');
+        return res;
 
-          // login successful if there's a jwt token in the response
-          // if (res) {
-          //   console.log('Successful login');
-          //   // res.user.token = res.token;
-          //   // store user details and jwt token in local storage to keep user logged in between page refreshes
-          //   localStorage.setItem('currentUser', JSON.stringify(res));
-          //   this.currentUserSubject.next(res);
-          // }
+        // login successful if there's a jwt token in the response
+        // if (res) {
+        //   console.log('Successful login');
+        //   // res.user.token = res.token;
+        //   // store user details and jwt token in local storage to keep user logged in between page refreshes
+        //   localStorage.setItem('currentUser', JSON.stringify(res));
+        //   this.currentUserSubject.next(res);
+        // }
 
-          // return res;
-        },),
-        catchError((err, caught) => {
-          console.log(err.message)
-          alert(err.msg);
-          return err;
-        })
-      );
+        // return res;
+      },), catchError((err, caught) => {
+        console.log(err.message)
+        alert(err.msg);
+        return err;
+      }));
   }
 
   loginXchaneUser(email: string, password: string) {
     return this.httpClient
-      .post<any>(`${environment.apiUrl}/api/xchaneuser/login`, { email, password })
-      .pipe(
-        map((res) => {
-          // login successful if there's a jwt token in the response
-          console.log('LOGIN RESULT : ' + JSON.stringify(res));
-          if (res.token) {
-            console.log('Successful login');
-            res.user.token = res.token;
-            console.log('Set token of user : ' + res.user.token);
-            // store user details and jwt token in local storage to keep user logged in between page refreshes
-            localStorage.setItem('XchaneCurrentUser', JSON.stringify(res.user));
-            console.log('Set current user in local storage');
-            this.currentUserSubject.next(res.user);
-          } else {
-            alert(res.msg)
-          }
+      .post<any>(`${environment.apiUrl}/api/xchaneuser/login`, {
+        email, password
+      })
+      .pipe(map((res) => {
+        // login successful if there's a jwt token in the response
+        console.log('LOGIN RESULT : ' + JSON.stringify(res));
+        if (res.token) {
+          console.log('Successful login');
+          res.user.token = res.token;
+          console.log('Set token of user : ' + res.user.token);
+          // store user details and jwt token in local storage to keep user logged in between page refreshes
+          localStorage.setItem('XchaneCurrentUser', JSON.stringify(res.user));
+          console.log('Set current user in local storage');
+          this.currentUserSubject.next(res.user);
+        } else {
+          alert(res.msg);
+        }
 
 
-          console.log('Returning result user');
-          return res.user;
-        })
-      );
+        console.log('Returning result user');
+        return res.user;
+      }));
   }
 
   getCurrentXchaneUser() {
     console.log('In getCurrentXchaneUser');
 
-    return this.httpClient.get(
-      `${environment.apiUrl}/api/xchaneuser/me`,
-      httpOptions
-    );
+    return this.httpClient.get(`${environment.apiUrl}/api/xchaneuser/me`, httpOptions);
   }
 
   getXchaneUser(id: string) {
@@ -139,12 +131,14 @@ export class XchaneAuthenticationService {
     return this.httpClient.get(`${environment.apiUrl}/api/xchaneuser/` + id);
   }
 
+  addPointsAfterSignUp = (campaignId: string, xchaneUserId: string, projectId: string) => {
+    return this.httpClient
+      .post<any>(`${environment.apiUrl}/api/engagement/addPoints`, {
+        campaignId, xchaneUserId, projectId
+      });
+  }
+
   welcome() {
-    return this.httpClient.put<any>(
-      `${environment.apiUrl}/api/xchaneuser/` +
-        this.currentUserValue._id +
-        '/welcome',
-      { id: this.currentUserValue._id }
-    );
+    return this.httpClient.put<any>(`${environment.apiUrl}/api/xchaneuser/` + this.currentUserValue._id + '/welcome', {id: this.currentUserValue._id});
   }
 }

@@ -431,7 +431,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         if (res) {
 
           console.log("USER CREATED " + res);
-          localStorage.setItem("currentrole", 'Business');
+          localStorage.setItem('currentRole', 'Business');
           //localStorage.setItem("trial",'true');
 
           // const navigationExtras: NavigationExtras = {

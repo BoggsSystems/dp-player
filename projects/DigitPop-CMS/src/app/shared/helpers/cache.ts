@@ -97,7 +97,7 @@ export const Cache = {
   exitTrial: (router: Router) => {
     localStorage.removeItem('currentuser');
     localStorage.removeItem('XchaneCurrentUser');
-    localStorage.removeItem('currentrole');
+    localStorage.removeItem('currentRole');
     router.navigate(['/']).then(r => {
       return;
     });

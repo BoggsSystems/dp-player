@@ -11,6 +11,7 @@ import { LoginComponent } from './login/login.component';
 import { LogoutComponent } from './logout/logout.component';
 import { SignupComponent } from './signup/signup.component';
 import { ProjectWizardYoutubePopup } from './cms/project-wizard/popup/youtube-popup.component';
+import {VisitorPopupComponent} from './visitor-popup/visitor-popup.component';
 
 @Component({
   selector: 'DigitPop-root',
@@ -55,7 +56,7 @@ export class AppComponent {
   }
 
   ngOnInit() {
-    // this.currentRole= localStorage.getItem("currentrole");
+    // this.currentRole= localStorage.getItem("currentRole");
     // if(this.currentRole=="admin"||this.currentRole=="Business"){
     //   this.router.navigate(['/cms/dashboard']);
     // };
@@ -65,8 +66,8 @@ export class AppComponent {
 
     this.isTrial = false;
 
-    if (localStorage.getItem('currentrole')) {
-      localStorage.removeItem('currentrole');
+    if (localStorage.getItem('currentRole')) {
+      localStorage.removeItem('currentRole');
     }
 
     if (localStorage.getItem('trial')) {
@@ -82,7 +83,7 @@ export class AppComponent {
     this.isAccountPage = false;
     this.excludeCustomNav = false;
     this.currentUser = localStorage.getItem('currentuser');
-    this.currentRole = localStorage.getItem('currentrole');
+    this.currentRole = localStorage.getItem('currentRole');
     this.isTrial = localStorage.getItem('trial');
 
     if (this.currentRole) {
@@ -141,7 +142,7 @@ export class AppComponent {
     });
 
     // localStorage.removeItem("currentuser");
-    // localStorage.removeItem("currentrole");
+    // localStorage.removeItem("currentRole");
     // this.router.navigate(['/']);
   }
 

@@ -46,6 +46,8 @@ import { ImagesLazyloadModule } from './shared/lazyload-imgs/lazyload.module';
 import { SignupComponent } from './signup/signup.component';
 import { VideosGridComponent } from './videos-grid/videos-grid.component';
 import { QuizAnimationComponent } from './quiz-animation/quiz-animation.component';
+import {MatTabsModule} from '@angular/material/tabs';
+import { VisitorPopupComponent } from './visitor-popup/visitor-popup.component';
 
 
 export const HTTP_CMS_AUTH = new InjectionToken('http_cms_auth');
@@ -62,7 +64,8 @@ export const HTTP_NO_INTERCEPTORS = new InjectionToken('http_no_interceptors');
     LogoutComponent,
     SignupComponent,
     VideosGridComponent,
-    QuizAnimationComponent
+    QuizAnimationComponent,
+    VisitorPopupComponent
   ],
   imports: [
     BrowserModule,
@@ -98,6 +101,7 @@ export const HTTP_NO_INTERCEPTORS = new InjectionToken('http_no_interceptors');
     HttpClientModule,
     MatRadioModule,
     ImagesLazyloadModule,
+    MatTabsModule,
   ],
   providers: [
     provideTokenizedHttpClient(HTTP_BILLS, { excludes: [JwtInterceptor, XchaneJwtInterceptor] }),
