@@ -1,7 +1,7 @@
-@mixin product-description($gridColumn: 2/6, $gridRow: 12/22, $fontSize: 14px) {
+@mixin product-description($gridColumnStart: 2, $gridColumnSpan: 6, $gridRowStart: 12, $gridRowSpan: 22, $fontSize: 14px) {
   margin-top: 10px;
-  grid-column: $gridColumn;
-  grid-row: $gridRow;
+  grid-column: #{$gridColumnStart}/#{$gridColumnSpan};
+  grid-row: #{$gridRowStart}/#{$gridRowSpan};
   font-size: $fontSize;
   font-weight: 300;
   background-color: transparent;
@@ -9,14 +9,14 @@
   font-family: Ubuntu, sans-serif;
 }
 
-@mixin product-image-thumbnails($gridColumn: 9/12, $gridRow: 8/22) {
-  grid-column: $gridColumn;
-  grid-row: $gridRow;
+@mixin product-image-thumbnails($gridColumnStart: 9, $gridColumnSpan:12, $gridRowStart: 8, $gridRowSpan: 22) {
+  grid-column: #{$gridColumnStart}/#{$gridColumnSpan};
+  grid-row: #{$gridRowStart}/#{$gridRowSpan};
 }
 
-@mixin product-buy-now($gridColumn: 2/6, $gridRow: 10/12, $fontSize: 16px) {
-  grid-column: $gridColumn;
-  grid-row: $gridRow;
+@mixin product-buy-now($gridColumnStart: 2, $gridColumnSpan: 6, $gridRowStart: 10, $gridRowSpan: 12, $fontSize: 16px) {
+  grid-column: #{$gridColumnStart}/#{$gridColumnSpan};
+  grid-row: #{$gridRowStart}/#{$gridRowSpan};
   height: 100%;
   margin-top: 10px;
   margin-bottom: 10px;
@@ -29,15 +29,15 @@
   vertical-align: middle;
 }
 
-@mixin product-price($gridColumn: 5/6, $gridRow: 8/10, $fontSize: 25px) {
-  grid-column: $gridColumn;
-  grid-row: $gridRow;
+@mixin product-price($gridColumnStart: 5, $gridColumnSpan: 6, $gridRowStart: 8, $gridRowSpan: 10, $fontSize: 25px) {
+  grid-column: #{$gridColumnStart}/#{$gridColumnSpan};
+  grid-row: #{$gridRowStart}/#{$gridRowSpan};
   font-size: $fontSize;
 }
 
-@mixin product-subtitle($gridColumn: 2/5, $gridRow: 8/10, $fontSize: 16px) {
-  grid-column: $gridColumn;
-  grid-row: $gridRow;
+@mixin product-subtitle($gridColumnStart: 2, $gridColumnSpan: 5, $gridRowStart: 8, $gridRowSpan: 10, $fontSize: 16px) {
+  grid-column: #{$gridColumnStart}/#{$gridColumnSpan};
+  grid-row: #{$gridRowStart}/#{$gridRowSpan};
   font-size: $fontSize;
   font-weight: 500;
   width: 100%;
@@ -47,27 +47,27 @@
   -webkit-line-clamp: 2;
 }
 
-@mixin product-main-image($gridColumn, $gridRow) {
-  grid-column: $gridColumn;
-  grid-row: $gridRow;
+@mixin product-main-image($gridColumnStart, $gridColumnSpan, $gridRowStart, $gridRowSpan) {
+  grid-column: #{$gridColumnStart}/#{$gridColumnSpan};
+  grid-row: #{$gridRowStart}/#{$gridRowSpan};
 }
 
-@mixin pg-products-list($gridColumn: 2/12, $gridRow) {
-  grid-column: $gridColumn;
-  grid-row: $gridRow;
+@mixin pg-products-list($gridColumnStart: 2, $gridColumnSpan: 12, $gridRowStart, $gridRowSpan) {
+  grid-column: #{$gridColumnStart}/#{$gridColumnSpan};
+  grid-row: #{$gridRowStart}/#{$gridRowSpan};
   width: 100%;
   height: 100%;
 }
 
-@mixin button-start-grid($gridColumn, $gridRow) {
+@mixin button-start-grid($gridColumnStart, $gridColumnSpan, $gridRowStart, $gridRowSpan) {
   color: #fff;
-  grid-column: $gridColumn;
-  grid-row: $gridRow;
+  grid-column: #{$gridColumnStart}/#{$gridColumnSpan};
+  grid-row: #{$gridRowStart}/#{$gridRowSpan};
 }
 
-@mixin title($gridColumn: 4/36, $gridRow: 1/2, $fontSize: 20px) {
-  grid-column: $gridColumn;
-  grid-row: $gridRow;
+@mixin title($gridColumnStart: 4, $gridColumnSpan: 36, $gridRowStart: 1, $gridRowSpan: 2, $fontSize: 20px) {
+  grid-column: #{$gridColumnStart}/#{$gridColumnSpan};
+  grid-row: #{$gridRowStart}/#{$gridRowSpan};
   font-size: $fontSize;
   color: #fff;
 }
@@ -200,7 +200,7 @@
   }
 
   .product-description {
-    @include product-description($gridColumn: 2/12, $gridRow: 18/24);
+    @include product-description($gridColumnStart: 2, $gridColumnSpan: 12, $gridRowStart: 18, $gridRowSpan: 24);
   }
 
   .product-thumbnail {
@@ -209,7 +209,7 @@
   }
 
   .product-image-thumbnails {
-    @include product-image-thumbnails($gridRow: 9/16);
+    @include product-image-thumbnails($gridRowStart: 9, $gridRowSpan: 16);
   }
 
   .product-buy-now {
@@ -217,31 +217,31 @@
   }
 
   .product-price {
-    @include product-price($gridColumn: 8/12, $gridRow: 8/8, $fontSize: 18px);
+    @include product-price($gridColumnStart: 8, $gridColumnSpan: 12, $gridRowStart: 8, $gridRowSpan: 8, $fontSize: 18px);
   }
 
   .product-subtitle {
-    @include product-subtitle($gridColumn: 2/7, $gridRow: 8/8, $fontSize: 12px);
+    @include product-subtitle($gridColumnStart: 2, $gridColumnSpan: 7, $gridRowStart: 8, $gridRowSpan: 8, $fontSize: 12px);
     word-wrap: break-word;
   }
 
   .product-main-image {
-    @include product-main-image($gridColumn: 2/10, $gridRow: 9/16);
+    @include product-main-image($gridColumnStart: 2, $gridColumnSpan: 10, $gridRowStart: 9, $gridRowSpan: 16);
     max-width: 100%;
     max-height: 100%;
   }
 
   .pg-products-list {
-    @include pg-products-list($gridRow: 10/26);
+    @include pg-products-list($gridRowStart: 10, $gridRowSpan: 26);
   }
 
   .button-start-grid {
-    @include button-start-grid($gridColumn: 2/3, $gridRow: 2/3);
+    @include button-start-grid($gridColumnStart: 2, $gridColumnSpan: 3, $gridRowStart: 2, $gridRowSpan: 3);
   }
 
   .title {
     margin-left: 20px;
-    @include title($gridColumn: 12/46, $gridRow: 2/3);
+    @include title($gridColumnStart: 12, $gridColumnSpan: 46, $gridRowStart: 2, $gridRowSpan: 3);
   }
 }
 
@@ -257,17 +257,17 @@
   }
 
   .product-main-image {
-    @include product-main-image($gridColumn: 6/9, $gridRow: 8/16);
+    @include product-main-image($gridColumnStart: 6, $gridColumnSpan: 9, $gridRowStart: 8, $gridRowSpan: 16);
     width: 100%;
     height: auto;
   }
 
   .pg-products-list {
-    @include pg-products-list($gridRow: 8/24);
+    @include pg-products-list($gridRowStart: 8, $gridRowSpan: 24);
   }
 
   .button-start-grid {
-    @include button-start-grid($gridColumn: 45/46, $gridRow: 1/2);
+    @include button-start-grid($gridColumnStart: 45, $gridColumnSpan: 46, $gridRowStart: 1, $gridRowSpan: 2);
   }
 
   .title {
@@ -379,7 +379,7 @@
 
 @media only screen and (min-width: 897px) and (max-width: 1059px) {
   .title {
-    @include title($gridColumn: 4/30, $fontSize: 32px);
+    @include title($gridColumnStart: 4, $gridColumnSpan: 30, $fontSize: 32px);
   }
 
   .product-description {
@@ -425,11 +425,11 @@
 
 @media only screen and (min-width: 1060px) and (max-width: 1366px) {
   .title {
-    @include title($gridColumn: 4/30, $fontSize: 40px);
+    @include title($gridColumnStart: 4, $gridColumnSpan: 30, $fontSize: 40px);
   }
 
   .product-image-thumbnails {
-    @include product-image-thumbnails($gridColumn: 9/11);
+    @include product-image-thumbnails($gridColumnStart: 9, $gridColumnSpan: 11);
   }
 
   .product-template {
@@ -471,11 +471,11 @@
 
 @media only screen and (min-width: 1367px) {
   .title {
-    @include title($gridColumn: 4/30, $fontSize: 40px);
+    @include title($gridColumnStart: 4, $gridColumnSpan: 30, $fontSize: 40px);
   }
 
   .product-image-thumbnails {
-    @include product-image-thumbnails($gridColumn: 9/11);
+    @include product-image-thumbnails($gridColumnStart: 9, $gridColumnSpan: 11);
   }
 
   .product-template {
@@ -517,7 +517,7 @@
 
 @media only screen and (max-height: 412px) and (max-width: 550px) {
   .product-buy-now {
-    @include product-buy-now($gridRow: 28/30, $fontSize: 14px);
+    @include product-buy-now($gridRowStart: 28, $gridRowSpan: 30, $fontSize: 14px);
   }
 }
 
@@ -535,7 +535,7 @@
 
 @media only screen and (min-height: 565px) and (max-width: 550px) {
   .product-buy-now {
-    @include product-buy-now($gridRow: 16/18, $fontSize: 20px);
+    @include product-buy-now($gridRowStart: 16, $gridRowSpan: 18, $fontSize: 20px);
   }
 }
 
