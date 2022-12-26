@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Router, ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {first} from 'rxjs/operators';
 import {MatDialogRef} from '@angular/material/dialog';
@@ -9,6 +9,9 @@ import {
 } from '../shared/services/xchane-auth-service.service';
 import {BillsbyService} from '../shared/services/billsby.service';
 import {Role} from '../shared/models/role';
+import {
+  throwError as observableThrowError
+} from 'rxjs/internal/observable/throwError';
 
 @Component({
   selector: 'digit-pop-login',
@@ -18,6 +21,9 @@ import {Role} from '../shared/models/role';
 
 export class LoginComponent implements OnInit {
   @Input() hideCloseButton = false;
+  @Input() fromQuiz = false;
+  @Input() campaignId: string;
+  @Input() projectId: string;
   loginForm: FormGroup;
   loading = false;
   submitted = false;
@@ -89,6 +95,7 @@ export class LoginComponent implements OnInit {
           if (res) {
             localStorage.setItem('currentRole', 'customer');
             this.dialogRef.close();
+            if (this.fromQuiz) return this.addPointsToUser(res._id);
             this.router.navigate(['/xchane/dashboard']);
           } else {
             this.dialogRef.close();
@@ -117,7 +124,7 @@ export class LoginComponent implements OnInit {
           //   }
           // );
 
-          localStorage.setItem("currentRole", 'Business');
+          localStorage.setItem('currentRole', 'Business');
           this.dialogRef.close();
           this.router.navigate(['/cms/dashboard']);
 
@@ -136,9 +143,18 @@ export class LoginComponent implements OnInit {
         });
 
     } else {
-      alert('Please select login user type')
+      alert('Please select login user type');
     }
+  }
 
-
+  addPointsToUser = (xchaneUserId: string) => {
+    this.xchaneAuthenticationService
+      .addPointsAfterSignUp(this.campaignId, xchaneUserId, this.projectId)
+      .subscribe(response => {
+        this.xchaneAuthenticationService.storeUser(response);
+        return this.router.navigate(['/xchane/dashboard']);
+      }, error => {
+        return observableThrowError(error);
+      });
   }
 }

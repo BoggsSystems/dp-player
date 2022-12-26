@@ -18,7 +18,12 @@
       </digit-pop-signup>
     </mat-tab>
     <mat-tab label="Already A Member">
-      <digit-pop-login [hideCloseButton]="true"></digit-pop-login>
+      <digit-pop-login
+        [campaignId]="campaignId"
+        [fromQuiz]="true"
+        [hideCloseButton]="true"
+        [projectId]="projectId">
+      </digit-pop-login>
     </mat-tab>
   </mat-tab-group>
 </section>
