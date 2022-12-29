@@ -5,6 +5,7 @@ import {XchaneUser} from '../models/xchane.user';
 import {catchError, map} from 'rxjs/operators';
 import {environment} from 'projects/DigitPop-CMS/src/environments/environment';
 import {HTTP_XCHANE_AUTH} from '../../app.module';
+import * as moment from 'moment';
 
 const httpOptions = {
   headers: new HttpHeaders({'Content-Type': 'application/json'}),
@@ -40,40 +41,32 @@ export class XchaneAuthenticationService {
 
 
   removeXchaneUserCategory(category: any, xchaneUser: any) {
-
     return this.httpClient.put('/api/xchaneuser/' + xchaneUser._id + '/removecategory', category);
   }
 
   updateXchaneUser(xchaneUser: any) {
-    //let body = JSON.stringify(xchaneUser);
     return this.httpClient.put('/api/xchaneuser/' + xchaneUser._id, xchaneUser);
   }
 
   approveXchaneUser(xchaneUser: any) {
-    let body = JSON.stringify(xchaneUser);
+    const body = JSON.stringify(xchaneUser);
     return this.httpClient.post('/api/xchaneuser/approve', body, httpOptions);
   }
 
   createXchaneUser(xchaneUser: XchaneUser) {
-    let body = JSON.stringify(xchaneUser);
-    //return this.httpClient.post('/api/xchaneuser/', body, httpOptions);
+    const body = JSON.stringify(xchaneUser);
 
     return this.httpClient
       .post<any>(`${environment.apiUrl}/api/xchaneuser/`, body, httpOptions)
       .pipe(map((res) => {
-        console.log('LOGIN RESULT : ' + JSON.stringify(res));
         if (res.token) {
-          console.log('Successful login');
           res.user.token = res.token;
-          console.log('Set token of user : ' + res.user.token);
           // store user details and jwt token in local storage to keep user logged in between page refreshes
           localStorage.setItem('XchaneCurrentUser', JSON.stringify(res.user));
-          console.log('Set current user in local storage');
           this.currentUserSubject.next(res.user);
         } else if (res.msg) {
           alert(res.msg);
         }
-        console.log('Returning result user');
         return res;
 
         // login successful if there's a jwt token in the response
@@ -86,8 +79,7 @@ export class XchaneAuthenticationService {
         // }
 
         // return res;
-      },), catchError((err, caught) => {
-        console.log(err.message)
+      }), catchError((err) => {
         alert(err.msg);
         return err;
       }));
@@ -99,35 +91,23 @@ export class XchaneAuthenticationService {
         email, password
       })
       .pipe(map((res) => {
-        // login successful if there's a jwt token in the response
-        console.log('LOGIN RESULT : ' + JSON.stringify(res));
         if (res.token) {
-          console.log('Successful login');
           res.user.token = res.token;
-          console.log('Set token of user : ' + res.user.token);
-          // store user details and jwt token in local storage to keep user logged in between page refreshes
+          this.setSession(res.token, res.expiresIn)
           localStorage.setItem('XchaneCurrentUser', JSON.stringify(res.user));
-          console.log('Set current user in local storage');
           this.currentUserSubject.next(res.user);
         } else {
           alert(res.msg);
         }
-
-
-        console.log('Returning result user');
         return res.user;
       }));
   }
 
   getCurrentXchaneUser() {
-    console.log('In getCurrentXchaneUser');
-
     return this.httpClient.get(`${environment.apiUrl}/api/xchaneuser/me`, httpOptions);
   }
 
   getXchaneUser(id: string) {
-    console.log('In getCurrentXchaneUser');
-
     return this.httpClient.get(`${environment.apiUrl}/api/xchaneuser/` + id);
   }
 
@@ -139,6 +119,33 @@ export class XchaneAuthenticationService {
   }
 
   welcome() {
-    return this.httpClient.put<any>(`${environment.apiUrl}/api/xchaneuser/` + this.currentUserValue._id + '/welcome', {id: this.currentUserValue._id});
+    return this.httpClient
+      .put<any>(`${environment.apiUrl}/api/xchaneuser/` + this.currentUserValue._id + '/welcome', {id: this.currentUserValue._id});
+  }
+
+  logout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('expires_at');
+  }
+
+  public isLoggedIn() {
+    return moment().isBefore(this.getExpiration());
+  }
+
+  isLoggedOut() {
+    return !this.isLoggedIn();
+  }
+
+  getExpiration() {
+    const expiration = localStorage.getItem('expires_at');
+    const expiresAt = JSON.parse(expiration);
+    return moment(expiresAt);
+  }
+
+  private setSession(token: string, expiresIn: string) {
+    const expiresAt = moment().add(expiresIn, 'second');
+
+    localStorage.setItem('token', token);
+    localStorage.setItem('expires_at', JSON.stringify(expiresAt.valueOf()));
   }
 }

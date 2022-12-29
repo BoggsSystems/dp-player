@@ -12,6 +12,7 @@ import {Role} from '../shared/models/role';
 import {
   throwError as observableThrowError
 } from 'rxjs/internal/observable/throwError';
+import {XchaneUser} from '../shared/models/xchane.user';
 
 @Component({
   selector: 'digit-pop-login',
@@ -87,15 +88,18 @@ export class LoginComponent implements OnInit {
     }
     // console.log("user:",this.f.email.value, this.f.password.value);
     this.loading = true;
-    if (this.validRole == "consumer") {
+    if (this.validRole == 'consumer') {
       this.xchaneAuthenticationService
         .loginXchaneUser(this.f.email.value, this.f.password.value)
         .pipe(first())
         .subscribe((res) => {
           if (res) {
+            this.storeUser(res);
             localStorage.setItem('currentRole', 'customer');
             this.dialogRef.close();
-            if (this.fromQuiz) return this.addPointsToUser(res._id);
+            if (this.fromQuiz) {
+              return this.addPointsToUser(res._id);
+            }
             this.router.navigate(['/xchane/dashboard']);
           } else {
             this.dialogRef.close();
@@ -145,6 +149,11 @@ export class LoginComponent implements OnInit {
     } else {
       alert('Please select login user type');
     }
+  }
+
+  storeUser = (response: XchaneUser) => {
+    const token = response.token ? response.token : null;
+    console.log(token);
   }
 
   addPointsToUser = (xchaneUserId: string) => {

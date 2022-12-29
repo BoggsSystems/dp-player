@@ -7,14 +7,14 @@
     </div>
 
     <span fxFlex></span>
-    <div *ngIf="isCMS && isLogin  && !isProjectWizard && !isCampaignsWizard && !isAccountPage" fxShow="true" fxHide.lt-sm="true" fxLayout="row">
+    <div *ngIf="isCMS && isLogin && !isProjectWizard && !isCampaignsWizard && !isAccountPage" fxShow="true" fxHide.lt-sm="true" fxLayout="row">
         <div class="page-nav" *ngFor="let item of navSections | keyvalue">
             <a mat-button href="javascript:void(0)" (click)="scrollToSection(item.key)">{{ item.value }}</a>
         </div>
     </div>
-    <div *ngIf="isCMS && isLogin  && excludeCustomNav && !isTrial" fxShow="true" fxHide.lt-sm="true" fxLayout="row">
+    <div *ngIf="isCMS && isLogin && excludeCustomNav && !isTrial" fxShow="true" fxHide.lt-sm="true" fxLayout="row">
         <div class="page-nav">
-            <a mat-button  href="#" routerLink="/cms/dashboard" routerLinkActive="active">Dashboard</a>
+            <a mat-button href="#" routerLink="/cms/dashboard" routerLinkActive="active">Dashboard</a>
         </div>
     </div>
 

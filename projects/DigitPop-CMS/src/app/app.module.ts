@@ -42,6 +42,7 @@ import { JwtInterceptor } from './cms/services/jwt.interceptor';
 import { BillsbyInterceptor } from './cms/services/billsby.interceptor';
 import {MatRadioModule} from '@angular/material/radio';
 import { XchaneJwtInterceptor } from './xchane/services/xchane.jwt.interceptor';
+import { AuthInterceptor } from './shared/interceptors/auth.interceptor';
 import { ImagesLazyloadModule } from './shared/lazyload-imgs/lazyload.module';
 import { SignupComponent } from './signup/signup.component';
 import { VideosGridComponent } from './videos-grid/videos-grid.component';
@@ -108,6 +109,12 @@ export const HTTP_NO_INTERCEPTORS = new InjectionToken('http_no_interceptors');
     {
       provide: HTTP_INTERCEPTORS,
       useClass: BillsbyInterceptor,
+      multi: true,
+    },
+    provideTokenizedHttpClient(HTTP_BILLS, { excludes: [JwtInterceptor, XchaneJwtInterceptor] }),
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
       multi: true,
     },
     provideTokenizedHttpClient(HTTP_XCHANE_AUTH, { excludes: [JwtInterceptor, BillsbyInterceptor] }),

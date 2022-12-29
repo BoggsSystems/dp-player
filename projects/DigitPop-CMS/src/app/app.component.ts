@@ -1,17 +1,17 @@
-import { Component, ViewChild } from '@angular/core';
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { Observable } from 'rxjs';
-import { map, shareReplay } from 'rxjs/operators';
-import { MatDialog } from '@angular/material/dialog';
-import { NavigationStart, Router } from '@angular/router';
-import { User } from './shared/models/user';
-import { SpinnerService } from './shared/services/spinner.service';
-import { HomeComponent } from './home/home.component';
-import { LoginComponent } from './login/login.component';
-import { LogoutComponent } from './logout/logout.component';
-import { SignupComponent } from './signup/signup.component';
-import { ProjectWizardYoutubePopup } from './cms/project-wizard/popup/youtube-popup.component';
-import {VisitorPopupComponent} from './visitor-popup/visitor-popup.component';
+import {Component, ViewChild} from '@angular/core';
+import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
+import {Observable} from 'rxjs';
+import {map, shareReplay} from 'rxjs/operators';
+import {MatDialog} from '@angular/material/dialog';
+import {Router} from '@angular/router';
+import {SpinnerService} from './shared/services/spinner.service';
+import {HomeComponent} from './home/home.component';
+import {LoginComponent} from './login/login.component';
+import {LogoutComponent} from './logout/logout.component';
+import {SignupComponent} from './signup/signup.component';
+import {
+  ProjectWizardYoutubePopup
+} from './cms/project-wizard/popup/youtube-popup.component';
 
 @Component({
   selector: 'DigitPop-root',
@@ -44,6 +44,7 @@ export class AppComponent {
   isEligible: boolean;
   sectionsKeys: any;
   @ViewChild(HomeComponent) child: HomeComponent;
+
   constructor(
     public spinnerService: SpinnerService,
     private breakpointObserver: BreakpointObserver,
@@ -75,6 +76,7 @@ export class AppComponent {
     }
 
   }
+
   ngDoCheck() {
     this.isLogin = false;
     this.isCMS = false;
@@ -86,10 +88,14 @@ export class AppComponent {
     this.currentRole = localStorage.getItem('currentRole');
     this.isTrial = localStorage.getItem('trial');
 
+    if (localStorage.getItem('token')) {
+      this.isLogin = true;
+    }
+
     if (this.currentRole) {
       this.isLogin = true;
     }
-    if (this.currentRole == 'Business') {
+    if (this.currentRole === 'Business') {
       this.isCMS = true;
     }
     if (this.router.url.indexOf('project-wizard') > -1) {
@@ -114,28 +120,31 @@ export class AppComponent {
     // };
     // console.log(this.currentUser);
   }
+
   openLoginDialog(): void {
     const dialogRef = this.dialog.open(LoginComponent, {
-		panelClass: 'dpop-modal'
-	});
+      panelClass: 'dpop-modal'
+    });
 
     dialogRef.afterClosed().subscribe(() => {
       console.log('The dialog was closed');
     });
   }
+
   openSignup(): void {
     const dialogRef = this.dialog.open(SignupComponent, {
-		panelClass: 'dpop-modal'
-	});
+      panelClass: 'dpop-modal'
+    });
 
     dialogRef.afterClosed().subscribe(() => {
       console.log('The dialog was closed');
     });
   }
+
   openLogout(): void {
     const dialogRef = this.dialog.open(LogoutComponent, {
-		panelClass: 'dpop-modal'
-	});
+      panelClass: 'dpop-modal'
+    });
 
     dialogRef.afterClosed().subscribe(() => {
       console.log('The dialog was closed');
@@ -181,6 +190,7 @@ export class AppComponent {
   projects() {
     this.router.navigate(['/cms/project-wizard']);
   }
+
   compaigns() {
     this.router.navigate(['/cms/campaign-wizard']);
   }
@@ -196,7 +206,7 @@ export class AppComponent {
       let id = this.getSectionId(section),
         title = this.getSectionTitle(section);
       if (!(id in pageSections)) {
-        Object.assign(sectionsObject, { [id]: title });
+        Object.assign(sectionsObject, {[id]: title});
       }
     });
     this.navSections = sectionsObject;
@@ -232,6 +242,7 @@ export class AppComponent {
       inline: 'nearest',
     });
   }
+
   account() {
     this.router.navigate(['/cms/account']);
   }
