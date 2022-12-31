@@ -124,9 +124,9 @@ export class SignupComponent implements OnInit {
     this.authService
       .createXchaneUser(user)
       .subscribe(response => {
+        this.dialogRef.close();
         this.authService.storeUser(response.user);
         localStorage.setItem('currentRole', 'customer');
-        this.dialogRef.close();
         this.addPointsToUser(response.user._id);
       }, error => {
         return observableThrowError(error);
