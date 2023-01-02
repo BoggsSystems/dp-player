@@ -5,7 +5,7 @@ import { QuizComponent } from './quiz/quiz.component';
 
 const routes: Routes = [
   {
-    path: 'ad/:id/preview/:preview',
+    path: 'ad/:id/preview/:preview/userId/:userId',
     component: VideoComponent,
   },
   {

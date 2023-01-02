@@ -7,6 +7,9 @@ import {
 } from '@angular/material/dialog';
 import {VideosGridService} from '../shared/services/videos-grid.service';
 import {EngagementService} from '../shared/services/engagement.service';
+import {
+  XchaneAuthenticationService
+} from '../shared/services/xchane-auth-service.service';
 import {PreviewComponent} from '../cms/preview/preview.component';
 import {ProjectMedia} from '../shared/models/ProjectMedia';
 import {Category} from '../shared/models/category';
@@ -37,12 +40,13 @@ export class VideosGridComponent implements OnInit {
   page = 0;
   projectId: string;
   campaignId: string;
+  categoryId: string;
   popupDialogRef: MatDialogRef<PlayerComponent>;
   monthNames: string[] = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   scoreBubbleIsOpen: boolean;
   canToggle: boolean;
 
-  constructor(private videosService: VideosGridService, private engagementService: EngagementService, private dialog: MatDialog) {
+  constructor(private videosService: VideosGridService, private engagementService: EngagementService, private authService: XchaneAuthenticationService, private dialog: MatDialog) {
     this.scoreBubbleIsOpen = false;
     this.canToggle = false;
     this.videosCount = Array(this.videosLimit).fill(0).map((x, i) => i);
@@ -76,8 +80,12 @@ export class VideosGridComponent implements OnInit {
   }
 
   getVideos: (isAppend?: boolean) => void = async (isAppend: boolean = false) => {
+    const currentUserId = localStorage.getItem('XchaneCurrentUser')
+      ? JSON.parse(localStorage.getItem('XchaneCurrentUser'))._id
+      : false;
+
     return this.videosService
-      .getVideos(this.selectedCategories, this.page, this.videosLimit)
+      .getVideos(this.selectedCategories, this.page, this.videosLimit, currentUserId)
       .subscribe((response) => {
         this.categoryVideosCount = response[0].count;
         this.videos = isAppend ? [...this.videos, ...response] : response;
@@ -105,18 +113,58 @@ export class VideosGridComponent implements OnInit {
     video.load();
   }
 
-  openPlayer = (id: string, campaignId: string, event: Event | null = null) => {
+  openPlayer = (id: string, campaignId: string, categoryId: string, event: Event | null = null) => {
     if (event) {
       event.preventDefault();
     }
 
     this.projectId = id;
     this.campaignId = campaignId;
+    this.categoryId = categoryId;
 
     const dialogConfig = new MatDialogConfig();
-    dialogConfig.data = {id, campaignId, isUser: false};
+    const isUser = !!localStorage.getItem('XchaneCurrentUser');
+    const userId = isUser ? JSON.parse(localStorage.getItem('XchaneCurrentUser'))._id : false;
 
+    // if (isUser) {
+    //   const user = localStorage.getItem('XchaneCurrentUser');
+
+    //
+    //   this.engagementService
+    //     .createEngagement(JSON.parse(user), category)
+    //     .subscribe(
+    //       (data: any) => {
+    //         this.popupDialogRef.componentInstance.iFrameSrc = `${environment.playerUrl}/ad/` +
+    //           id +
+    //           '/engagement/' +
+    //           data._id +
+    //           '/campaign/' +
+    //           campaignId;
+    //         return true;
+    //       }
+    //     );
+    // } else {
+    //
+    // }
+    let engagementId;
+    if (isUser) {
+      const category = {
+        _id: this.categoryId,
+        name: '',
+        description: '',
+      };
+      this.engagementService
+        .createEngagement(this.authService.currentUserValue, category)
+        .subscribe(
+          (data: any) => {
+            console.log(data._id);
+            return engagementId = data._id;
+          }
+        );
+    }
+    dialogConfig.data = {id, campaignId, userId, categoryId, engagementId};
     this.popupDialogRef = this.dialog.open(PreviewComponent, dialogConfig);
+
   }
 
   loadMoreVideos = () => {
@@ -150,7 +198,7 @@ export class VideosGridComponent implements OnInit {
           confirmDialog.close();
 
           if (result === true) {
-            this.openPlayer(this.projectId, this.campaignId);
+            this.openPlayer(this.projectId, this.campaignId, this.categoryId);
           }
         });
       }

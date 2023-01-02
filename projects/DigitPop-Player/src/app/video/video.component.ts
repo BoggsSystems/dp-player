@@ -1,8 +1,15 @@
 import {
-  AfterViewInit, Component, ElementRef, OnInit, ViewChild,
+  AfterViewInit,
+  Component,
+  ElementRef,
+  OnInit,
+  ViewChild,
 } from '@angular/core';
 import {
-  ActivatedRoute, NavigationExtras, Params, Router,
+  ActivatedRoute,
+  NavigationExtras,
+  Params,
+  Router,
 } from '@angular/router';
 import {Project} from '../models/project';
 import {MatDialog} from '@angular/material/dialog';
@@ -14,10 +21,10 @@ import {environment} from '../../environments/environment';
 import {SubscriptionDetails, SubscriptionInfo} from '../models/subscription';
 import {AdService} from '../shared/services/ad.service';
 import {UserService} from '../shared/services/user.service';
+import {EngagementService} from '../shared/services/engagement.service';
 import {BillsbyService} from '../shared/services/billsby.service';
 import {ProductGroup} from '../models/productGroup';
 import {Product} from '../models/product';
-import {add} from 'lodash';
 
 enum VideoType {
   Regular = 1, Cpcc,
@@ -30,9 +37,11 @@ enum VideoType {
 })
 export class VideoComponent implements OnInit, AfterViewInit {
   isUser: boolean;
+  userId: string;
   adId: any;
   engagementId: any;
   campaignId: any;
+  categoryId: string;
   ad: Project;
   currentProductGroup: ProductGroup;
   currentProduct: Product;
@@ -57,7 +66,7 @@ export class VideoComponent implements OnInit, AfterViewInit {
   @ViewChild('videoPlayer') videoPlayer: ElementRef;
   @ViewChild('canvas') canvas: ElementRef;
 
-  constructor(private router: Router, public dialog: MatDialog, private route: ActivatedRoute, private adService: AdService, private userService: UserService, private billsByService: BillsbyService) {
+  constructor(private router: Router, public dialog: MatDialog, private route: ActivatedRoute, private adService: AdService, private userService: UserService, private engagementService: EngagementService, private billsByService: BillsbyService) {
     this.isUser = false;
   }
 
@@ -70,12 +79,13 @@ export class VideoComponent implements OnInit, AfterViewInit {
     this.route.params.subscribe((params) => {
       this.params = params;
       this.adId = params.id;
+      this.isUser = params.userId !== 'false';
+      this.userId = this.isUser ? params.userId : '';
 
       if (params.engagementId != null && params.campaignId) {
         this.engagementId = params.engagementId;
         this.campaignId = params.campaignId;
         this.videoType = VideoType.Cpcc;
-        this.isUser = !!(this.campaignId && this.engagementId);
       }
       if (params.preview != null) {
         this.preview = params.preview;
@@ -116,7 +126,7 @@ export class VideoComponent implements OnInit, AfterViewInit {
       });
     }
 
-    if (!this.isUser) {
+    if (!this.isUser || !this.engagementId) {
       // TODO: change targetOrigin url for staging/live deployment
       window.parent.postMessage({
         init: true, action: 'getCampaignId'
@@ -125,6 +135,7 @@ export class VideoComponent implements OnInit, AfterViewInit {
       addEventListener('message', (event) => {
         if (event.data.campaignId) {
           this.campaignId = event.data.campaignId;
+          this.categoryId = event.data.categoryId;
         }
       });
     }
@@ -276,6 +287,7 @@ export class VideoComponent implements OnInit, AfterViewInit {
   }
 
   startQuiz() {
+    console.log('started quiz');
     this.showQuizButton = false;
     const navigationExtras: NavigationExtras = this.isUser ? {
       state: {

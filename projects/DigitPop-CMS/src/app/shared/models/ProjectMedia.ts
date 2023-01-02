@@ -5,10 +5,12 @@ export class ProjectMedia {
   name: string;
   createdAt: Date;
   category: string;
+  categoryId: string;
   media: {
     url: string; duration: number | string;
   };
   thumbnail: {
     url: string;
   };
+  watched: boolean;
 }

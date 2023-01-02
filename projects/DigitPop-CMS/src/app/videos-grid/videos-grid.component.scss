@@ -270,6 +270,37 @@ mat-radio-group {
   }
 }
 
+.video-element.dim {
+  pointer-events: none;
+  cursor: default;
+
+  video,
+  img {
+    -webkit-filter: grayscale(100%);
+    filter: grayscale(100%);
+  }
+
+  video,
+  img,
+  .details {
+    opacity: 0.25;
+  }
+
+  .thumbnail:after {
+    padding: 0 7px;
+    content: 'Watched';
+    font-size: 14px;
+    font-weight: bold;
+    background-color: #ff2169;
+    color: #fff;
+    z-index: 9999999;
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    border-radius: 5px;
+  }
+}
+
 .load-more {
   grid-column: 1/-1;
 }

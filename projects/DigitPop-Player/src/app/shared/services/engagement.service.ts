@@ -12,8 +12,11 @@ export class EngagementService {
   constructor(private http: HttpClient) {
   }
 
-  createEngagement(xchaneUser: XchaneUser) {
-    return this.http.post<any>(`${environment.apiUrl}/api/engagement/`, xchaneUser, httpOptions);
+  createEngagement(xchaneUser: string, category: string) {
+    return this.http.post<any>(`${environment.apiUrl}/api/engagement/`, {
+      xchaneUser,
+      category
+    }, httpOptions);
   }
 
   verificationAnswer(answer: any, engagementId: any, campaignId: any, isUser: boolean = true) {

@@ -1,21 +1,23 @@
-import { throwError as observableThrowError, timer } from 'rxjs';
-import { Component, OnInit, AfterViewInit } from '@angular/core';
-import { MatDialogRef, MatDialog } from '@angular/material/dialog';
-import { RedemptionpopupComponent } from '../redemptionpopup/redemptionpopup.component';
-import { FailurepopupComponent } from '../failurepopup/failurepopup.component';
-import { XchaneAuthenticationService } from '../../shared/services/xchane-auth-service.service';
-import { EngagementService } from '../../shared/services/engagement.service';
-import { RedemptionService } from '../../shared/services/redemption.service';
-import { XchaneUser } from '../../shared/models/xchane.user';
-import { Redemption } from '../../shared/models/redemption';
-import { Engagement } from '../../shared/models/engagement';
-import { PlayerComponent } from '../player/player.component';
-import { environment } from 'projects/DigitPop-CMS/src/environments/environment';
-import { AnswerDialogComponent } from '../answer-dialog/answer-dialog.component';
-import { ConfirmDialogComponent } from '../../cms/confirm-dialog/confirm-dialog.component';
-import { CategoryService } from '../../shared/services/category.service';
-import { WelcomeComponent } from '../help/welcome/welcome.component';
-import { OkDialogComponent } from '../../cms/ok-dialog/ok-dialog.component';
+import {throwError as observableThrowError, timer} from 'rxjs';
+import {AfterViewInit, Component, OnInit} from '@angular/core';
+import {MatDialog, MatDialogRef} from '@angular/material/dialog';
+import {
+  RedemptionpopupComponent
+} from '../redemptionpopup/redemptionpopup.component';
+import {FailurepopupComponent} from '../failurepopup/failurepopup.component';
+import {
+  XchaneAuthenticationService
+} from '../../shared/services/xchane-auth-service.service';
+import {EngagementService} from '../../shared/services/engagement.service';
+import {RedemptionService} from '../../shared/services/redemption.service';
+import {XchaneUser} from '../../shared/models/xchane.user';
+import {Redemption} from '../../shared/models/redemption';
+import {PlayerComponent} from '../player/player.component';
+import {environment} from 'projects/DigitPop-CMS/src/environments/environment';
+import {AnswerDialogComponent} from '../answer-dialog/answer-dialog.component';
+import {CategoryService} from '../../shared/services/category.service';
+import {WelcomeComponent} from '../help/welcome/welcome.component';
+import {OkDialogComponent} from '../../cms/ok-dialog/ok-dialog.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -31,6 +33,10 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   userCategories: any;
   showvideos: boolean;
   error = '';
+  // Score Bubble Animation
+  scoreBubbleIsOpen = false;
+  canToggle = false;
+  showAdmin = false;
 
   constructor(
     public authService: XchaneAuthenticationService,
@@ -49,11 +55,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     //   this.showAdmin = true;
     // }
   }
-
-  // Score Bubble Animation
-  scoreBubbleIsOpen = false;
-  canToggle = false;
-  showAdmin = false;
 
   public scoreBubbleToggle() {
     if (this.canToggle) {
@@ -170,46 +171,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     );
   }
 
-  private refreshUser() {
-    this.authService.getCurrentXchaneUser().subscribe(
-      (data2) => {
-        let use = new XchaneUser();
-        use = data2 as XchaneUser;
-        this.authService.storeUser(use);
-      },
-      (error: any) => {
-        this.failurepopupDialogRef = this.dialog.open(FailurepopupComponent, {
-          autoFocus: true,
-          hasBackdrop: false,
-          closeOnNavigation: true,
-        });
-
-        return observableThrowError(error);
-      }
-    );
-
-    // this.authService.getCurrentXchaneUser().subscribe(
-    //   (data2: XchaneUser) => {
-    //     let use = new XchaneUser();
-    //     use = data2 as XchaneUser;
-    //     this.authService.storeUser(use);
-
-    //     // if (this.authService.currentUser.role === 'admin') {
-    //     //   this.showAdmin = true;
-    //     // }
-    //   },
-    //   (error: any) => {
-    //     this.failurepopupDialogRef = this.dialog.open(FailurepopupComponent, {
-    //       autoFocus: true,
-    //       hasBackdrop: false,
-    //       closeOnNavigation: true,
-    //     });
-
-    //     return observableThrowError(error);
-    //   }
-    // );
-  }
-
   categoryVideoSwitch() {
     this.showvideos = !this.showvideos;
   }
@@ -270,12 +231,12 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         (res) => {
           console.log(
             'Auth service welcome call returned with res : ' +
-              JSON.stringify(res)
+            JSON.stringify(res)
           );
           this.authService.currentUserValue.welcomed = true;
           console.log(
             'Set current user welcome : ' +
-              this.authService.currentUserValue.welcomed
+            this.authService.currentUserValue.welcomed
           );
         },
         (error) => {
@@ -295,7 +256,10 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   receiveMessage(event: any) {
     if (event.data != null && event.data.received) {
       const iframeWindow = (document.querySelector('iframe.iframe') as HTMLIFrameElement).contentWindow;
-      iframeWindow.postMessage({success: true, initCommunications: true}, environment.playerUrl);
+      iframeWindow.postMessage({
+        success: true,
+        initCommunications: true
+      }, environment.playerUrl);
     }
 
     if (
@@ -393,5 +357,45 @@ export class DashboardComponent implements OnInit, AfterViewInit {
           return observableThrowError(error);
         }
       );
+  }
+
+  private refreshUser() {
+    this.authService.getCurrentXchaneUser().subscribe(
+      (data2) => {
+        let use = new XchaneUser();
+        use = data2 as XchaneUser;
+        this.authService.storeUser(use);
+      },
+      (error: any) => {
+        this.failurepopupDialogRef = this.dialog.open(FailurepopupComponent, {
+          autoFocus: true,
+          hasBackdrop: false,
+          closeOnNavigation: true,
+        });
+
+        return observableThrowError(error);
+      }
+    );
+
+    // this.authService.getCurrentXchaneUser().subscribe(
+    //   (data2: XchaneUser) => {
+    //     let use = new XchaneUser();
+    //     use = data2 as XchaneUser;
+    //     this.authService.storeUser(use);
+
+    //     // if (this.authService.currentUser.role === 'admin') {
+    //     //   this.showAdmin = true;
+    //     // }
+    //   },
+    //   (error: any) => {
+    //     this.failurepopupDialogRef = this.dialog.open(FailurepopupComponent, {
+    //       autoFocus: true,
+    //       hasBackdrop: false,
+    //       closeOnNavigation: true,
+    //     });
+
+    //     return observableThrowError(error);
+    //   }
+    // );
   }
 }
