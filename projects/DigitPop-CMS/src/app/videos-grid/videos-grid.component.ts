@@ -157,7 +157,6 @@ export class VideosGridComponent implements OnInit {
         .createEngagement(this.authService.currentUserValue, category)
         .subscribe(
           (data: any) => {
-            console.log(data._id);
             return engagementId = data._id;
           }
         );

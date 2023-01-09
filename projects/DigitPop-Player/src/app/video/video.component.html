@@ -1,5 +1,22 @@
 <div class="container">
   <img
+    [hidden]="pausedVideo"
+    (click)="onShowProduct()"
+    [tooltip]="'Pause to check related products'"
+    alt=""
+    class="shoppable-video-tutorial"
+    src="/assets/images/shoppable-video.svg"
+    tooltipPosition="above"
+  />
+  <img
+    [hidden]="!pausedVideo"
+    [tooltip]="'Click on product for more details'"
+    alt=""
+    class="shoppable-video-tutorial"
+    src="/assets/images/shoppable-video-touch.svg"
+    tooltipPosition="above"
+  />
+  <img
     (click)="onStartVideo()"
     [alt]="ad?.name"
     [hidden]="!showThumbnail"

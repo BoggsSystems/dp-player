@@ -113,6 +113,14 @@
   overflow: hidden;
 }
 
+.shoppable-video-tutorial {
+  z-index: 1;
+  width: 75px;
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+}
+
 .video-player-nav {
   display: grid;
   grid-template-columns: repeat(48, 1fr);
@@ -403,7 +411,7 @@
   }
 
   .product-template {
-    @include product-subtitle();
+    @include product-template();
   }
 
   .product-template-image {
@@ -433,7 +441,7 @@
   }
 
   .product-template {
-    @include product-subtitle();
+    @include product-template();
   }
 
   .product-template-image {

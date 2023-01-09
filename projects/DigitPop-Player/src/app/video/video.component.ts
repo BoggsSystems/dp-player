@@ -63,6 +63,7 @@ export class VideoComponent implements OnInit, AfterViewInit {
   preview = false;
   params: Params;
   pgIndex: any;
+  pausedVideo = false;
   @ViewChild('videoPlayer') videoPlayer: ElementRef;
   @ViewChild('canvas') canvas: ElementRef;
 
@@ -250,6 +251,7 @@ export class VideoComponent implements OnInit, AfterViewInit {
   }
 
   onShowProduct() {
+    this.pausedVideo = true;
     this.showSoundIcon = false;
     this.videoPlayer.nativeElement.pause();
     this.pgIndex = this.getProductGroupFromTime(this.videoPlayer.nativeElement.currentTime);
@@ -287,7 +289,6 @@ export class VideoComponent implements OnInit, AfterViewInit {
   }
 
   startQuiz() {
-    console.log('started quiz');
     this.showQuizButton = false;
     const navigationExtras: NavigationExtras = this.isUser ? {
       state: {

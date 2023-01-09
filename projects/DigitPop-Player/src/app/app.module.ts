@@ -20,6 +20,7 @@ import { MatStepperModule } from '@angular/material/stepper';
 import { SafePipe } from './video/utilities/SafePipe';
 import { AnswerDialogComponent } from './answer-dialog/answer-dialog.component';
 import { SubtitlePipe } from './video/utilities/SubtitlePipe';
+import {SharedModule} from './shared/shared.module';
 
 export const HTTP_NOAUTH = new InjectionToken('http_noauth');
 export const HTTP_NOBILLS = new InjectionToken('http_nobills');
@@ -50,7 +51,8 @@ export const HTTP_NOBILLS = new InjectionToken('http_nobills');
     ScrollingModule,
     CdkScrollableModule,
     MatStepperModule,
-    MatDialogModule
+    MatDialogModule,
+    SharedModule
   ],
   providers: [],
   bootstrap: [AppComponent],

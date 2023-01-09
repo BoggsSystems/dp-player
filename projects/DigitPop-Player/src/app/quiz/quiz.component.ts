@@ -40,9 +40,8 @@ export class QuizComponent implements OnInit, AfterViewInit {
       this.getCampaign(this.campaignId);
     }
 
-    if (navState.isUser && navState.campaignId != null && navState.engagementId != null) {
+    if (navState.isUser && navState.campaignId != null ) {
       this.campaignId = nav.extras.state.campaignId;
-      this.engagementId = nav.extras.state.engagementId;
       this.getCampaign(this.campaignId);
     }
 
