@@ -31,9 +31,9 @@
            src="{{video.thumbnail.url}}">
     </a>
     <div class="details">
-      <div fxLayout="row" fxLayoutAlign="space-between start">
+      <div fxLayout="row wrap" fxLayoutAlign="space-between start">
         <div fxLayout="row" fxLayoutAlign="start start">
-          <a aria-label="category title" class="category"
+          <a aria-label="category title" class="category" matTooltip="{{video.category}}"
              href="">{{video.category}}</a>
           <time class="duration">{{video.media.duration}}</time>
         </div>
