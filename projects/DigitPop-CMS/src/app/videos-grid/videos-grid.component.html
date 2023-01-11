@@ -12,13 +12,14 @@
 <div *ngIf="videosLoaded" [hidden]="!videosLoaded"
      [ngClass]="{'justify-start' : categoryVideosCount < 6}"
      class="videos-grid">
-  <div *ngFor="let video of videos" class="video-element" fxFlex="100%"
-       [class] = "video.watched ? 'dim' : ''"
+  <div *ngFor="let video of videos" [class]="video.watched ? 'dim' : ''" class="video-element"
+       fxFlex="100%"
        fxLayout="column"
        fxLayoutGap="10px">
-    <a (click)="openPlayer(video._id, video.campaignId, video.categoryId, $event)"
-       (mouseenter)="previewVideo($event)" class="thumbnail"
-       href="">
+    <a
+      (click)="openPlayer(video._id, video.campaignId, video.categoryId, $event)"
+      (mouseenter)="previewVideo($event)" class="thumbnail"
+      href="">
       <div class="preview-backdrop"></div>
       <video
         poster="{{video.thumbnail.url}}">
@@ -29,12 +30,19 @@
       </video>
       <img alt="video title" height="170"
            src="{{video.thumbnail.url}}">
+      <img
+        [hidden]="video.watched || completedShoppableTour"
+        alt=""
+        class="shoppable-video-indicator"
+        src="/assets/img/shoppable-video.svg"
+      />
     </a>
     <div class="details">
       <div fxLayout="row wrap" fxLayoutAlign="space-between start">
         <div fxLayout="row" fxLayoutAlign="start start">
-          <a aria-label="category title" class="category" matTooltip="{{video.category}}"
-             href="">{{video.category}}</a>
+          <a aria-label="category title" class="category"
+             href=""
+             matTooltip="{{video.category}}">{{video.category}}</a>
           <time class="duration">{{video.media.duration}}</time>
         </div>
         <time>{{prettyDate(video.createdAt)}}</time>
@@ -58,7 +66,8 @@
 </div>
 
 <div *ngIf="!videosLoaded || !MoreVideosLoaded" class="videos-grid lazy-loader">
-  <div *ngFor="let count of [0,1,2,3,4,5,6,7,8,9]" class="video-element" fxFlex="100%"
+  <div *ngFor="let count of [0,1,2,3,4,5,6,7,8,9]" class="video-element"
+       fxFlex="100%"
        fxLayout="column"
        fxLayoutGap="10px">
     <a class="thumbnail" href="">

@@ -45,12 +45,16 @@ export class VideosGridComponent implements OnInit {
   monthNames: string[] = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   scoreBubbleIsOpen: boolean;
   canToggle: boolean;
+  completedShoppableTour = false;
 
   constructor(private videosService: VideosGridService, private engagementService: EngagementService, private authService: XchaneAuthenticationService, private dialog: MatDialog) {
     this.scoreBubbleIsOpen = false;
     this.canToggle = false;
     this.videosCount = Array(this.videosLimit).fill(0).map((x, i) => i);
     this.categoryVideosCount = 0;
+    if (localStorage.getItem('completedShoppableTour')) {
+      this.completedShoppableTour = localStorage.getItem('completedShoppableTour') === 'true';
+    }
   }
 
   ngOnInit(): void {
@@ -205,6 +209,9 @@ export class VideosGridComponent implements OnInit {
       this.canToggle = true;
       this.scoreBubbleToggle(event.data.isUser);
       this.canToggle = false;
+    } else if (event.data.action === 'completedShoppableTour') {
+      this.completedShoppableTour = event.data.completed;
+      localStorage.setItem('completedShoppableTour', event.data.completed);
     }
   }
 

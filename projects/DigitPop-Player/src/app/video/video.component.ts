@@ -19,6 +19,9 @@ import {
 import {MainHelpComponent} from '../help/main-help/main-help.component';
 import {environment} from '../../environments/environment';
 import {SubscriptionDetails, SubscriptionInfo} from '../models/subscription';
+import {
+  XchaneAuthenticationService
+} from '../shared/services/xchane-auth-service.service';
 import {AdService} from '../shared/services/ad.service';
 import {UserService} from '../shared/services/user.service';
 import {EngagementService} from '../shared/services/engagement.service';
@@ -35,6 +38,7 @@ enum VideoType {
   templateUrl: './video.component.html',
   styleUrls: ['./video.component.scss'],
 })
+
 export class VideoComponent implements OnInit, AfterViewInit {
   isUser: boolean;
   userId: string;
@@ -63,15 +67,23 @@ export class VideoComponent implements OnInit, AfterViewInit {
   preview = false;
   params: Params;
   pgIndex: any;
-  pausedVideo = false;
+  videoPlaying = false;
+  completedShoppableTour = false;
   @ViewChild('videoPlayer') videoPlayer: ElementRef;
   @ViewChild('canvas') canvas: ElementRef;
 
-  constructor(private router: Router, public dialog: MatDialog, private route: ActivatedRoute, private adService: AdService, private userService: UserService, private engagementService: EngagementService, private billsByService: BillsbyService) {
+  constructor(private router: Router, public dialog: MatDialog, private route: ActivatedRoute, private authService: XchaneAuthenticationService, private adService: AdService, private userService: UserService, private engagementService: EngagementService, private billsByService: BillsbyService) {
     this.isUser = false;
+    if (localStorage.getItem('completedShoppableTour')) {
+      this.completedShoppableTour = localStorage.getItem('completedShoppableTour') === 'true';
+    } else {
+      localStorage.setItem('completedShoppableTour', 'false');
+      this.messageCMS();
+    }
   }
 
   ngOnInit(): void {
+    this.handleTutorial();
     this.videoType = VideoType.Regular;
 
     this.innerWidth = window.innerWidth;
@@ -176,6 +188,7 @@ export class VideoComponent implements OnInit, AfterViewInit {
       this.toggleVideoMute();
     }
     this.videoPlayer.nativeElement.play();
+    this.videoPlaying = true;
   }
 
   toggleVideoMute() {
@@ -245,13 +258,19 @@ export class VideoComponent implements OnInit, AfterViewInit {
   }
 
   onProductClick(product: Product) {
+    if (!this.completedShoppableTour) {
+      this.completedShoppableTour = true;
+      localStorage.setItem('completedShoppableTour', 'true');
+
+      this.messageCMS();
+    }
     this.currentProduct = product;
     this.selectedImage = product.images[0];
     this.viewState = 'Product';
   }
 
   onShowProduct() {
-    this.pausedVideo = true;
+    this.videoPlaying = false;
     this.showSoundIcon = false;
     this.videoPlayer.nativeElement.pause();
     this.pgIndex = this.getProductGroupFromTime(this.videoPlayer.nativeElement.currentTime);
@@ -309,6 +328,7 @@ export class VideoComponent implements OnInit, AfterViewInit {
     this.showVideo = true;
     // this.showSoundIcon = true;
     this.videoPlayer.nativeElement.play();
+    this.videoPlaying = true;
   }
 
   setSize() {
@@ -403,5 +423,16 @@ export class VideoComponent implements OnInit, AfterViewInit {
   onSeekAndPlay() {
     this.videoPlayer.nativeElement.currentTime = this.currentProductGroup.time;
     this.onResumeVideo();
+  }
+
+  messageCMS = () => {
+    const targetWindow = window.parent;
+    targetWindow.postMessage({
+      action: 'completedShoppableTour',
+      completed: this.completedShoppableTour
+    }, `http://localhost:4200`);
+  }
+
+  handleTutorial = () => {
   }
 }

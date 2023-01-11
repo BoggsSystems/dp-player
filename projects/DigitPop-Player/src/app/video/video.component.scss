@@ -76,7 +76,6 @@
   display: grid;
   grid-template-columns: $gridTemplateColumns;
   grid-template-rows: $gridTemplateRows;
-  margin-bottom: 10px;
 }
 
 @mixin product-template-image($width: 100px) {
@@ -487,7 +486,7 @@
   }
 
   .product-template {
-    @include product-template($gridTemplateColumns: 160px 300px, $gridTemplateRows: 30px 150px);
+    @include product-template($gridTemplateColumns: 160px 300px, $gridTemplateRows: 30px auto);
   }
 
   .product-template-image {
