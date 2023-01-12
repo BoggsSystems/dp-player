@@ -25,6 +25,7 @@ export class LoginComponent implements OnInit {
   @Input() fromQuiz = false;
   @Input() campaignId: string;
   @Input() projectId: string;
+  @Input() toured = false;
   loginForm: FormGroup;
   loading = false;
   submitted = false;
@@ -39,6 +40,10 @@ export class LoginComponent implements OnInit {
       this.router.navigate(['/']);
     }
     this.validRole = Role.Consumer;
+
+    if (localStorage.getItem('completedShoppableTour')) {
+      this.toured = localStorage.getItem('completedShoppableTour') === 'true';
+    }
     // redirect to home if already logged in
     // if (this.authenticationService.currentUserValue) {
     //   this.dialogRef.close();
@@ -97,9 +102,20 @@ export class LoginComponent implements OnInit {
             this.storeUser(res);
             localStorage.setItem('currentRole', 'customer');
             this.dialogRef.close();
+
+            if (!res.toured && this.toured) {
+              this.xchaneAuthenticationService
+                .tour()
+                .subscribe(user => {
+                  localStorage.setItem('completedShoppableTour', 'true');
+                  localStorage.setItem('XchaneCurrentUser', JSON.stringify(user));
+                });
+            }
+
             if (this.fromQuiz) {
               return this.addPointsToUser(res._id);
             }
+
             this.router.navigate(['/xchane/dashboard']);
           } else {
             this.dialogRef.close();

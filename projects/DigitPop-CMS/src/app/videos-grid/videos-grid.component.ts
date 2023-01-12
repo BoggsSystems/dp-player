@@ -19,6 +19,7 @@ import {
 import {PlayerComponent} from '../xchane/player/player.component';
 import {timer} from 'rxjs';
 import {VisitorPopupComponent} from '../visitor-popup/visitor-popup.component';
+import {XchaneUser} from '../shared/models/xchane.user';
 
 @Component({
   selector: 'digit-pop-videos-grid',
@@ -47,17 +48,23 @@ export class VideosGridComponent implements OnInit {
   canToggle: boolean;
   completedShoppableTour = false;
 
+  // tslint:disable-next-line:max-line-length
   constructor(private videosService: VideosGridService, private engagementService: EngagementService, private authService: XchaneAuthenticationService, private dialog: MatDialog) {
     this.scoreBubbleIsOpen = false;
     this.canToggle = false;
     this.videosCount = Array(this.videosLimit).fill(0).map((x, i) => i);
     this.categoryVideosCount = 0;
-    if (localStorage.getItem('completedShoppableTour')) {
-      this.completedShoppableTour = localStorage.getItem('completedShoppableTour') === 'true';
-    }
   }
 
   ngOnInit(): void {
+    if (this.authService.currentUserValue) {
+      this.completedShoppableTour = this.authService.currentUserValue.toured ? this.authService.currentUserValue.toured : false;
+      localStorage.setItem('completedShoppableTour', String(this.completedShoppableTour));
+    } else if (localStorage.getItem('completedShoppableTour')) {
+      this.completedShoppableTour = localStorage.getItem('completedShoppableTour') === 'true';
+    } else {
+      localStorage.setItem('completedShoppableTour', 'false');
+    }
     this.getCategories();
     window.addEventListener('message', this.handlePostQuizMessage.bind(this), false);
   }
@@ -165,7 +172,14 @@ export class VideosGridComponent implements OnInit {
           }
         );
     }
-    dialogConfig.data = {id, campaignId, userId, categoryId, engagementId};
+    dialogConfig.data = {
+      id,
+      campaignId,
+      userId,
+      categoryId,
+      engagementId,
+      completedShoppableTour: this.completedShoppableTour
+    };
     this.popupDialogRef = this.dialog.open(PreviewComponent, dialogConfig);
 
   }
@@ -212,6 +226,9 @@ export class VideosGridComponent implements OnInit {
     } else if (event.data.action === 'completedShoppableTour') {
       this.completedShoppableTour = event.data.completed;
       localStorage.setItem('completedShoppableTour', event.data.completed);
+      if (this.completedShoppableTour) {
+        this.toured();
+      }
     }
   }
 
@@ -242,5 +259,22 @@ export class VideosGridComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(() => {
     });
+  }
+
+  toured = () => {
+    if (!this.authService.currentUserValue.toured) {
+      this.authService
+        .tour()
+        .subscribe(
+          (res: XchaneUser) => {
+            if (res.toured) {
+              this.authService.storeUser(res);
+            }
+          },
+          (error: any) => {
+            console.error(error);
+          }
+        );
+    }
   }
 }

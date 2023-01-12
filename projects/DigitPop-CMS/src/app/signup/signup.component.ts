@@ -31,6 +31,7 @@ export class SignupComponent implements OnInit {
   @Input() fromQuiz = false;
   @Input() campaignId: string;
   @Input() projectId: string;
+  @Input() toured = false;
 
   signUpForm: FormGroup;
   submitted = false;
@@ -121,6 +122,11 @@ export class SignupComponent implements OnInit {
     user.email = this.signUpForm.controls.email.value;
     user.password = this.signUpForm.controls.password.value;
     user.role = Role.Consumer;
+
+    if (this.toured) {
+      user.toured = this.toured;
+    }
+
     this.authService
       .createXchaneUser(user)
       .subscribe(response => {

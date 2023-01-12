@@ -72,6 +72,7 @@ export class VideoComponent implements OnInit, AfterViewInit {
   @ViewChild('videoPlayer') videoPlayer: ElementRef;
   @ViewChild('canvas') canvas: ElementRef;
 
+  // tslint:disable-next-line:max-line-length
   constructor(private router: Router, public dialog: MatDialog, private route: ActivatedRoute, private authService: XchaneAuthenticationService, private adService: AdService, private userService: UserService, private engagementService: EngagementService, private billsByService: BillsbyService) {
     this.isUser = false;
     if (localStorage.getItem('completedShoppableTour')) {
@@ -80,6 +81,7 @@ export class VideoComponent implements OnInit, AfterViewInit {
       localStorage.setItem('completedShoppableTour', 'false');
       this.messageCMS();
     }
+    this.handleTutorial();
   }
 
   ngOnInit(): void {
@@ -149,6 +151,10 @@ export class VideoComponent implements OnInit, AfterViewInit {
         if (event.data.campaignId) {
           this.campaignId = event.data.campaignId;
           this.categoryId = event.data.categoryId;
+          if (!this.completedShoppableTour && event.data.toured) {
+            this.completedShoppableTour = event.data.toured;
+            localStorage.setItem('completedShoppableTour', 'true');
+          }
         }
       });
     }
@@ -261,7 +267,6 @@ export class VideoComponent implements OnInit, AfterViewInit {
     if (!this.completedShoppableTour) {
       this.completedShoppableTour = true;
       localStorage.setItem('completedShoppableTour', 'true');
-
       this.messageCMS();
     }
     this.currentProduct = product;
@@ -434,5 +439,6 @@ export class VideoComponent implements OnInit, AfterViewInit {
   }
 
   handleTutorial = () => {
+    const user = this.authService.currentUserValue;
   }
 }

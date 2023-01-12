@@ -123,6 +123,11 @@ export class XchaneAuthenticationService {
       .put<any>(`${environment.apiUrl}/api/xchaneuser/` + this.currentUserValue._id + '/welcome', {id: this.currentUserValue._id});
   }
 
+  tour = () => {
+    return this.httpClient
+      .put<any>(`${environment.apiUrl}/api/xchaneuser/tour`, {id: this.currentUserValue._id});
+  }
+
   logout() {
     localStorage.removeItem('token');
     localStorage.removeItem('expires_at');
