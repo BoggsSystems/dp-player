@@ -49,7 +49,7 @@ import { VideosGridComponent } from './videos-grid/videos-grid.component';
 import { QuizAnimationComponent } from './quiz-animation/quiz-animation.component';
 import {MatTabsModule} from '@angular/material/tabs';
 import { VisitorPopupComponent } from './visitor-popup/visitor-popup.component';
-
+import { UserRewardsComponent } from './user-rewards/user-rewards.component';
 
 export const HTTP_CMS_AUTH = new InjectionToken('http_cms_auth');
 export const HTTP_XCHANE_AUTH = new InjectionToken('http_xchane_auth');
@@ -66,7 +66,8 @@ export const HTTP_NO_INTERCEPTORS = new InjectionToken('http_no_interceptors');
     SignupComponent,
     VideosGridComponent,
     QuizAnimationComponent,
-    VisitorPopupComponent
+    VisitorPopupComponent,
+    UserRewardsComponent
   ],
   imports: [
     BrowserModule,
@@ -103,6 +104,7 @@ export const HTTP_NO_INTERCEPTORS = new InjectionToken('http_no_interceptors');
     MatRadioModule,
     ImagesLazyloadModule,
     MatTabsModule,
+    SharedModule,
   ],
   providers: [
     provideTokenizedHttpClient(HTTP_BILLS, { excludes: [JwtInterceptor, XchaneJwtInterceptor] }),
