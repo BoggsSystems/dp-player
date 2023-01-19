@@ -71,12 +71,19 @@ section {
 
 .points h1 {
   z-index: 2;
+  width: 200px;
   margin: 0;
   font-size: 55px;
   line-height: 55px;
   font-weight: 900;
   color: #ff2169;
+  position: relative;
+}
 
+.points--total--opening--backdrop {
+  position: absolute;
+  opacity: 0.04;
+  top: 0;
 }
 
 .points span:last-of-type {

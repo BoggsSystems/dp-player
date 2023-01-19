@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute, NavigationExtras, Router} from '@angular/router';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {first} from 'rxjs/operators';
 import {MatDialogRef} from '@angular/material/dialog';
@@ -116,7 +116,12 @@ export class LoginComponent implements OnInit {
               return this.addPointsToUser(res._id);
             }
 
-            return this.router.navigate(['/home']);
+            const navigationExtras: NavigationExtras = {
+              state: {
+                loggedIn: true
+              },
+            };
+            return this.router.navigate(['/home'], navigationExtras);
           } else {
             this.dialogRef.close();
           }
@@ -177,7 +182,12 @@ export class LoginComponent implements OnInit {
       .addPointsAfterSignUp(this.campaignId, xchaneUserId, this.projectId)
       .subscribe(response => {
         this.xchaneAuthenticationService.storeUser(response);
-        return this.router.navigate(['/home']);
+        const navigationExtras: NavigationExtras = {
+          state: {
+            loggedIn: true
+          },
+        };
+        return this.router.navigate(['/home'], navigationExtras);
       }, error => {
         return observableThrowError(error);
       });

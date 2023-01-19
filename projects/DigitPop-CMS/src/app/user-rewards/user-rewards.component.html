@@ -9,7 +9,8 @@
       >i</span>
       <span class="points--total--opening">you have</span>
       <h1>
-        {{authService.currentUserValue.credits.toString().padEnd(7, ".000")}}
+        {{authService.currentUserValue.credits}}
+        <span class="points--total--opening--backdrop">{{authService.currentUserValue.credits.toString().padEnd(7, '.000')}}</span>
       </h1>
       <span>Points</span>
     </div>

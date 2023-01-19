@@ -121,7 +121,6 @@ export class QuizComponent implements OnInit, AfterViewInit {
     return this.engagementService
       .verificationAnswer(answer, this.engagementId, this.campaignId, this.isUser)
       .subscribe((res: any) => {
-        console.log(res);
         res = {action: 'postQuiz', isUser: this.isUser, isCorrect: res};
 
         const targetWindow = window.parent;

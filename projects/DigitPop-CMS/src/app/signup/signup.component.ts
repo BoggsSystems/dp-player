@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MatDialogRef} from '@angular/material/dialog';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute, NavigationExtras, Router} from '@angular/router';
 import {
   XchaneAuthenticationService
 } from '../shared/services/xchane-auth-service.service';
@@ -144,7 +144,12 @@ export class SignupComponent implements OnInit {
       .addPointsAfterSignUp(this.campaignId, xchaneUserId, this.projectId)
       .subscribe(response => {
         this.authService.storeUser(response);
-        return this.router.navigate(['/home']);
+        const navigationExtras: NavigationExtras = {
+          state: {
+            loggedIn: true
+          },
+        };
+        return this.router.navigate(['/home'], navigationExtras);
       }, error => {
         return observableThrowError(error);
       });

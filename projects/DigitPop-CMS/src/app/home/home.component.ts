@@ -1,4 +1,5 @@
 import {
+  AfterViewInit,
   Component,
   ElementRef,
   HostListener,
@@ -8,13 +9,12 @@ import {
 } from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {
-  HashLocationStrategy,
-  Location,
-  LocationStrategy,
+  HashLocationStrategy, Location, LocationStrategy,
 } from '@angular/common';
 import {environment} from '../../environments/environment';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {PreviewComponent} from '../cms/preview/preview.component';
+import {WelcomeComponent} from '../xchane/help/welcome/welcome.component';
 import {
   animate,
   animation,
@@ -26,135 +26,130 @@ import {
   trigger,
 } from '@angular/animations';
 import {Platform} from '@angular/cdk/platform';
-import {User} from '../shared/models/user'
+import {User} from '../shared/models/user';
 import {
   UserService
 } from '../../../../DigitPop-Player/src/app/shared/services/user.service';
 import {AuthenticationService} from '../shared/services/auth-service.service';
+import {XchaneAuthenticationService} from '../shared/services/xchane-auth-service.service';
 import {SignupComponent} from '../signup/signup.component';
 import {
   MetricsService
 } from 'projects/DigitPop-CMS/src/app/shared/services/metrics.service';
 import {Metric} from '../shared/models/metric';
 
-interface customWindow extends Window {
+interface CustomWindow extends Window {
   billsbyData: any;
 }
 
-declare const window: customWindow;
+declare const window: CustomWindow;
 declare let Calendly: any;
 
 @Component({
   selector: 'digit-pop-home',
   templateUrl: './home.component.html',
-  providers: [
-    Location,
-    {provide: LocationStrategy, useClass: HashLocationStrategy},
-  ],
-  animations: [
-    trigger('openClose', [
-      state(
-        'open',
-        style({
-          top: '0px',
-          left: '0px',
-          position: 'fixed',
-          width: '{{startWidth}}px',
-          height: '{{startHeight}}px',
-          opacity: 1,
-        }),
-        {
-          params: {
-            startHeight: window.innerHeight,
-            startWidth: window.innerWidth,
-          },
-        }
-      ),
-      state(
-        'closed',
-        style({
-          height: '100%',
-          width: '100%',
-        })
-      ),
-      transition('open => closed', [animate('1s')]),
-      transition('closed => open', [animate('0.5s')]),
-    ]),
-  ],
+  providers: [Location, {
+    provide: LocationStrategy, useClass: HashLocationStrategy
+  },],
+  animations: [trigger('openClose', [state('open', style({
+    top: '0px',
+    left: '0px',
+    position: 'fixed',
+    width: '{{startWidth}}px',
+    height: '{{startHeight}}px',
+    opacity: 1,
+  }), {
+    params: {
+      startHeight: window.innerHeight, startWidth: window.innerWidth,
+    },
+  }), state('closed', style({
+    height: '100%', width: '100%',
+  })), transition('open => closed', [animate('1s')]), transition('closed => open', [animate('0.5s')]),]),],
   styleUrls: ['./home.component.scss'],
 })
 
-export class HomeComponent implements OnInit, OnDestroy {
+export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   location: Location;
   iFrameSrc: any;
   fadeAnimation: any;
   loading = false;
   users: User[];
+  isUser = false;
   @ViewChild('embeddedFrame') embeddedFrame: ElementRef;
   @ViewChild('embeddedIFrame') embeddedIFrame: ElementRef;
 
-  constructor(
-    private router: Router,
-    private route: ActivatedRoute,
-    private dialog: MatDialog,
-    location: Location,
-    private _builder: AnimationBuilder,
-    public platform: Platform,
-    private userService: UserService,
-    private metricsService: MetricsService,
-    private authService: AuthenticationService
-  ) {
+  // tslint:disable-next-line:max-line-length
+  constructor(private router: Router, private route: ActivatedRoute, private dialog: MatDialog, location: Location, private _builder: AnimationBuilder, public platform: Platform, private userService: UserService, private metricsService: MetricsService, private authService: AuthenticationService, private xchaneAuthService: XchaneAuthenticationService) {
+    const nav = this.router.getCurrentNavigation();
+    const checkNav = nav != null && nav.extras != null && nav.extras.state != null;
+
+    if (checkNav) {
+      const navState = nav.extras.state;
+      if (navState.loggedIn) {
+        this.isUser = true;
+      }
+    }
     this.location = location;
     this.iFrameSrc = `${environment.playerUrl}/ad/60518dfbe73b860004205e72`;
-    this.fadeAnimation = animation(
-      [
-        style({opacity: '{{ start }}'}),
-        animate('{{ time }}', style({opacity: '{{ end }}'})),
-      ],
-      {params: {time: '1000ms', start: 0, end: 1}}
-    );
+    this.fadeAnimation = animation([style({opacity: '{{ start }}'}), animate('{{ time }}', style({opacity: '{{ end }}'})),], {
+      params: {
+        time: '1000ms', start: 0, end: 1
+      }
+    });
   }
 
-  @HostListener('window:orientationchange', ['$event'])
-  onOrientationChange(event: any) {
-    var url = environment.playerUrl;
+  @HostListener('window:orientationchange', ['$event']) onOrientationChange(event: any) {
+    const url = environment.playerUrl;
 
     console.log('Passing embedded player message');
-    this.embeddedIFrame.nativeElement.contentWindow.postMessage(
-      'embeddedPlayer',
-      url
-    );
+    this.embeddedIFrame.nativeElement.contentWindow.postMessage('embeddedPlayer', url);
 
     if (window.innerHeight > window.innerWidth) {
       console.log('Height greater than width - show message');
-      this.embeddedIFrame.nativeElement.contentWindow.postMessage(
-        'orientationPortrait',
-        url
-      );
+      this.embeddedIFrame.nativeElement.contentWindow.postMessage('orientationPortrait', url);
     } else {
       console.log('Width greater than height - do not show message');
-      this.embeddedIFrame.nativeElement.contentWindow.postMessage(
-        'orientationLandscape',
-        url
-      );
+      this.embeddedIFrame.nativeElement.contentWindow.postMessage('orientationLandscape', url);
     }
 
     console.log('orientationChanged');
   }
 
-  preview() {
-    var metric = new Metric();
-    metric.description = "Preview Shoppable Video Button Press";
-    console.log("Calling metrics service");
+  ngAfterViewInit() {
+    if (this.isUser) {
+      this.welcome();
+    }
+  }
 
-    this.metricsService.createMetric(metric).subscribe(
-      (res) => {
-        console.log('Metric Created');
-      },
-      (err) => {
-        console.log('Error : ' + err);
-      }
-    );
+  welcome = () => {
+    if (!this.xchaneAuthService.currentUserValue.welcomed) {
+      this.openWelcomeDialog();
+    }
+  }
+
+  openWelcomeDialog = (): void => {
+    const dialogRef = this.dialog.open(WelcomeComponent, {
+      width: '100%', height: '90%',
+    });
+
+    dialogRef.afterClosed().subscribe(() => {
+      this.xchaneAuthService.welcome().subscribe((res) => {
+        this.xchaneAuthService.currentUserValue.welcomed = true;
+      }, (error) => {
+        console.error(error);
+      });
+    });
+  }
+
+  preview() {
+    const metric = new Metric();
+    metric.description = 'Preview Shoppable Video Button Press';
+
+    this.metricsService.createMetric(metric).subscribe((res) => {
+      console.log('Metric Created');
+    }, (err) => {
+      console.log('Error : ' + err);
+    });
 
     const dialogConfig = new MatDialogConfig();
 
@@ -165,18 +160,15 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   preview_fenty_icon() {
-    var metric = new Metric();
-    metric.description = "Preview Shoppable Video Button Press";
-    console.log("Calling metrics service");
+    const metric = new Metric();
+    metric.description = 'Preview Shoppable Video Button Press';
+    console.log('Calling metrics service');
 
-    this.metricsService.createMetric(metric).subscribe(
-      (res) => {
-        console.log('Metric Created');
-      },
-      (err) => {
-        console.log('Error : ' + err);
-      }
-    );
+    this.metricsService.createMetric(metric).subscribe((res) => {
+      console.log('Metric Created');
+    }, (err) => {
+      console.log('Error : ' + err);
+    });
 
     const dialogConfig = new MatDialogConfig();
 
@@ -188,18 +180,15 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   preview_cardi_reebok() {
-    var metric = new Metric();
-    metric.description = "Preview Shoppable Video Button Press";
-    console.log("Calling metrics service");
+    const metric = new Metric();
+    metric.description = 'Preview Shoppable Video Button Press';
+    console.log('Calling metrics service');
 
-    this.metricsService.createMetric(metric).subscribe(
-      (res) => {
-        console.log('Metric Created');
-      },
-      (err) => {
-        console.log('Error : ' + err);
-      }
-    );
+    this.metricsService.createMetric(metric).subscribe((res) => {
+      console.log('Metric Created');
+    }, (err) => {
+      console.log('Error : ' + err);
+    });
 
     const dialogConfig = new MatDialogConfig();
 
@@ -221,7 +210,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     window.addEventListener('message', this.receiveMessage.bind(this), false);
 
     if (this.route != null && this.route.queryParams != null) {
-      var x = this.route.queryParams;
+      const x = this.route.queryParams;
     }
   }
 
@@ -231,8 +220,8 @@ export class HomeComponent implements OnInit, OnDestroy {
       // https://msdn.microsoft.com/en-us/library/hh869301(v=vs.85).aspx
       return false;
     }
-    var match = navigator.appVersion.match(/OS (\d+)_(\d+)_?(\d+)?/),
-      version;
+    const match = navigator.appVersion.match(/OS (\d+)_(\d+)_?(\d+)?/);
+    let version;
 
     if (match !== undefined && match !== null) {
       version = [parseInt(match[1], 10), parseInt(match[2], 10)];
@@ -243,18 +232,12 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   receiveMessage(event: any) {
+    let isIOS;
     if (event.data === 'exit') {
-      var isIOS =
-        window.navigator.userAgent.match(/iPhone/i) ||
-        window.navigator.userAgent.match(/iPad/i); // ||
-      //window.navigator.userAgent.match(/Macintosh/i);
-      console.log('Video Is iOS : ' + isIOS);
+      isIOS = window.navigator.userAgent.match(/iPhone/i) || window.navigator.userAgent.match(/iPad/i);
 
       if (isIOS != null) {
-        this.embeddedFrame.nativeElement.style.setProperty(
-          'position',
-          'static'
-        );
+        this.embeddedFrame.nativeElement.style.setProperty('position', 'static');
         this.embeddedFrame.nativeElement.style.setProperty('left', 0 + 'px');
         this.embeddedFrame.nativeElement.style.setProperty('top', 0 + 'px');
 
@@ -265,10 +248,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.embeddedIFrame.nativeElement.style.setProperty('height', '100%');
       } else if (window.navigator.userAgent.match(/Macintosh/i)) {
         console.log('Close action in Macintosh SMOSH');
-        this.embeddedFrame.nativeElement.style.setProperty(
-          'position',
-          'static'
-        );
+        this.embeddedFrame.nativeElement.style.setProperty('position', 'static');
         this.embeddedFrame.nativeElement.style.setProperty('left', 0 + 'px');
         this.embeddedFrame.nativeElement.style.setProperty('top', 0 + 'px');
         this.embeddedFrame.nativeElement.style.setProperty('width', '100%');
@@ -276,19 +256,14 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.embeddedIFrame.nativeElement.style.setProperty('width', '100%');
         this.embeddedIFrame.nativeElement.style.setProperty('height', '100%');
       } else {
-        const closeAnimation = this._builder.build([
-          animate(
-            500,
-            style({
-              top: '0px',
-              left: '0px',
-              position: 'static',
-              width: '100%',
-              height: '100%',
-              opacity: 1,
-            })
-          ),
-        ]);
+        const closeAnimation = this._builder.build([animate(500, style({
+          top: '0px',
+          left: '0px',
+          position: 'static',
+          width: '100%',
+          height: '100%',
+          opacity: 1,
+        })),]);
 
         // use the returned factory object to create a player
         const player = closeAnimation.create(this.embeddedFrame.nativeElement);
@@ -298,9 +273,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
 
     if (event.data === 'start') {
-      var isIOS =
-        window.navigator.userAgent.match(/iPhone/i) ||
-        window.navigator.userAgent.match(/iPad/i);
+      isIOS = window.navigator.userAgent.match(/iPhone/i) || window.navigator.userAgent.match(/iPad/i);
 
       if (isIOS != null) {
         this.embeddedFrame.nativeElement.style.setProperty('position', 'fixed');
@@ -309,26 +282,14 @@ export class HomeComponent implements OnInit, OnDestroy {
 
         const version = this.iOSVersion();
         if (version >= 13 && version < 14) {
-          this.embeddedIFrame.nativeElement.style.setProperty(
-            'width',
-            window.innerWidth + 'px'
-          );
+          this.embeddedIFrame.nativeElement.style.setProperty('width', window.innerWidth + 'px');
 
-          this.embeddedIFrame.nativeElement.style.setProperty(
-            'height',
-            window.innerHeight + 'px'
-          );
+          this.embeddedIFrame.nativeElement.style.setProperty('height', window.innerHeight + 'px');
 
-          this.embeddedFrame.nativeElement.style.setProperty(
-            'width',
-            window.innerWidth + 'px'
-          );
+          this.embeddedFrame.nativeElement.style.setProperty('width', window.innerWidth + 'px');
 
-          this.embeddedFrame.nativeElement.style.setProperty(
-            'height',
-            window.innerHeight + 'px'
-          );
-        } else if (version == 14) {
+          this.embeddedFrame.nativeElement.style.setProperty('height', window.innerHeight + 'px');
+        } else if (version === 14) {
           this.embeddedFrame.nativeElement.style.setProperty('width', '100%');
           this.embeddedFrame.nativeElement.style.setProperty('height', '100%');
         } else if (version < 13) {
@@ -336,46 +297,25 @@ export class HomeComponent implements OnInit, OnDestroy {
         }
       } else if (window.navigator.userAgent.match(/Macintosh/i)) {
         if (window.navigator.userAgent.match(/Safari/i)) {
-          //window.open(this.iFrameSrc);
+          // window.open(this.iFrameSrc);
         } else {
-          this.embeddedFrame.nativeElement.style.setProperty(
-            'position',
-            'fixed'
-          );
+          this.embeddedFrame.nativeElement.style.setProperty('position', 'fixed');
           this.embeddedFrame.nativeElement.style.setProperty('left', 0 + 'px');
           this.embeddedFrame.nativeElement.style.setProperty('top', 0 + 'px');
-          this.embeddedFrame.nativeElement.style.setProperty(
-            'width',
-            window.innerWidth + 'px'
-          );
+          this.embeddedFrame.nativeElement.style.setProperty('width', window.innerWidth + 'px');
 
-          this.embeddedFrame.nativeElement.style.setProperty(
-            'height',
-            window.innerHeight + 'px'
-          );
+          this.embeddedFrame.nativeElement.style.setProperty('height', window.innerHeight + 'px');
         }
       } else {
-        const startAnimation = this._builder.build([
-          sequence([
-            animate(
-              100,
-              style({
-                top: '0px',
-                left: '0px',
-                position: 'fixed',
-                width: window.innerWidth,
-                height: window.innerHeight,
-              })
-            ),
-            animate(
-              400,
-              style({
-                width: window.innerWidth,
-                height: window.innerHeight,
-              })
-            ),
-          ]),
-        ]);
+        const startAnimation = this._builder.build([sequence([animate(100, style({
+          top: '0px',
+          left: '0px',
+          position: 'fixed',
+          width: window.innerWidth,
+          height: window.innerHeight,
+        })), animate(400, style({
+          width: window.innerWidth, height: window.innerHeight,
+        })),]),]);
 
         const player = startAnimation.create(this.embeddedFrame.nativeElement);
         player.play();
@@ -391,22 +331,18 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   openSignup() {
 
-    var metric = new Metric();
-    metric.description = "Signup Button Press";
-    console.log("Calling metrics service");
+    const metric = new Metric();
+    metric.description = 'Signup Button Press';
+    console.log('Calling metrics service');
 
-    this.metricsService.createMetric(metric).subscribe(
-      (res) => {
-        console.log('Metric Created');
-      },
-      (err) => {
-        console.log('Error : ' + err);
-      }
-    );
+    this.metricsService.createMetric(metric).subscribe((res) => {
+      console.log('Metric Created');
+    }, (err) => {
+      console.log('Error : ' + err);
+    });
 
     const dialogRef = this.dialog.open(SignupComponent, {
-      width: '40%',
-      height: '70%',
+      width: '40%', height: '70%',
     });
 
     dialogRef.afterClosed().subscribe(() => {
@@ -417,46 +353,43 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   createFreeTrialAccount() {
 
-    console.log("In  createFreeTrialAccount")
-    var user = new User();
+    console.log('In  createFreeTrialAccount');
+    const user = new User();
 
-    let r = (Math.random() + 1).toString(36).substring(7);
-    console.log("random", r);
+    const r = (Math.random() + 1).toString(36).substring(7);
+    console.log('random', r);
 
-    user.email = "testfreetrial@gmail.com"
-    user.password = "testfreetrial";
+    user.email = 'testfreetrial@gmail.com';
+    user.password = 'testfreetrial';
 
-    this.authService.createUser(user).subscribe(
-      (res) => {
-        if (res) {
+    this.authService.createUser(user).subscribe((res) => {
+      if (res) {
 
-          console.log("USER CREATED " + res);
-          localStorage.setItem('currentRole', 'Business');
-          //localStorage.setItem("trial",'true');
+        console.log('USER CREATED ' + res);
+        localStorage.setItem('currentRole', 'Business');
+        // localStorage.setItem("trial",'true');
 
-          // const navigationExtras: NavigationExtras = {
-          //   state: { trial: true },
-          // };
+        // const navigationExtras: NavigationExtras = {
+        //   state: { trial: true },
+        // };
 
-          this.router.navigate(['/cms/dashboard']);
-        }
-      },
-      (err) => {
-        console.log('Update error : ' + err.toString());
+        this.router.navigate(['/cms/dashboard']);
       }
-    );
+    }, (err) => {
+      console.log('Update error : ' + err.toString());
+    });
   }
 
   ngOnDestroy(): void {
     Calendly.destroyBadgeWidget();
 
-    var frame = document.getElementById('checkout-billsby-iframe');
+    const frame = document.getElementById('checkout-billsby-iframe');
 
     if (frame != null) {
       frame.parentNode.removeChild(frame);
     }
 
-    var bg = document.getElementById('checkout-billsby-outer-background');
+    const bg = document.getElementById('checkout-billsby-outer-background');
 
     if (bg != null) {
       bg.parentNode.removeChild(bg);
