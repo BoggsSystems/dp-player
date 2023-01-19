@@ -92,7 +92,6 @@ export class VideoComponent implements OnInit, AfterViewInit {
       this.userId = this.isUser ? params.userId : '';
 
       if (params.engagementId != null && params.campaignId) {
-        this.engagementId = params.engagementId;
         this.campaignId = params.campaignId;
         this.videoType = VideoType.Cpcc;
       }

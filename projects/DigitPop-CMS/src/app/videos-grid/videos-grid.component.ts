@@ -3,6 +3,7 @@ import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {
   MatDialog, MatDialogConfig, MatDialogRef
 } from '@angular/material/dialog';
+import {Router} from '@angular/router';
 import {VideosGridService} from '../shared/services/videos-grid.service';
 import {EngagementService} from '../shared/services/engagement.service';
 import {
@@ -51,9 +52,10 @@ export class VideosGridComponent implements OnInit {
   scoreBubbleIsOpen: boolean;
   canToggle: boolean;
   completedShoppableTour = false;
+  isUser: string | boolean;
 
   // tslint:disable-next-line:max-line-length
-  constructor(private videosService: VideosGridService, private engagementService: EngagementService, private authService: XchaneAuthenticationService, private dialog: MatDialog) {
+  constructor(private videosService: VideosGridService, private engagementService: EngagementService, private authService: XchaneAuthenticationService, private dialog: MatDialog, private router: Router) {
     this.scoreBubbleIsOpen = false;
     this.canToggle = false;
     this.videosCount = Array(this.videosLimit).fill(0).map((x, i) => i);
@@ -139,6 +141,8 @@ export class VideosGridComponent implements OnInit {
     const isUser = !!localStorage.getItem('XchaneCurrentUser');
     const userId = isUser ? JSON.parse(localStorage.getItem('XchaneCurrentUser'))._id : false;
 
+    this.isUser = isUser;
+
     dialogConfig.data = {
       id,
       campaignId,
@@ -189,7 +193,9 @@ export class VideosGridComponent implements OnInit {
       this.canToggle = true;
       this.scoreBubbleToggle(event.data.isUser);
       this.canToggle = false;
-      this.refreshUser();
+      if (this.isUser) {
+        return this.refreshUser();
+      }
     } else if (event.data.action === 'completedShoppableTour') {
       this.completedShoppableTour = event.data.completed;
       localStorage.setItem('completedShoppableTour', event.data.completed);
@@ -245,6 +251,7 @@ export class VideosGridComponent implements OnInit {
       let use = new XchaneUser();
       use = user as XchaneUser;
       this.authService.storeUser(use);
+      return this.router.navigate(['/home']);
     }, (error: any) => {
       console.error(error);
     });

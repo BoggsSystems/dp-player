@@ -59,10 +59,10 @@ export class LoginComponent implements OnInit {
   }
 
   onChange($event: any) {
-    if ($event.source.value == "1") {
+    if ($event.source.value === '1') {
       this.validRole = Role.Consumer;
     }
-    if ($event.source.value == "2") {
+    if ($event.source.value === '2') {
       this.validRole = Role.Business;
     }
   }
@@ -71,7 +71,7 @@ export class LoginComponent implements OnInit {
     this.loginForm = this.formBuilder.group({
       email: ['', Validators.required], password: ['', Validators.required],
     });
-    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+    this.returnUrl = this.route.snapshot.queryParams.returnUrl || '/';
 
     // get return url from route parameters or default to '/'
     // if (this.authenticationService.currentUserValue) {
@@ -93,7 +93,7 @@ export class LoginComponent implements OnInit {
     }
     // console.log("user:",this.f.email.value, this.f.password.value);
     this.loading = true;
-    if (this.validRole == 'consumer') {
+    if (this.validRole === 'consumer') {
       this.xchaneAuthenticationService
         .loginXchaneUser(this.f.email.value, this.f.password.value)
         .pipe(first())
@@ -116,15 +116,15 @@ export class LoginComponent implements OnInit {
               return this.addPointsToUser(res._id);
             }
 
-            this.router.navigate(['/xchane/dashboard']);
+            return this.router.navigate(['/home']);
           } else {
             this.dialogRef.close();
           }
 
         }, (err) => {
           console.log('Update error : ' + err.toString());
-        })
-    } else if (this.validRole == "Business") {
+        });
+    } else if (this.validRole === 'Business') {
       this.authenticationService
         .login(this.f.email.value, this.f.password.value)
         .pipe(first())
@@ -177,7 +177,7 @@ export class LoginComponent implements OnInit {
       .addPointsAfterSignUp(this.campaignId, xchaneUserId, this.projectId)
       .subscribe(response => {
         this.xchaneAuthenticationService.storeUser(response);
-        return this.router.navigate(['/xchane/dashboard']);
+        return this.router.navigate(['/home']);
       }, error => {
         return observableThrowError(error);
       });

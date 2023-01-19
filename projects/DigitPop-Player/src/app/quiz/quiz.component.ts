@@ -42,6 +42,7 @@ export class QuizComponent implements OnInit, AfterViewInit {
     }
 
     if (navState.isUser && navState.campaignId != null ) {
+      this.engagementId = navState.engagementId;
       this.campaignId = nav.extras.state.campaignId;
       this.getCampaign(this.campaignId);
     }
@@ -120,6 +121,7 @@ export class QuizComponent implements OnInit, AfterViewInit {
     return this.engagementService
       .verificationAnswer(answer, this.engagementId, this.campaignId, this.isUser)
       .subscribe((res: any) => {
+        console.log(res);
         res = {action: 'postQuiz', isUser: this.isUser, isCorrect: res};
 
         const targetWindow = window.parent;

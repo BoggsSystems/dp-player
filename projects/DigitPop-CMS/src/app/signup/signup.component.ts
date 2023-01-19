@@ -144,7 +144,7 @@ export class SignupComponent implements OnInit {
       .addPointsAfterSignUp(this.campaignId, xchaneUserId, this.projectId)
       .subscribe(response => {
         this.authService.storeUser(response);
-        return this.router.navigate(['/xchane/dashboard']);
+        return this.router.navigate(['/home']);
       }, error => {
         return observableThrowError(error);
       });
