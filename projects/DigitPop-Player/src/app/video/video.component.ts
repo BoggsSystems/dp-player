@@ -1,15 +1,8 @@
 import {
-  AfterViewInit,
-  Component,
-  ElementRef,
-  OnInit,
-  ViewChild,
+  AfterViewInit, Component, ElementRef, OnInit, ViewChild,
 } from '@angular/core';
 import {
-  ActivatedRoute,
-  NavigationExtras,
-  Params,
-  Router,
+  ActivatedRoute, NavigationExtras, Params, Router,
 } from '@angular/router';
 import {Project} from '../models/project';
 import {MatDialog} from '@angular/material/dialog';
@@ -69,6 +62,7 @@ export class VideoComponent implements OnInit, AfterViewInit {
   pgIndex: any;
   videoPlaying = false;
   completedShoppableTour = false;
+  creatingEngagment = false;
   @ViewChild('videoPlayer') videoPlayer: ElementRef;
   @ViewChild('canvas') canvas: ElementRef;
 
@@ -151,6 +145,14 @@ export class VideoComponent implements OnInit, AfterViewInit {
         if (event.data.campaignId) {
           this.campaignId = event.data.campaignId;
           this.categoryId = event.data.categoryId;
+          if (this.isUser && !this.engagementId && !this.creatingEngagment) {
+            this.creatingEngagment = true;
+            this.engagementService
+              .createEngagement(this.userId, this.categoryId)
+              .subscribe(res => {
+                this.engagementId = res._id;
+              });
+          }
           if (!this.completedShoppableTour && event.data.toured) {
             this.completedShoppableTour = event.data.toured;
             localStorage.setItem('completedShoppableTour', 'true');
@@ -433,8 +435,7 @@ export class VideoComponent implements OnInit, AfterViewInit {
   messageCMS = () => {
     const targetWindow = window.parent;
     targetWindow.postMessage({
-      action: 'completedShoppableTour',
-      completed: this.completedShoppableTour
+      action: 'completedShoppableTour', completed: this.completedShoppableTour
     }, `http://localhost:4200`);
   }
 

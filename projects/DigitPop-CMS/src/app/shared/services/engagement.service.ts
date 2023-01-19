@@ -16,8 +16,7 @@ export class EngagementService {
 
   createEngagement(xchaneUser: XchaneUser, category: Category) {
     return this.http.post<any>(`${environment.apiUrl}/api/engagement/`, {
-      xchaneUser,
-      category
+      userId: xchaneUser._id, categoryId: category._id
     }, httpOptions);
   }
 

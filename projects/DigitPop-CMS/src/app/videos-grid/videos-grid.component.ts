@@ -1,9 +1,7 @@
 'use strict';
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {
-  MatDialog,
-  MatDialogConfig,
-  MatDialogRef
+  MatDialog, MatDialogConfig, MatDialogRef
 } from '@angular/material/dialog';
 import {VideosGridService} from '../shared/services/videos-grid.service';
 import {EngagementService} from '../shared/services/engagement.service';
@@ -20,6 +18,12 @@ import {PlayerComponent} from '../xchane/player/player.component';
 import {timer} from 'rxjs';
 import {VisitorPopupComponent} from '../visitor-popup/visitor-popup.component';
 import {XchaneUser} from '../shared/models/xchane.user';
+import {
+  FailurepopupComponent
+} from '../xchane/failurepopup/failurepopup.component';
+import {
+  throwError as observableThrowError
+} from 'rxjs/internal/observable/throwError';
 
 @Component({
   selector: 'digit-pop-videos-grid',
@@ -91,9 +95,7 @@ export class VideosGridComponent implements OnInit {
   }
 
   getVideos: (isAppend?: boolean) => void = async (isAppend: boolean = false) => {
-    const currentUserId = localStorage.getItem('XchaneCurrentUser')
-      ? JSON.parse(localStorage.getItem('XchaneCurrentUser'))._id
-      : false;
+    const currentUserId = localStorage.getItem('XchaneCurrentUser') ? JSON.parse(localStorage.getItem('XchaneCurrentUser'))._id : false;
 
     return this.videosService
       .getVideos(this.selectedCategories, this.page, this.videosLimit, currentUserId)
@@ -124,7 +126,7 @@ export class VideosGridComponent implements OnInit {
     video.load();
   }
 
-  openPlayer = (id: string, campaignId: string, categoryId: string, event: Event | null = null) => {
+  openPlayer = async (id: string, campaignId: string, categoryId: string, event: Event | null = null) => {
     if (event) {
       event.preventDefault();
     }
@@ -137,47 +139,11 @@ export class VideosGridComponent implements OnInit {
     const isUser = !!localStorage.getItem('XchaneCurrentUser');
     const userId = isUser ? JSON.parse(localStorage.getItem('XchaneCurrentUser'))._id : false;
 
-    // if (isUser) {
-    //   const user = localStorage.getItem('XchaneCurrentUser');
-
-    //
-    //   this.engagementService
-    //     .createEngagement(JSON.parse(user), category)
-    //     .subscribe(
-    //       (data: any) => {
-    //         this.popupDialogRef.componentInstance.iFrameSrc = `${environment.playerUrl}/ad/` +
-    //           id +
-    //           '/engagement/' +
-    //           data._id +
-    //           '/campaign/' +
-    //           campaignId;
-    //         return true;
-    //       }
-    //     );
-    // } else {
-    //
-    // }
-    let engagementId;
-    if (isUser) {
-      const category = {
-        _id: this.categoryId,
-        name: '',
-        description: '',
-      };
-      this.engagementService
-        .createEngagement(this.authService.currentUserValue, category)
-        .subscribe(
-          (data: any) => {
-            return engagementId = data._id;
-          }
-        );
-    }
     dialogConfig.data = {
       id,
       campaignId,
       userId,
       categoryId,
-      engagementId,
       completedShoppableTour: this.completedShoppableTour
     };
     this.popupDialogRef = this.dialog.open(PreviewComponent, dialogConfig);
@@ -223,6 +189,7 @@ export class VideosGridComponent implements OnInit {
       this.canToggle = true;
       this.scoreBubbleToggle(event.data.isUser);
       this.canToggle = false;
+      this.refreshUser();
     } else if (event.data.action === 'completedShoppableTour') {
       this.completedShoppableTour = event.data.completed;
       localStorage.setItem('completedShoppableTour', event.data.completed);
@@ -251,10 +218,8 @@ export class VideosGridComponent implements OnInit {
   openVisitorPopup = () => {
     const dialogRef = this.dialog.open(VisitorPopupComponent, {
       data: {
-        campaignId: this.campaignId,
-        projectId: this.projectId
-      },
-      panelClass: 'dpop-modal'
+        campaignId: this.campaignId, projectId: this.projectId
+      }, panelClass: 'dpop-modal'
     });
 
     dialogRef.afterClosed().subscribe(() => {
@@ -265,16 +230,23 @@ export class VideosGridComponent implements OnInit {
     if (!this.authService.currentUserValue.toured) {
       this.authService
         .tour()
-        .subscribe(
-          (res: XchaneUser) => {
-            if (res.toured) {
-              this.authService.storeUser(res);
-            }
-          },
-          (error: any) => {
-            console.error(error);
+        .subscribe((res: XchaneUser) => {
+          if (res.toured) {
+            this.authService.storeUser(res);
           }
-        );
+        }, (error: any) => {
+          console.error(error);
+        });
     }
+  }
+
+  private refreshUser = () => {
+    this.authService.getCurrentXchaneUser().subscribe((user) => {
+      let use = new XchaneUser();
+      use = user as XchaneUser;
+      this.authService.storeUser(use);
+    }, (error: any) => {
+      console.error(error);
+    });
   }
 }

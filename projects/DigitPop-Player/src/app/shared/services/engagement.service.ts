@@ -12,10 +12,9 @@ export class EngagementService {
   constructor(private http: HttpClient) {
   }
 
-  createEngagement(xchaneUser: string, category: string) {
+  createEngagement(userId: string, categoryId: string) {
     return this.http.post<any>(`${environment.apiUrl}/api/engagement/`, {
-      xchaneUser,
-      category
+      userId, categoryId
     }, httpOptions);
   }
 

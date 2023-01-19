@@ -26,6 +26,7 @@ export class QuizComponent implements OnInit, AfterViewInit {
   detectIos = true;
   isUser: boolean;
 
+  // tslint:disable-next-line:max-line-length
   constructor(private route: ActivatedRoute, private campaignService: CampaignService, public dialog: MatDialog, private engagementService: EngagementService, private router: Router) {
     const nav = this.router.getCurrentNavigation();
     const checkNav = nav != null && nav.extras != null && nav.extras.state != null;
