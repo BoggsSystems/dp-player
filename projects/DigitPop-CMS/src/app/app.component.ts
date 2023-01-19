@@ -3,7 +3,7 @@ import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
 import {Observable} from 'rxjs';
 import {map, shareReplay} from 'rxjs/operators';
 import {MatDialog} from '@angular/material/dialog';
-import {Router} from '@angular/router';
+import {NavigationExtras, Router} from '@angular/router';
 import {SpinnerService} from './shared/services/spinner.service';
 import {HomeComponent} from './home/home.component';
 import {LoginComponent} from './login/login.component';
@@ -21,10 +21,7 @@ import {
 export class AppComponent {
   isHandset$: Observable<boolean> = this.breakpointObserver
     .observe(Breakpoints.Handset)
-    .pipe(
-      map((result) => result.matches),
-      shareReplay()
-    );
+    .pipe(map((result) => result.matches), shareReplay());
 
   email: any;
   password: any;
@@ -45,12 +42,7 @@ export class AppComponent {
   sectionsKeys: any;
   @ViewChild(HomeComponent) child: HomeComponent;
 
-  constructor(
-    public spinnerService: SpinnerService,
-    private breakpointObserver: BreakpointObserver,
-    public dialog: MatDialog,
-    private router: Router
-  ) {
+  constructor(public spinnerService: SpinnerService, private breakpointObserver: BreakpointObserver, public dialog: MatDialog, private router: Router) {
     router.events.subscribe(() => {
       this.getSections();
     });
@@ -141,18 +133,15 @@ export class AppComponent {
     });
   }
 
-  openLogout(): void {
+  openLogout() {
     const dialogRef = this.dialog.open(LogoutComponent, {
       panelClass: 'dpop-modal'
     });
 
     dialogRef.afterClosed().subscribe(() => {
-      console.log('The dialog was closed');
     });
 
-    // localStorage.removeItem("currentuser");
-    // localStorage.removeItem("currentRole");
-    // this.router.navigate(['/']);
+    return this.router.navigate(['/home']);
   }
 
   openDialog(): void {
@@ -178,8 +167,7 @@ export class AppComponent {
 
   openYoutubeDialog(): void {
     const dialogRef = this.dialog.open(ProjectWizardYoutubePopup, {
-      width: '100%',
-      height: '90%',
+      width: '100%', height: '90%',
     });
   }
 
@@ -235,11 +223,9 @@ export class AppComponent {
   }
 
   scrollToSection(sectionId: string): void {
-    let targetSection = document.querySelector('#' + sectionId);
+    const targetSection = document.querySelector('#' + sectionId);
     targetSection.scrollIntoView({
-      behavior: 'smooth',
-      block: 'start',
-      inline: 'nearest',
+      behavior: 'smooth', block: 'start', inline: 'nearest',
     });
   }
 

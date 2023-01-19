@@ -65,7 +65,7 @@ export class UserRewardsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.isUser = this.authService.currentUserValue._id !== null;
+    this.isUser = localStorage.getItem('XchaneCurrentUser') !== null;
   }
 
   public RedeemReward = (reward: string) => {

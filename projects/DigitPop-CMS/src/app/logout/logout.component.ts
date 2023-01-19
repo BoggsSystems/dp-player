@@ -24,11 +24,11 @@ export class LogoutComponent implements OnInit {
 
   logout() {
     Cache.invokeCache();
-    localStorage.removeItem("currentUser");
-    localStorage.removeItem("XchaneCurrentUser");
-    localStorage.removeItem("currentRole");
-    localStorage.removeItem("expires_at");
-    localStorage.removeItem("token");
+    localStorage.removeItem('currentUser');
+    localStorage.removeItem('XchaneCurrentUser');
+    localStorage.removeItem('currentRole');
+    localStorage.removeItem('expires_at');
+    localStorage.removeItem('token');
 
     this.router.navigate(['/']);
     this.dialogRef.close();

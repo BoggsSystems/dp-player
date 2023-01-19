@@ -74,7 +74,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   fadeAnimation: any;
   loading = false;
   users: User[];
-  isUser = false;
+  loggedIn = false;
   @ViewChild('embeddedFrame') embeddedFrame: ElementRef;
   @ViewChild('embeddedIFrame') embeddedIFrame: ElementRef;
 
@@ -86,9 +86,10 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     if (checkNav) {
       const navState = nav.extras.state;
       if (navState.loggedIn) {
-        this.isUser = true;
+        this.loggedIn = true;
       }
     }
+
     this.location = location;
     this.iFrameSrc = `${environment.playerUrl}/ad/60518dfbe73b860004205e72`;
     this.fadeAnimation = animation([style({opacity: '{{ start }}'}), animate('{{ time }}', style({opacity: '{{ end }}'})),], {
@@ -116,7 +117,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit() {
-    if (this.isUser) {
+    if (this.loggedIn) {
       this.welcome();
     }
   }
