@@ -6,6 +6,6 @@ export class AppPage {
   }
 
   getTitleText(): Promise<string> {
-    return element(by.css('DigitPop-root .content span')).getText() as Promise<string>;
+    return element(by.css('digit-pop-root .content span')).getText() as Promise<string>;
   }
 }

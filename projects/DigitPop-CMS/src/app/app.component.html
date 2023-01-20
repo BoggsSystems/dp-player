@@ -26,7 +26,11 @@
 
     <div fxLayoutAlign="end end">
         <a mat-button *ngIf="!isLogin" (click)="openLoginDialog()">Login</a>
-        <a mat-button *ngIf="isLogin" (click)="openLogout()">Logout</a>
+        <button *ngIf="isLogin" mat-button [matMenuTriggerFor]="menu" class="user-dropdown" fxLayoutAlign="end">{{ currentUser ? currentUser.email : '' }}</button>
+        <mat-menu #menu="matMenu">
+          <div *ngIf="currentUser" class="user-id">Account ID: {{ currentUser ? currentUser._id : '' }}</div>
+          <button mat-menu-item *ngIf="isLogin" (click)="openLogout()">Logout</button>
+        </mat-menu>
         <a mat-button *ngIf="!isLogin" (click)="openSignup()">Sign Up</a>
         <!-- <a mat-button *ngIf="isLogin && isCMS && !isTrial" routerLink="/account" (click)="account()"><mat-icon>account_circle</mat-icon></a> -->
     </div>

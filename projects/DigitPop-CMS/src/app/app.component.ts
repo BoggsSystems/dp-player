@@ -14,7 +14,7 @@ import {
 } from './cms/project-wizard/popup/youtube-popup.component';
 
 @Component({
-  selector: 'DigitPop-root',
+  selector: 'digit-pop-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
@@ -76,12 +76,19 @@ export class AppComponent {
     this.isCampaignsWizard = false;
     this.isAccountPage = false;
     this.excludeCustomNav = false;
-    this.currentUser = localStorage.getItem('currentuser');
     this.currentRole = localStorage.getItem('currentRole');
     this.isTrial = localStorage.getItem('trial');
 
     if (localStorage.getItem('token')) {
       this.isLogin = true;
+    }
+
+    if (localStorage.getItem('currentuser')) {
+      this.currentUser = JSON.parse(localStorage.getItem('currentuser'));
+    }
+
+    if (localStorage.getItem('XchaneCurrentUser')) {
+      this.currentUser = JSON.parse(localStorage.getItem('XchaneCurrentUser'));
     }
 
     if (this.currentRole) {

@@ -85,3 +85,31 @@ mat-sidenav {
     line-height: 20px;
     text-align: center;
 }
+
+.user-dropdown {
+  color: lightgray;
+  font-weight: normal;
+  letter-spacing: 1px;
+}
+
+.user-dropdown::after {
+  font-size: 1.25rem;
+  content: '\2023';
+  margin-left: 3px;
+  display: inline-block;
+  color: #ff2169;
+  transform: rotate(90deg);
+}
+
+.user-id {
+  white-space: nowrap;
+  font-size: 0.8rem;
+  padding: 8px 16px;
+  color: darkgray;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.user-id:hover {
+  cursor: default;
+  background-color: transparent;
+}
