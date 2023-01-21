@@ -1,11 +1,11 @@
 <div class="categories">
   <mat-radio-group fxLayout="row" fxLayoutAlign="start start"
                    fxLayoutGap="7px">
-    <mat-radio-button (click)="setCategory('All')">All</mat-radio-button>
     <mat-radio-button
+      [checked]="category.name === selectedCategories[0] "
       (click)="setCategory(category.name)"
       *ngFor="let category of activeCategories"
-      [value]="category._id">{{category.name}}</mat-radio-button>
+      [value]="category._id ? category._id : ''">{{category.name}}</mat-radio-button>
   </mat-radio-group>
 </div>
 

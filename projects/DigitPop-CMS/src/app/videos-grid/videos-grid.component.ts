@@ -60,6 +60,7 @@ export class VideosGridComponent implements OnInit {
     this.canToggle = false;
     this.videosCount = Array(this.videosLimit).fill(0).map((x, i) => i);
     this.categoryVideosCount = 0;
+    this.selectedCategories = ['Clothing']; // Set default category
   }
 
   ngOnInit(): void {
@@ -84,10 +85,32 @@ export class VideosGridComponent implements OnInit {
     return this.videosService
       .getActiveCategories()
       .subscribe((response: Category[]) => {
-        this.activeCategories = response;
-        this.categories = this.selectedCategories = this.activeCategories.map(category => category.name);
+        this.activeCategories = [{
+          _id: '', name: 'All', description: ''
+        }, ...this.sortCategories(response)];
+        console.log(this.activeCategories);
+        // this.categories = this.selectedCategories = this.activeCategories.map(category => category.name);
+        this.categories = this.activeCategories.map(category => category.name);
         this.getVideos();
       });
+  }
+
+  sortCategories = (response: Category[]) => {
+    console.log(response);
+    const startingCategories = ['Clothing', 'Cosmetics'];
+    const filteredResponse: Category[] = [];
+
+    const preferredSort = response.filter(category => {
+      if (startingCategories.includes(category.name)) {
+        response.pop();
+        return true;
+      }
+
+      filteredResponse.push(category);
+      return false;
+    });
+
+    return [...preferredSort, ...filteredResponse];
   }
 
   setCategory: (category: string) => void = (category: string) => {
