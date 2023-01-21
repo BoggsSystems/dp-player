@@ -50,6 +50,7 @@ import { QuizAnimationComponent } from './quiz-animation/quiz-animation.componen
 import {MatTabsModule} from '@angular/material/tabs';
 import { VisitorPopupComponent } from './visitor-popup/visitor-popup.component';
 import { UserRewardsComponent } from './user-rewards/user-rewards.component';
+import {XchaneModule} from './xchane/xchane.module';
 
 export const HTTP_CMS_AUTH = new InjectionToken('http_cms_auth');
 export const HTTP_XCHANE_AUTH = new InjectionToken('http_xchane_auth');
@@ -105,6 +106,7 @@ export const HTTP_NO_INTERCEPTORS = new InjectionToken('http_no_interceptors');
     ImagesLazyloadModule,
     MatTabsModule,
     SharedModule,
+    XchaneModule,
   ],
   providers: [
     provideTokenizedHttpClient(HTTP_BILLS, { excludes: [JwtInterceptor, XchaneJwtInterceptor] }),

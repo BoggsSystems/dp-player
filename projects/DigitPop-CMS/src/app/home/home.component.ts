@@ -31,7 +31,9 @@ import {
   UserService
 } from '../../../../DigitPop-Player/src/app/shared/services/user.service';
 import {AuthenticationService} from '../shared/services/auth-service.service';
-import {XchaneAuthenticationService} from '../shared/services/xchane-auth-service.service';
+import {
+  XchaneAuthenticationService
+} from '../shared/services/xchane-auth-service.service';
 import {SignupComponent} from '../signup/signup.component';
 import {
   MetricsService
@@ -75,6 +77,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   loading = false;
   users: User[];
   loggedIn = false;
+  welcomed = false;
   @ViewChild('embeddedFrame') embeddedFrame: ElementRef;
   @ViewChild('embeddedIFrame') embeddedIFrame: ElementRef;
 
@@ -118,28 +121,8 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngAfterViewInit() {
     if (this.loggedIn) {
-      this.welcome();
+      this.welcomed = this.xchaneAuthService.currentUserValue.welcomed;
     }
-  }
-
-  welcome = () => {
-    if (!this.xchaneAuthService.currentUserValue.welcomed) {
-      this.openWelcomeDialog();
-    }
-  }
-
-  openWelcomeDialog = (): void => {
-    const dialogRef = this.dialog.open(WelcomeComponent, {
-      width: '100%', height: '90%',
-    });
-
-    dialogRef.afterClosed().subscribe(() => {
-      this.xchaneAuthService.welcome().subscribe((res) => {
-        this.xchaneAuthService.currentUserValue.welcomed = true;
-      }, (error) => {
-        console.error(error);
-      });
-    });
   }
 
   preview() {

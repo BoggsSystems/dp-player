@@ -95,7 +95,7 @@ const routes: Routes = [
     MatProgressSpinnerModule,
     SharedModule,
   ],
-  exports: [RouterModule],
+  exports: [RouterModule, WelcomeComponent],
   declarations: [
     PlayerComponent,
     DashboardComponent,

@@ -88,7 +88,6 @@ export class VideosGridComponent implements OnInit {
         this.activeCategories = [{
           _id: '', name: 'All', description: ''
         }, ...this.sortCategories(response)];
-        console.log(this.activeCategories);
         // this.categories = this.selectedCategories = this.activeCategories.map(category => category.name);
         this.categories = this.activeCategories.map(category => category.name);
         this.getVideos();
@@ -96,7 +95,6 @@ export class VideosGridComponent implements OnInit {
   }
 
   sortCategories = (response: Category[]) => {
-    console.log(response);
     const startingCategories = ['Clothing', 'Cosmetics'];
     const filteredResponse: Category[] = [];
 

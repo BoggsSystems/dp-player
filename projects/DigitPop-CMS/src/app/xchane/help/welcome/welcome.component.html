@@ -1,19 +1,35 @@
-<div>
-  <mat-horizontal-stepper linear="false" #stepper label="Welcome">
-    <mat-step>
-      <ng-template matStepLabel>Welcome to DigitPop!</ng-template>
-      <button mat-button mat-dialog-close class="close-dialog">&times;</button>
-      <div class="welcomeVideo">
-        <video
-          class="welcomeVideo"
-          preload="auto"
-          controls
-          [src]="videoUrl"
-          type="video/mp4"
-        >
-          Your browser does not support the video tag.
-        </video>
+<section *ngIf="!closeSection" [class]="closeClass" class="welcome">
+  <div class="container">
+    <button (click)="wrapSection()" class="welcome--dismiss">&times;</button>
+    <div class="welcome--video">
+      <img (click)="toggleSound()" [src]='"assets/img/"+soundIcon+"_icon.svg"'
+           class="welcome--video--sound"/>
+      <video
+        #welcomeVideo
+        [src]="videoUrl"
+        autoplay
+        muted
+        preload="auto"
+        type="video/mp4"
+      >
+        Your browser does not support the video tag.
+      </video>
+    </div>
+    <div class="welcome--content">
+      <h1 class="welcome--content--heading">
+        <span>Welcome</span><br> To <p>DigitPop</p>!
+      </h1>
+      <h2 class="welcome--content--description">Earn electronic gift cards just by watching videos.</h2>
+      <div class="welcome--content--actions" fxLayout fxLayoutAlign="center">
+        <button #replayButton (click)="replayVideo()" color="secondary"
+                mat-flat-button>
+          Replay Video
+        </button>
+        <button (click)="wrapSection()" color="primary" mat-flat-button>
+          Start Earning
+        </button>
       </div>
-    </mat-step>
-  </mat-horizontal-stepper>
-</div>
+    </div>
+  </div>
+</section>
+<div *ngIf="!closeSection" class="blurred-backdrop"></div>
