@@ -244,6 +244,7 @@ export class VideosGridComponent implements OnInit {
 
   openVisitorPopup = () => {
     const dialogRef = this.dialog.open(VisitorPopupComponent, {
+      maxWidth: '90%',
       data: {
         campaignId: this.campaignId, projectId: this.projectId
       }, panelClass: 'dpop-modal'
