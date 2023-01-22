@@ -1,6 +1,10 @@
-<section *ngIf="!closeSection" [class]="closeClass" class="welcome">
+<section [class]="closeClass" class="welcome">
+  <div class="welcome--collapsed--message">
+    <h1>Welcome to DigitPop!</h1>
+    <button (click)="openSection()" class="welcome--button welcome--open">&#x26BA;</button>
+  </div>
   <div class="container">
-    <button (click)="wrapSection()" class="welcome--dismiss">&times;</button>
+    <button (click)="collapseSection()" class="welcome--button welcome--collapse">&#x26BB;</button>
     <div class="welcome--video">
       <img (click)="toggleSound()" [src]='"assets/img/"+soundIcon+"_icon.svg"'
            class="welcome--video--sound"/>
@@ -19,13 +23,14 @@
       <h1 class="welcome--content--heading">
         <span>Welcome</span><br> To <p>DigitPop</p>!
       </h1>
-      <h2 class="welcome--content--description">Earn electronic gift cards just by watching videos.</h2>
+      <h2 class="welcome--content--description">Earn electronic gift cards just
+        by watching videos.</h2>
       <div class="welcome--content--actions" fxLayout fxLayoutAlign="center">
         <button #replayButton (click)="replayVideo()" color="secondary"
                 mat-flat-button>
           Replay Video
         </button>
-        <button (click)="wrapSection()" color="primary" mat-flat-button>
+        <button (click)="scrollToVideo()" color="primary" mat-flat-button>
           Start Earning
         </button>
       </div>
@@ -33,3 +38,4 @@
   </div>
 </section>
 <div *ngIf="!closeSection" class="blurred-backdrop"></div>
+<div #welcomeAnchor></div>

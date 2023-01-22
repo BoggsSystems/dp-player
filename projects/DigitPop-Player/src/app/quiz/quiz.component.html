@@ -3,19 +3,15 @@
     {{ campaign?.verificationQuestion }}
   </div>
 
-
   <div class="answers">
-    <mat-grid-list class="answers" cols="1" rowHeight="fit" gutterSize="10px">
-      <mat-grid-tile *ngFor="let item of answers">
-        <button
-          mat-flat-button
-          class="my-class answerButtton"
-          (click)="onAnswer(item)"
-        >
-          <span class="answerText">{{ item }}</span>
-        </button>
-      </mat-grid-tile>
-
-    </mat-grid-list>
+    <div *ngFor="let item of answers">
+      <button
+        (click)="onAnswer(item)"
+        class="answers--answer"
+        mat-flat-button
+      >
+        <span class="answers--answer--text">{{ item }}</span>
+      </button>
+    </div>
   </div>
 </div>

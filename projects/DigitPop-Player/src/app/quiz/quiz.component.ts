@@ -4,7 +4,6 @@ import {Campaign} from '../models/campaign';
 import {MatDialog} from '@angular/material/dialog';
 import {EngagementService} from '../shared/services/engagement.service';
 import {CampaignService} from '../shared/services/campaign.service';
-import {environment} from '../../environments/environment.staging';
 import {CrossDomainMessaging} from '../shared/helpers/cd-messaging';
 
 @Component({
@@ -41,7 +40,7 @@ export class QuizComponent implements OnInit, AfterViewInit {
       this.getCampaign(this.campaignId);
     }
 
-    if (navState.isUser && navState.campaignId != null ) {
+    if (navState.isUser && navState.campaignId != null) {
       this.engagementId = navState.engagementId;
       this.campaignId = nav.extras.state.campaignId;
       this.getCampaign(this.campaignId);
@@ -124,6 +123,7 @@ export class QuizComponent implements OnInit, AfterViewInit {
         res = {action: 'postQuiz', isUser: this.isUser, isCorrect: res};
 
         const targetWindow = window.parent;
+        // TODO: Replace localhost with production urls
         if (!this.detectIos) {
           // return targetWindow.postMessage(res, this.messagingOrigin);
           return targetWindow.postMessage(res, 'http://localhost:4200');

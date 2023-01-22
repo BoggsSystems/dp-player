@@ -19,6 +19,7 @@ export class WelcomeComponent implements OnInit, AfterViewInit {
   closeSection = false;
   closeClass = '';
   soundIcon = 'muted';
+  @ViewChild('welcomeAnchor') welcomeAnchor: ElementRef;
   @ViewChild('welcomeVideo') welcomeVideo: ElementRef;
   @ViewChild('replayButton') replayButton: ElementRef;
 
@@ -54,6 +55,26 @@ export class WelcomeComponent implements OnInit, AfterViewInit {
 
     this.updateUser();
     setTimeout(() => this.closeSection = true, 500);
+  }
+
+  collapseSection = () => {
+    this.welcomeVideo.nativeElement.pause();
+    this.closeSection = true;
+    this.closeClass = 'wrap';
+  }
+
+  openSection = () => {
+    this.closeSection = false;
+    this.closeClass = '';
+  }
+
+  scrollToVideo = () => {
+    this.welcomeVideo.nativeElement.pause();
+    this.closeSection = true;
+
+    this.welcomeAnchor.nativeElement.scrollIntoView({
+      behavior: 'smooth'
+    });
   }
 
   updateUser = () => {

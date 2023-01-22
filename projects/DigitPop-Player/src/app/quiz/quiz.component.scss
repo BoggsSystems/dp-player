@@ -1,148 +1,43 @@
 .container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  row-gap: 50px;
   width: 100vw;
   height: 100vh;
-  display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  grid-template-rows: repeat(10, 1fr);
+  padding: 30px;
 }
 
-.backToProductsButton_grid{
-  grid-row: 1/2;
-  grid-column: 9/10;
+.question {
   width: 100%;
-  height: 100%;
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-align: center;
 }
 
 .answers {
-  grid-row: 3/10;
-  grid-column: 2/12;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  row-gap: 20px;
   width: 100%;
-  height: 100%;
 }
 
-.my-class{
-  height: 100%;
-  width: 100%!important;
-  min-width: unset!important;
+.answers--answer {
+  min-width: unset !important;
+  width: 100% !important;
+  height: 75px;
+  border-radius: 10px;
+  color: #ff2169;
+  background-color: #121212;
+  transition: background-color 500ms ease-in;
 }
 
-
-@media only screen and (max-width: 666px) {
-  .question {
-    grid-row: 2/3;
-    grid-column: 2/12;
-    width: 100%;
-    height: 100%;
-    font-family: Ubuntu;
-    font-size: 24px;
-    font-weight: 700;
-  }
-
-  .answerButtton {
-    background-color: rgb(13, 13, 13);
-    opacity: 1;
-  }
-
-  .answerText{
-    font-family: Ubuntu;
-    font-size: 20px;
-    font-weight: 400;
-    color: #5abeff;
-  }
+.answers--answer:hover {
+  background-color: #fff;
 }
 
-@media only screen and (min-width: 667px) and (max-width: 1024px) {
-  .question {
-    grid-row: 2/3;
-    grid-column: 2/12;
-    width: 100%;
-    height: 100%;
-    font-family: Ubuntu;
-    font-size: 28px;
-    font-weight: 700;
-  }
-
-  .answerButtton {
-    background-color: rgb(13, 13, 13);
-    opacity: 1;
-  }
-
-  .answerText{
-    font-family: Ubuntu;
-    font-size: 24px;
-    font-weight: 400;
-    color: #5abeff;
-  }
-}
-
-@media only screen and (min-width: 1025px) and (max-width: 1366px) {
-  .question {
-    grid-row: 2/3;
-    grid-column: 2/12;
-    width: 100%;
-    height: 100%;
-    font-family: Ubuntu;
-    font-size: 36px;
-    font-weight: 700;
-  }
-
-  .answerButtton {
-    background-color: rgb(13, 13, 13);
-    opacity: 1;
-  }
-
-  .answerText{
-    font-family: Ubuntu;
-    font-size: 32px;
-    font-weight: 400;
-    color: #5abeff;
-  }
-}
-
-@media only screen and (min-width: 1367px) and (max-width: 1679px) {
-  .question {
-    grid-row: 2/3;
-    grid-column: 2/12;
-    width: 100%;
-    height: 100%;
-    font-family: Ubuntu;
-    font-size: 42px;
-    font-weight: 700;
-  }
-
-  .answerButtton {
-    background-color: rgb(13, 13, 13);
-    opacity: 1;
-  }
-
-  .answerText{
-    font-family: Ubuntu;
-    font-size: 36px;
-    font-weight: 400;
-    color: #5abeff;
-  }
-}
-
-@media only screen and (min-width: 1680px) {
-  .question {
-    grid-row: 2/3;
-    grid-column: 2/12;
-    width: 100%;
-    height: 100%;
-    font-family: Ubuntu;
-    font-size: 46px;
-    font-weight: 700;
-  }
-
-  .answerButtton {
-    background-color: rgb(13, 13, 13);
-    opacity: 1;
-  }
-
-  .answerText{
-    font-family: Ubuntu;
-    font-size: 42px;
-    font-weight: 400;
-    color: #5abeff;
-  }
+.answers--answer--text {
+  font-size: 1.15rem;
+  font-weight: 700;
 }
