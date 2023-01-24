@@ -15,6 +15,8 @@ import {
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {XchaneUser} from '../shared/models/xchane.user';
 import {RedemptionService} from '../shared/services/redemption.service';
+import {RewardService} from '../shared/services/reward.service';
+import {Reward} from '../shared/models/reward';
 
 @Component({
   selector: 'digit-pop-user-rewards',
@@ -27,42 +29,15 @@ export class UserRewardsComponent implements OnInit {
   currentUser: XchaneUser;
   redemptionPopupDialogRef: MatDialogRef<RedemptionpopupComponent>;
   failurePopupDialogRef: MatDialogRef<FailurepopupComponent>;
-  rewards: { provider: string, pointsRequired: number }[];
+  rewards: Reward[];
 
-  constructor(public authService: XchaneAuthenticationService, private dialog: MatDialog, public redemptionService: RedemptionService) {
-    this.rewards = [{
-      provider: 'sling', pointsRequired: 2000,
-    }, {
-      provider: 'netflix', pointsRequired: 1100,
-    }, {
-      provider: 'hulu', pointsRequired: 600,
-    }, {
-      provider: 'amazon', pointsRequired: 1300,
-    }, {
-      provider: 'spotify', pointsRequired: 1000,
-    }, {
-      provider: 'applemusic', pointsRequired: 1000,
-    }, {
-      provider: 'pandora', pointsRequired: 1000,
-    }, {
-      provider: 'tidal', pointsRequired: 1000,
-    }, {
-      provider: 'wallstreetjournal', pointsRequired: 1000,
-    }, {
-      provider: 'newyorktimes', pointsRequired: 1200,
-    }, {
-      provider: 'usatoday', pointsRequired: 1000,
-    }, {
-      provider: 'latimes', pointsRequired: 800,
-    }, {
-      provider: 'nbatv', pointsRequired: 1800,
-    }, {
-      provider: 'mlbtv', pointsRequired: 2500,
-    }, {
-      provider: 'gamefly', pointsRequired: 1600,
-    }, {
-      provider: 'youtubetv', pointsRequired: 4000,
-    }];
+  // tslint:disable-next-line:max-line-length
+  constructor(public authService: XchaneAuthenticationService, private dialog: MatDialog, public redemptionService: RedemptionService, private rewardService: RewardService) {
+    this.rewardService
+      .getRewards()
+      .subscribe((rewards: Reward[]) => {
+        this.rewards = rewards;
+      });
   }
 
   ngOnInit(): void {
@@ -90,9 +65,9 @@ export class UserRewardsComponent implements OnInit {
     });
   }
 
-  public sortByPoints = (rewards: { provider: string, pointsRequired: number }[]) => {
+  public sortByPoints = (rewards: Reward[]) => {
     return rewards.sort((a, b) => {
-      return a.pointsRequired - b.pointsRequired;
+      return a.points - b.points;
     });
   }
 
