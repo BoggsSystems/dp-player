@@ -24,6 +24,7 @@ import {RedemptionService} from '../shared/services/redemption.service';
 
 export class UserRewardsComponent implements OnInit {
   isUser = false;
+  currentUser: XchaneUser;
   redemptionPopupDialogRef: MatDialogRef<RedemptionpopupComponent>;
   failurePopupDialogRef: MatDialogRef<FailurepopupComponent>;
   rewards: { provider: string, pointsRequired: number }[];
@@ -66,11 +67,14 @@ export class UserRewardsComponent implements OnInit {
 
   ngOnInit(): void {
     this.isUser = localStorage.getItem('XchaneCurrentUser') !== null;
+    this.currentUser = this.isUser ? JSON.parse(localStorage.getItem('XchaneCurrentUser')) : null;
   }
 
   public RedeemReward = (reward: string) => {
     const redemption = new Redemption();
-    redemption.rewarder = reward;
+    redemption.reward = reward;
+    redemption.userId = this.currentUser._id;
+
     this.redemptionService.requestRedemption(redemption).subscribe(() => {
       this.refreshUser();
 

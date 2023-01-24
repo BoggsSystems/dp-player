@@ -176,32 +176,32 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   }
 
   public onClickMe(rewarder: string) {
-    let redemption = new Redemption();
-    redemption.rewarder = rewarder;
+    // let redemption = new Redemption();
+    // redemption.rewarder = rewarder;
     //redemption.xchaneuser = this.authService.currentUser;
-    this.redemptionService.requestRedemption(redemption).subscribe(
-      () => {
-        this.refreshUser();
-
-        this.redemptionpopupDialogRef = this.dialog.open(
-          RedemptionpopupComponent,
-          {
-            autoFocus: true,
-            hasBackdrop: false,
-            closeOnNavigation: true,
-          }
-        );
-      },
-      (error: any) => {
-        this.failurepopupDialogRef = this.dialog.open(FailurepopupComponent, {
-          autoFocus: true,
-          hasBackdrop: false,
-          closeOnNavigation: true,
-        });
-
-        return observableThrowError(error);
-      }
-    );
+    // this.redemptionService.requestRedemption(redemption).subscribe(
+    //   () => {
+    //     this.refreshUser();
+    //
+    //     this.redemptionpopupDialogRef = this.dialog.open(
+    //       RedemptionpopupComponent,
+    //       {
+    //         autoFocus: true,
+    //         hasBackdrop: false,
+    //         closeOnNavigation: true,
+    //       }
+    //     );
+    //   },
+    //   (error: any) => {
+    //     this.failurepopupDialogRef = this.dialog.open(FailurepopupComponent, {
+    //       autoFocus: true,
+    //       hasBackdrop: false,
+    //       closeOnNavigation: true,
+    //     });
+    //
+    //     return observableThrowError(error);
+    //   }
+    // );
 
     console.log('onClickMe entered. Rewarder : ' + rewarder);
   }
