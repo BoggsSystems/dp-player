@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FailurepopupComponent } from './failurepopup.component';
+import { FailurepopupComponent } from './failure-popup.component';
 
 describe('FailurepopupComponent', () => {
   let component: FailurepopupComponent;

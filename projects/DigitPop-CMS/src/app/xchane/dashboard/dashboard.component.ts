@@ -4,7 +4,7 @@ import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {
   RedemptionpopupComponent
 } from '../redemptionpopup/redemptionpopup.component';
-import {FailurepopupComponent} from '../failurepopup/failurepopup.component';
+import {FailurepopupComponent} from '../failurepopup/failure-popup.component';
 import {
   XchaneAuthenticationService
 } from '../../shared/services/xchane-auth-service.service';

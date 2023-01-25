@@ -1,6 +1,6 @@
 import { NgModule, InjectionToken } from '@angular/core';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { FailurepopupComponent } from './failurepopup/failurepopup.component';
+import { FailurepopupComponent } from './failurepopup/failure-popup.component';
 import { RedemptionpopupComponent } from './redemptionpopup/redemptionpopup.component';
 import { Routes, RouterModule } from '@angular/router';
 import { AuthGuard } from '../shared/guards/auth-guard.service';

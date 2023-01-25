@@ -48,7 +48,7 @@ import { WelcomeComponent } from './help/welcome/welcome.component';
 import { CommonModule } from '@angular/common';
 import { SafePipe } from '../shared/pipes/SafePipe';
 import { RouterModule, Routes } from '@angular/router';
-import { FailurepopupComponent } from '../xchane/failurepopup/failurepopup.component';
+import { FailurepopupComponent } from '../xchane/failurepopup/failure-popup.component';
 import { RedemptionpopupComponent } from '../xchane/redemptionpopup/redemptionpopup.component';
 import { AuthGuard } from '../shared/guards/auth-guard.service';
 import { CampaignWizardComponent } from './campaign-wizard/campaign-wizard.component';

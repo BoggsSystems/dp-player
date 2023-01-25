@@ -21,7 +21,7 @@ import {VisitorPopupComponent} from '../visitor-popup/visitor-popup.component';
 import {XchaneUser} from '../shared/models/xchane.user';
 import {
   FailurepopupComponent
-} from '../xchane/failurepopup/failurepopup.component';
+} from '../xchane/failurepopup/failure-popup.component';
 import {
   throwError as observableThrowError
 } from 'rxjs/internal/observable/throwError';

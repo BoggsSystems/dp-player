@@ -30,7 +30,7 @@
       </div>
     </div>
     <div (wheel)="wheelScrollHorizontally($event)" class="rewards--gallery">
-      <div (click)="RedeemReward(reward.name)"
+      <div (click)="RedeemReward(reward.name, reward.points)"
            *ngFor="let reward of sortByPoints(rewards)"
            [class]="reward.points > +authService.currentUserValue.credits ? 'rewards--gallery--item--disabled' : ''"
            class="rewards--gallery--item">

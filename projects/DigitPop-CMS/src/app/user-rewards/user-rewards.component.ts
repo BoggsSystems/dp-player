@@ -7,9 +7,6 @@ import {
   RedemptionpopupComponent
 } from '../xchane/redemptionpopup/redemptionpopup.component';
 import {
-  FailurepopupComponent
-} from '../xchane/failurepopup/failurepopup.component';
-import {
   throwError as observableThrowError
 } from 'rxjs/internal/observable/throwError';
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
@@ -17,6 +14,9 @@ import {XchaneUser} from '../shared/models/xchane.user';
 import {RedemptionService} from '../shared/services/redemption.service';
 import {RewardService} from '../shared/services/reward.service';
 import {Reward} from '../shared/models/reward';
+import {
+  AnswerDialogComponent
+} from '../xchane/answer-dialog/answer-dialog.component';
 
 @Component({
   selector: 'digit-pop-user-rewards',
@@ -28,7 +28,7 @@ export class UserRewardsComponent implements OnInit {
   isUser = false;
   currentUser: XchaneUser;
   redemptionPopupDialogRef: MatDialogRef<RedemptionpopupComponent>;
-  failurePopupDialogRef: MatDialogRef<FailurepopupComponent>;
+  failurePopupDialogRef: MatDialogRef<RedemptionpopupComponent>;
   rewards: Reward[];
 
   // tslint:disable-next-line:max-line-length
@@ -45,23 +45,50 @@ export class UserRewardsComponent implements OnInit {
     this.currentUser = this.isUser ? JSON.parse(localStorage.getItem('XchaneCurrentUser')) : null;
   }
 
-  public RedeemReward = (reward: string) => {
+  public RedeemReward = (reward: string, rewardPoints: number) => {
     const redemption = new Redemption();
     redemption.reward = reward;
     redemption.userId = this.currentUser._id;
 
-    this.redemptionService.requestRedemption(redemption).subscribe(() => {
-      this.refreshUser();
+    const confirmDialog = this.dialog.open(AnswerDialogComponent, {
+      panelClass: 'dpop-modal', data: {
+        title: 'Confirm Redemption',
+        message: `Are you sure you want to redeem ${reward} for ${rewardPoints} points?`,
+      },
+    });
 
-      this.redemptionPopupDialogRef = this.dialog.open(RedemptionpopupComponent, {
-        autoFocus: true, hasBackdrop: false, closeOnNavigation: true,
-      });
-    }, (error: any) => {
-      this.failurePopupDialogRef = this.dialog.open(FailurepopupComponent, {
-        autoFocus: true, hasBackdrop: false, closeOnNavigation: true,
-      });
+    return confirmDialog.afterClosed().subscribe((result: boolean) => {
+      confirmDialog.close();
 
-      return observableThrowError(error);
+      if (result === true) {
+        this.redemptionService.requestRedemption(redemption).subscribe(() => {
+          this.refreshUser();
+
+          this.redemptionPopupDialogRef = this.dialog.open(RedemptionpopupComponent, {
+            panelClass: 'dpop-modal',
+            autoFocus: true,
+            hasBackdrop: true,
+            closeOnNavigation: true,
+            data: {
+              title: 'Points Redeemed',
+              message: 'Points successfully redeemed.<br> Check email for electronic gift card.'
+            }
+          });
+        }, (error: any) => {
+          this.failurePopupDialogRef = this.dialog.open(RedemptionpopupComponent, {
+            panelClass: 'dpop-modal',
+            autoFocus: true,
+            hasBackdrop: true,
+            closeOnNavigation: true,
+            data: {
+              title: 'Unable to redeem points',
+              message: 'Insufficient points for redemption'
+            }
+          });
+
+          return observableThrowError(error);
+        });
+      }
     });
   }
 
@@ -93,8 +120,11 @@ export class UserRewardsComponent implements OnInit {
       use = user as XchaneUser;
       this.authService.storeUser(use);
     }, (error: any) => {
-      this.failurePopupDialogRef = this.dialog.open(FailurepopupComponent, {
-        autoFocus: true, hasBackdrop: false, closeOnNavigation: true,
+      this.failurePopupDialogRef = this.dialog.open(RedemptionpopupComponent, {
+        autoFocus: true, hasBackdrop: true, closeOnNavigation: true, data: {
+          title: 'Unable to redeem points',
+          message: 'Insufficient points for redemption'
+        }
       });
 
       return observableThrowError(error);

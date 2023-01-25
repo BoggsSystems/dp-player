@@ -1,12 +1,12 @@
-<h1 mat-dialog-title>{{data.title}}</h1>
+<h3 class="answer--dialog--heading" mat-dialog-title>{{data.title}}</h3>
 <div mat-dialog-content>
   {{data.message}}
 </div>
-<div style="float:right;margin:20px;">
-  <button mat-button [mat-dialog-close]="true" class="btn btn-primary">
+<div style="margin:20px 0 0;">
+  <button [mat-dialog-close]="true" class="btn btn-primary answer--dialog--confirm" mat-button>
     Confirm
   </button>
-  <button mat-button [mat-dialog-close]="false" class="btn btn-primary">
+  <button [mat-dialog-close]="false" class="btn btn-primary answer--dialog--cancel" mat-button>
     Cancel
   </button>
 </div>
