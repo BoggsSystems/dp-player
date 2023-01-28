@@ -1,8 +1,15 @@
 import {
-  AfterViewInit, Component, ElementRef, OnInit, ViewChild,
+  AfterViewInit,
+  Component,
+  ElementRef,
+  OnInit,
+  ViewChild,
 } from '@angular/core';
 import {
-  ActivatedRoute, NavigationExtras, Params, Router,
+  ActivatedRoute,
+  NavigationExtras,
+  Params,
+  Router,
 } from '@angular/router';
 import {Project} from '../models/project';
 import {MatDialog} from '@angular/material/dialog';
@@ -257,6 +264,9 @@ export class VideoComponent implements OnInit, AfterViewInit {
   }
 
   onBuyNow() {
+    this.adService
+      .updateStats(this.adId, 'clickedBuy', this.currentProduct._id)
+      .subscribe();
     window.open(this.currentProduct.makeThisYourLookURL, '_blank');
   }
 
@@ -273,9 +283,16 @@ export class VideoComponent implements OnInit, AfterViewInit {
     this.currentProduct = product;
     this.selectedImage = product.images[0];
     this.viewState = 'Product';
+    this.adService
+      .updateStats(this.adId, 'clickedProduct', this.currentProduct._id)
+      .subscribe();
+
   }
 
   onShowProduct() {
+    this.adService
+      .updateStats(this.adId, 'paused')
+      .subscribe();
     this.videoPlaying = false;
     this.showSoundIcon = false;
     this.videoPlayer.nativeElement.pause();

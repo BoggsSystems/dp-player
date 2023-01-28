@@ -1,24 +1,27 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Product } from '../models/product';
-import { ProductGroup } from '../models/productGroup';
-import { environment } from 'projects/DigitPop-CMS/src/environments/environment';
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {environment} from 'projects/DigitPop-CMS/src/environments/environment';
 
-@Injectable({ providedIn: 'root' })
+@Injectable({providedIn: 'root'})
 export class AdService {
-  constructor(private httpClient: HttpClient) {}
+  constructor(private httpClient: HttpClient) {
+  }
 
-  getAd(videoId: any) {
+  getAd = (videoId: any) => {
     return this.httpClient.get(
       `${environment.apiUrl}/api/projects/` + videoId + '/true'
     );
   }
 
-  createView(adId: any, cycle: any) {
+  createView = (adId: any, cycle: any) => {
     return this.httpClient.post<any>(`${environment.apiUrl}/api/views/`, {
       id: adId,
-      cycle: cycle,
+      cycle,
     });
+  }
+
+  updateStats = (projectId: string, action: string, productId = '') => {
+    return this.httpClient.post<any>(`${environment.apiUrl}/api/projects/updateStats`, {projectId, action, productId});
   }
 
   // increaseProjectViewCount(videoId: any) {
