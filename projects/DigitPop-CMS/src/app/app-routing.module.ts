@@ -5,12 +5,19 @@ import { RegisterComponent } from './register/register.component';
 import { HomeComponent } from './home/home.component';
 import { AuthGuard } from './shared/guards/auth-guard.service';
 import { LoginComponent } from './login/login.component';
+import {
+  UserDashboardComponent
+} from './user-dashboard/user-dashboard.component';
 
 const routes: Routes = [
   {
     path: '',
     component: HomeComponent,
     canActivate: [AuthGuard],
+  },
+  {
+    path: 'dashboard',
+    component: UserDashboardComponent
   },
   {
     path: 'cms',
@@ -32,7 +39,6 @@ const routes: Routes = [
     path: 'register',
     component: RegisterComponent,
   },
-  // otherwise redirect to home
   { path: '**', redirectTo: '' },
 ];
 export const appRoutingModule = RouterModule.forRoot(routes);

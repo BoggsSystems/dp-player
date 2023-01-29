@@ -14,7 +14,11 @@ export class RedemptionService {
   constructor(@Inject(HTTP_XCHANE_AUTH) private http: HttpClient) {
   }
 
-  requestRedemption(redemption: Redemption) {
+  requestRedemption = (redemption: Redemption) => {
     return this.http.post(`${environment.apiUrl}/api/redemption/`, redemption, httpOptions);
+  }
+
+  getMyRedemptions = (body = {userId: ''}) => {
+    return this.http.post(`${environment.apiUrl}/api/redemption/mine`, body, httpOptions);
   }
 }

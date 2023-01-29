@@ -50,6 +50,7 @@ import { QuizAnimationComponent } from './quiz-animation/quiz-animation.componen
 import {MatTabsModule} from '@angular/material/tabs';
 import { VisitorPopupComponent } from './visitor-popup/visitor-popup.component';
 import { UserRewardsComponent } from './user-rewards/user-rewards.component';
+import { UserDashboardComponent } from './user-dashboard/user-dashboard.component';
 import {XchaneModule} from './xchane/xchane.module';
 
 export const HTTP_CMS_AUTH = new InjectionToken('http_cms_auth');
@@ -68,7 +69,8 @@ export const HTTP_NO_INTERCEPTORS = new InjectionToken('http_no_interceptors');
     VideosGridComponent,
     QuizAnimationComponent,
     VisitorPopupComponent,
-    UserRewardsComponent
+    UserRewardsComponent,
+    UserDashboardComponent
   ],
   imports: [
     BrowserModule,

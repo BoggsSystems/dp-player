@@ -29,6 +29,9 @@
         <button *ngIf="isLogin" mat-button [matMenuTriggerFor]="menu" class="user-dropdown" fxLayoutAlign="end">{{ currentUser ? currentUser.email : '' }}</button>
         <mat-menu #menu="matMenu">
           <div *ngIf="currentUser" class="user-id">Account ID: {{ currentUser ? currentUser._id : '' }}</div>
+          <div *ngIf="currentUser">
+            <a mat-menu-item href="#" routerLink="/dashboard" routerLinkActive="active">Account Dashboard</a>
+          </div>
           <button mat-menu-item *ngIf="isLogin" (click)="openLogout()">Logout</button>
         </mat-menu>
         <a mat-button *ngIf="!isLogin" (click)="openSignup()">Sign Up</a>
@@ -44,7 +47,7 @@
     </div>
 </mat-toolbar>
 
-<mat-sidenav-container fxFlexFill class="mobile-container">
+<mat-sidenav-container style="overflow: visible" fxFlexFill class="mobile-container">
     <mat-sidenav #sidenav fxLayout="column">
         <div fxLayout="column">
             <span fxLayoutAlign="end end" class="close-menu" (click)="sidenav.toggle()" href="javascript:void(0)"
@@ -69,7 +72,7 @@
         </div>
     </mat-sidenav>
 
-    <mat-sidenav-content autosize fxFlexFill>
+    <mat-sidenav-content style="overflow: visible" autosize fxFlexFill>
         <router-outlet></router-outlet>
     </mat-sidenav-content>
 </mat-sidenav-container>
