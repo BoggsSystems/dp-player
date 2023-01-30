@@ -29,11 +29,13 @@
         </div>
 
         <div
-          style="column-gap: 25px; row-gap: 25px" fxLayout="row wrap" fxLayoutAlign="center center" fxLayoutAlign.gt-sm="start start">
-          <div *ngFor="let stat of stats" class="dashboard--content--analysis--card" [class]="stat.class"
+          fxLayout="row wrap" fxLayoutAlign="center center"
+          fxLayoutAlign.gt-sm="start start" style="column-gap: 25px; row-gap: 25px">
+          <div *ngFor="let stat of stats"
+               [class]="stat.class" class="dashboard--content--analysis--card"
                fxLayout="column" fxLayoutAlign="center center"
                fxLayoutGap="10px">
-            <img alt="cup icon" [attr.src]="'assets/img/'+stat.icon">
+            <img [attr.src]="'assets/img/'+stat.icon" alt="cup icon">
             <h2>{{stat.value}}</h2>
             <p><span>{{stat.span}}</span>{{stat.description}}</p>
           </div>
@@ -47,7 +49,8 @@
         </div>
 
         <div
-          style="display: flex; flex-wrap: wrap; align-items: center; row-gap: 25px; column-gap: 20px;">
+          fxLayout="row wrap" fxLayoutAlign="center center"
+          fxLayoutAlign.gt-sm="start start" style="row-gap: 25px; column-gap: 20px;">
 
           <div
             *ngFor="let redemption of myRedemptions; let i = index"
@@ -62,7 +65,8 @@
             </svg>
             <span
               class="card--content-date">{{prettyDate(redemption.createdAt)}}</span>
-            <span class="dashboard--redemption--card--copy" (click)="onCopyToClipboard('giftCardCode')"></span>
+            <span (click)="onCopyToClipboard('giftCardCode')"
+                  class="dashboard--redemption--card--copy"></span>
             <span
               class="dashboard--redemption--card--number">{{redemptionsCount - i}}</span>
           </div>

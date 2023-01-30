@@ -157,6 +157,10 @@
   background-image: url("/assets/img/calendar.svg");
 }
 
+.dashboard--content--analysis--card.available--card::before {
+  background-image: url("/assets/img/check-mark-icon.svg");
+}
+
 .dashboard--content--analysis--card img {
   object-fit: none;
   position: relative;

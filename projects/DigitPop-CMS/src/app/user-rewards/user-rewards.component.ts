@@ -17,6 +17,7 @@ import {Reward} from '../shared/models/reward';
 import {
   AnswerDialogComponent
 } from '../xchane/answer-dialog/answer-dialog.component';
+import {DataService} from '../xchane/services/data.service';
 
 @Component({
   selector: 'digit-pop-user-rewards',
@@ -32,7 +33,7 @@ export class UserRewardsComponent implements OnInit {
   rewards: Reward[];
 
   // tslint:disable-next-line:max-line-length
-  constructor(public authService: XchaneAuthenticationService, private dialog: MatDialog, public redemptionService: RedemptionService, private rewardService: RewardService) {
+  constructor(public authService: XchaneAuthenticationService, private dialog: MatDialog, public redemptionService: RedemptionService, private rewardService: RewardService, private data: DataService) {
     this.rewardService
       .getRewards()
       .subscribe((rewards: Reward[]) => {
@@ -116,9 +117,11 @@ export class UserRewardsComponent implements OnInit {
 
   private refreshUser = () => {
     this.authService.getCurrentXchaneUser().subscribe((user) => {
-      let use = new XchaneUser();
+      let use: XchaneUser;
       use = user as XchaneUser;
       this.authService.storeUser(use);
+      this.data
+        .updateUserCredit(use.credits);
     }, (error: any) => {
       this.failurePopupDialogRef = this.dialog.open(RedemptionpopupComponent, {
         autoFocus: true, hasBackdrop: true, closeOnNavigation: true, data: {
