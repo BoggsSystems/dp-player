@@ -38,5 +38,5 @@
     </div>
   </div>
 </section>
-<div *ngIf="!closeSection" class="blurred-backdrop"></div>
+ <div #backdropBlur *ngIf="!closeSection" class="blurred-backdrop" (mouseenter)="disableBlur()"></div>
 <div #welcomeAnchor></div>

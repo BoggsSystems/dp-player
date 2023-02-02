@@ -25,10 +25,14 @@
     </div>
 
     <div fxLayoutAlign="end end">
+        <a mat-button *ngIf="!isLogin" (click)="scrollToSection('dp-for-business')">For Business</a>
         <a mat-button *ngIf="!isLogin" (click)="openLoginDialog()">Login</a>
         <button *ngIf="isLogin" mat-button [matMenuTriggerFor]="menu" class="user-dropdown" fxLayoutAlign="end">{{ currentUser ? currentUser.email : '' }}</button>
         <mat-menu #menu="matMenu">
           <div *ngIf="currentUser" class="user-id">Account ID: {{ currentUser ? currentUser._id : '' }}</div>
+          <div mat-menu-item (click) = "$event.stopPropagation()">
+            <mat-slide-toggle color="primary" [(ngModel)]="enableShoppableTour" (change)="toured()">Shoppable Tour</mat-slide-toggle>
+          </div>
           <div *ngIf="currentUser">
             <a mat-menu-item href="#" routerLink="/dashboard" routerLinkActive="active">Account Dashboard</a>
           </div>

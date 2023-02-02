@@ -22,6 +22,7 @@ export class WelcomeComponent implements OnInit, AfterViewInit {
   @ViewChild('welcomeAnchor') welcomeAnchor: ElementRef;
   @ViewChild('welcomeVideo') welcomeVideo: ElementRef;
   @ViewChild('replayButton') replayButton: ElementRef;
+  @ViewChild('backdropBlur') backdropBlur: ElementRef;
 
   constructor(private dialog: MatDialog, private xchaneAuthService: XchaneAuthenticationService) {
     const videoPath = 'v1644701022/DigitPop-1080p-220208_n2xy7t.mp4';
@@ -83,5 +84,9 @@ export class WelcomeComponent implements OnInit, AfterViewInit {
     }, (error) => {
       console.error(error);
     });
+  }
+
+  disableBlur = () => {
+    this.backdropBlur.nativeElement.classList.toggle('disabled');
   }
 }

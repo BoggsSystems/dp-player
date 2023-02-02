@@ -41,8 +41,8 @@ export class LoginComponent implements OnInit {
     }
     this.validRole = Role.Consumer;
 
-    if (localStorage.getItem('completedShoppableTour')) {
-      this.toured = localStorage.getItem('completedShoppableTour') === 'true';
+    if (localStorage.getItem('enabledShoppableTour')) {
+      this.toured = localStorage.getItem('enabledShoppableTour') === 'true';
     }
     // redirect to home if already logged in
     // if (this.authenticationService.currentUserValue) {
@@ -107,7 +107,7 @@ export class LoginComponent implements OnInit {
               this.xchaneAuthenticationService
                 .tour()
                 .subscribe(user => {
-                  localStorage.setItem('completedShoppableTour', 'true');
+                  localStorage.setItem('enabledShoppableTour', 'true');
                   localStorage.setItem('XchaneCurrentUser', JSON.stringify(user));
                 });
             }

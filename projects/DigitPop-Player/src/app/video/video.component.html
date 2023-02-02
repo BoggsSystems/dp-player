@@ -1,6 +1,6 @@
 <div class="container">
   <img
-    *ngIf="videoPlaying && !completedShoppableTour"
+    *ngIf="videoPlaying && enabledShoppableTour"
     [tooltip]="'Click on product for more details'"
     (click)="onShowProduct()"
     alt=""

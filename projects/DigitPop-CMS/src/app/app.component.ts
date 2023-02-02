@@ -1,4 +1,4 @@
-import {Component, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
 import {Observable} from 'rxjs';
 import {map, shareReplay} from 'rxjs/operators';
@@ -12,13 +12,17 @@ import {SignupComponent} from './signup/signup.component';
 import {
   ProjectWizardYoutubePopup
 } from './cms/project-wizard/popup/youtube-popup.component';
+import {XchaneUser} from './shared/models/xchane.user';
+import {XchaneAuthenticationService} from './shared/services/xchane-auth-service.service';
+import {DataService} from './xchane/services/data.service';
+
 
 @Component({
   selector: 'digit-pop-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   isHandset$: Observable<boolean> = this.breakpointObserver
     .observe(Breakpoints.Handset)
     .pipe(map((result) => result.matches), shareReplay());
@@ -40,12 +44,15 @@ export class AppComponent {
   navSections: Object;
   isEligible: boolean;
   sectionsKeys: any;
+  enableShoppableTour = true;
   @ViewChild(HomeComponent) child: HomeComponent;
 
-  constructor(public spinnerService: SpinnerService, private breakpointObserver: BreakpointObserver, public dialog: MatDialog, private router: Router) {
+  // tslint:disable-next-line:max-line-length
+  constructor(public spinnerService: SpinnerService, private breakpointObserver: BreakpointObserver, public dialog: MatDialog, private router: Router, private authService: XchaneAuthenticationService, private data: DataService) {
     router.events.subscribe(() => {
       this.getSections();
     });
+    this.enableShoppableTour = this.authService.currentUserValue.toured;
   }
 
   ngOnInit() {
@@ -120,6 +127,17 @@ export class AppComponent {
     // console.log(this.currentUser);
   }
 
+  toured = () => {
+    this.authService
+      .tour()
+      .subscribe((res: XchaneUser) => {
+        this.authService.storeUser(res);
+        this.data.setShoppableTour(res.toured);
+      }, (error: any) => {
+        console.error(error);
+      });
+  }
+
   openLoginDialog(): void {
     const dialogRef = this.dialog.open(LoginComponent, {
       panelClass: 'dpop-modal'
@@ -147,8 +165,6 @@ export class AppComponent {
 
     dialogRef.afterClosed().subscribe(() => {
     });
-
-    return this.router.navigate(['/home']);
   }
 
   openDialog(): void {

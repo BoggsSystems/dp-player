@@ -55,7 +55,7 @@ export class ProjectService {
 
   getProject(id: any) {
     return this.httpClient.get(
-      `${environment.apiUrl}/api/projects/` + id + '/true'
+      `${environment.apiUrl}/api/projects/` + id + '/true/false'
     );
   }
 

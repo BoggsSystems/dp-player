@@ -9,7 +9,7 @@ export class AdService {
 
   getAd = (videoId: any) => {
     return this.httpClient.get(
-      `${environment.apiUrl}/api/projects/` + videoId + '/true'
+      `${environment.apiUrl}/api/projects/` + videoId + '/true/true'
     );
   }
 

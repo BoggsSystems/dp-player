@@ -214,5 +214,8 @@ section {
 .rewards--gallery--item--disabled {
   pointer-events: none;
   cursor: default;
+}
+
+.rewards--gallery--item--disabled svg {
   opacity: 0.25;
 }

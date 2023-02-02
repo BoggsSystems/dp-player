@@ -35,6 +35,7 @@ $paddingSides: 15px;
 .wrap .welcome--collapsed--message {
   opacity: 1;
   visibility: visible;
+  background: linear-gradient(90deg, #000 0%, #303030 22%);
 }
 
 .welcome--collapsed--message h1 {
@@ -243,4 +244,10 @@ $paddingSides: 15px;
   right: 0;
   background-color: rgba(0, 0, 0, 0.2);
   backdrop-filter: blur(1px);
+  transition: opacity 300ms ease-out;
+}
+
+.blurred-backdrop.disabled {
+  pointer-events: none;
+  opacity: 0;
 }

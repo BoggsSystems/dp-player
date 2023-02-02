@@ -49,7 +49,6 @@ export class UserDashboardComponent implements OnInit, OnDestroy {
       .getUserCredit()
       .subscribe(points => {
         this.userPoints = points.points;
-        this.stats = this.updatedStats();
         this.getRedemptions();
       });
   }

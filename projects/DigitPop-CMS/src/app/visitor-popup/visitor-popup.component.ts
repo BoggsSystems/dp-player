@@ -13,8 +13,8 @@ export class VisitorPopupComponent implements OnInit {
   toured = false;
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: { campaignId: string, projectId: string }) {
-    if (localStorage.getItem('completedShoppableTour')) {
-      this.toured = localStorage.getItem('completedShoppableTour') === 'true';
+    if (localStorage.getItem('enabledShoppableTour')) {
+      this.toured = localStorage.getItem('enabledShoppableTour') === 'true';
     }
   }
 

@@ -1,7 +1,7 @@
 import {
   AfterViewInit,
   Component,
-  ElementRef,
+  ElementRef, EventEmitter,
   OnInit,
   ViewChild,
 } from '@angular/core';
@@ -68,7 +68,7 @@ export class VideoComponent implements OnInit, AfterViewInit {
   params: Params;
   pgIndex: any;
   videoPlaying = false;
-  completedShoppableTour = false;
+  enabledShoppableTour = true;
   creatingEngagment = false;
   @ViewChild('videoPlayer') videoPlayer: ElementRef;
   @ViewChild('canvas') canvas: ElementRef;
@@ -76,11 +76,8 @@ export class VideoComponent implements OnInit, AfterViewInit {
   // tslint:disable-next-line:max-line-length
   constructor(private router: Router, public dialog: MatDialog, private route: ActivatedRoute, private authService: XchaneAuthenticationService, private adService: AdService, private userService: UserService, private engagementService: EngagementService, private billsByService: BillsbyService) {
     this.isUser = false;
-    if (localStorage.getItem('completedShoppableTour')) {
-      this.completedShoppableTour = localStorage.getItem('completedShoppableTour') === 'true';
-    } else {
-      localStorage.setItem('completedShoppableTour', 'false');
-      this.messageCMS();
+    if (localStorage.getItem('enabledShoppableTour')) {
+      this.enabledShoppableTour = localStorage.getItem('enabledShoppableTour') === 'true';
     }
     this.handleTutorial();
   }
@@ -159,9 +156,9 @@ export class VideoComponent implements OnInit, AfterViewInit {
                 this.engagementId = res._id;
               });
           }
-          if (!this.completedShoppableTour && event.data.toured) {
-            this.completedShoppableTour = event.data.toured;
-            localStorage.setItem('completedShoppableTour', 'true');
+          if (event.data.toured) {
+            this.enabledShoppableTour = event.data.toured;
+            localStorage.setItem('enabledShoppableTour', 'true');
           }
         }
       });
@@ -256,7 +253,9 @@ export class VideoComponent implements OnInit, AfterViewInit {
     this.showThumbnail = true;
     this.showCanvas = false;
 
-    targetWindow.postMessage('exit', `${environment.homeUrl}`);
+    // TODO: Change the URL
+    targetWindow.postMessage('exit', `http://localhost:4200`);
+    // targetWindow.postMessage('exit', `${environment.homeUrl}`);
   }
 
   onBackToGroup() {
@@ -275,11 +274,6 @@ export class VideoComponent implements OnInit, AfterViewInit {
   }
 
   onProductClick(product: Product) {
-    if (!this.completedShoppableTour) {
-      this.completedShoppableTour = true;
-      localStorage.setItem('completedShoppableTour', 'true');
-      this.messageCMS();
-    }
     this.currentProduct = product;
     this.selectedImage = product.images[0];
     this.viewState = 'Product';
@@ -446,13 +440,6 @@ export class VideoComponent implements OnInit, AfterViewInit {
   onSeekAndPlay() {
     this.videoPlayer.nativeElement.currentTime = this.currentProductGroup.time;
     this.onResumeVideo();
-  }
-
-  messageCMS = () => {
-    const targetWindow = window.parent;
-    targetWindow.postMessage({
-      action: 'completedShoppableTour', completed: this.completedShoppableTour
-    }, `http://localhost:4200`);
   }
 
   handleTutorial = () => {

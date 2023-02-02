@@ -6,5 +6,6 @@ export class XchaneUser {
     credits: number;
     introduced: boolean;
     approved: boolean;
+    toured: boolean;
     referrerCode: string;
 }

@@ -5,7 +5,7 @@
     .u {
       transform-box: fill-box;
       transform-origin: center;
-      animation: circle-animation 1500ms linear infinite normal forwards
+      animation: circle-animation 2500ms linear infinite normal forwards
     }
 
     @keyframes circle-animation {

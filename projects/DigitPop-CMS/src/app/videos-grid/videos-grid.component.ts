@@ -48,10 +48,11 @@ export class VideosGridComponent implements OnInit {
   campaignId: string;
   categoryId: string;
   popupDialogRef: MatDialogRef<PlayerComponent>;
+  previewDialogRef: MatDialogRef<PreviewComponent>;
   monthNames: string[] = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   scoreBubbleIsOpen: boolean;
   canToggle: boolean;
-  completedShoppableTour = false;
+  enabledShoppableTour = true;
   isUser: string | boolean;
 
   // tslint:disable-next-line:max-line-length
@@ -60,17 +61,13 @@ export class VideosGridComponent implements OnInit {
     this.canToggle = false;
     this.videosCount = Array(this.videosLimit).fill(0).map((x, i) => i);
     this.categoryVideosCount = 0;
-    this.selectedCategories = ['Clothing']; // Set default category
+    this.selectedCategories = ['Cosmetics']; // Set default category
   }
 
   ngOnInit(): void {
     if (this.authService.currentUserValue) {
-      this.completedShoppableTour = this.authService.currentUserValue.toured ? this.authService.currentUserValue.toured : false;
-      localStorage.setItem('completedShoppableTour', String(this.completedShoppableTour));
-    } else if (localStorage.getItem('completedShoppableTour')) {
-      this.completedShoppableTour = localStorage.getItem('completedShoppableTour') === 'true';
-    } else {
-      localStorage.setItem('completedShoppableTour', 'false');
+      this.enabledShoppableTour = this.authService.currentUserValue.toured ? this.authService.currentUserValue.toured : false;
+      localStorage.setItem('enabledShoppableTour', String(this.enabledShoppableTour));
     }
     this.getCategories();
     window.addEventListener('message', this.handlePostQuizMessage.bind(this), false);
@@ -169,10 +166,12 @@ export class VideosGridComponent implements OnInit {
       campaignId,
       userId,
       categoryId,
-      completedShoppableTour: this.completedShoppableTour
+      enabledShoppableTour: this.enabledShoppableTour
     };
-    this.popupDialogRef = this.dialog.open(PreviewComponent, dialogConfig);
-
+    this.previewDialogRef = this.dialog.open(PreviewComponent, dialogConfig);
+    const sub = this.previewDialogRef.componentInstance.onAdd.subscribe(() => {
+      this.previewDialogRef.close();
+    });
   }
 
   loadMoreVideos = () => {
@@ -216,12 +215,6 @@ export class VideosGridComponent implements OnInit {
       this.canToggle = false;
       if (this.isUser) {
         return this.refreshUser();
-      }
-    } else if (event.data.action === 'completedShoppableTour') {
-      this.completedShoppableTour = event.data.completed;
-      localStorage.setItem('completedShoppableTour', event.data.completed);
-      if (this.completedShoppableTour) {
-        this.toured();
       }
     }
   }

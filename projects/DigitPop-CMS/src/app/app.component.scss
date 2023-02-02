@@ -2,6 +2,11 @@
     flex: 2 2 auto;
 }
 
+mat-toolbar {
+  z-index: 2;
+  position: relative;
+}
+
 .sidenav-container {
     height: 100%;
 }

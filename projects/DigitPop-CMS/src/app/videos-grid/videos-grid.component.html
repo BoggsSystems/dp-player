@@ -31,7 +31,7 @@
       <img alt="video title" height="170"
            src="{{video.thumbnail.url}}">
       <img
-        [hidden]="video.watched || completedShoppableTour"
+        [hidden]="video.watched || !enabledShoppableTour"
         alt=""
         class="shoppable-video-indicator"
         src="/assets/img/shoppable-video.svg"
