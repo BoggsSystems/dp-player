@@ -190,7 +190,7 @@ export class VideosGridComponent implements OnInit {
     if (event.data.action === 'postQuiz') {
       this.previewDialogRef.close();
 
-      const isCorrect = event.data.isCorrect;
+      const isCorrect = event.data.isCorrect.correct;
       let confirmDialog: any;
 
       if (!isCorrect) {
@@ -210,12 +210,19 @@ export class VideosGridComponent implements OnInit {
         });
       }
 
+      this.videos = this.videos.map(video => {
+        if (video._id !== this.projectId) {
+          return video;
+        }
+
+        video.watched = true;
+        return video;
+      });
+      console.log(this.videos);
+
       this.canToggle = true;
       this.scoreBubbleToggle(event.data.isUser);
       this.canToggle = false;
-      if (this.isUser) {
-        return this.refreshUser();
-      }
     }
   }
 
@@ -228,8 +235,9 @@ export class VideosGridComponent implements OnInit {
         scoreBubbleTimer.subscribe((x: any) => {
           this.scoreBubbleIsOpen = !this.scoreBubbleIsOpen;
           if (!isUser) {
-            this.openVisitorPopup();
+            return this.openVisitorPopup();
           }
+          return this.refreshUser();
         });
       }
     }
@@ -266,7 +274,6 @@ export class VideosGridComponent implements OnInit {
       let use = new XchaneUser();
       use = user as XchaneUser;
       this.authService.storeUser(use);
-      return this.router.navigate(['/']);
     }, (error: any) => {
       console.error(error);
     });
