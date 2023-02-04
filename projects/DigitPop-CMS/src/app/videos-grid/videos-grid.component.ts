@@ -266,7 +266,7 @@ export class VideosGridComponent implements OnInit {
       let use = new XchaneUser();
       use = user as XchaneUser;
       this.authService.storeUser(use);
-      return this.router.navigate(['/home']);
+      return this.router.navigate(['/']);
     }, (error: any) => {
       console.error(error);
     });

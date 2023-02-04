@@ -52,7 +52,9 @@ export class AppComponent implements OnInit {
     router.events.subscribe(() => {
       this.getSections();
     });
-    this.enableShoppableTour = this.authService.currentUserValue.toured;
+    if (this.authService.currentUserValue) {
+      this.enableShoppableTour = this.authService.currentUserValue.toured;
+    }
   }
 
   ngOnInit() {
