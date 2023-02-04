@@ -190,7 +190,7 @@ export class VideosGridComponent implements OnInit {
     if (event.data.action === 'postQuiz') {
       this.previewDialogRef.close();
 
-      const isCorrect = event.data.isCorrect.correct;
+      const isCorrect = this.isUser ? event.data.isCorrect.correct : event.data.isCorrect;
       let confirmDialog: any;
 
       if (!isCorrect) {
