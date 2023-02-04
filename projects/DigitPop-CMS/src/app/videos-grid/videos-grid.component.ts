@@ -1,7 +1,9 @@
 'use strict';
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {
-  MatDialog, MatDialogConfig, MatDialogRef
+  MatDialog,
+  MatDialogConfig,
+  MatDialogRef
 } from '@angular/material/dialog';
 import {Router} from '@angular/router';
 import {VideosGridService} from '../shared/services/videos-grid.service';
@@ -19,12 +21,7 @@ import {PlayerComponent} from '../xchane/player/player.component';
 import {timer} from 'rxjs';
 import {VisitorPopupComponent} from '../visitor-popup/visitor-popup.component';
 import {XchaneUser} from '../shared/models/xchane.user';
-import {
-  FailurepopupComponent
-} from '../xchane/failurepopup/failure-popup.component';
-import {
-  throwError as observableThrowError
-} from 'rxjs/internal/observable/throwError';
+import {DataService} from '../xchane/services/data.service';
 
 @Component({
   selector: 'digit-pop-videos-grid',
@@ -56,12 +53,15 @@ export class VideosGridComponent implements OnInit {
   isUser: string | boolean;
 
   // tslint:disable-next-line:max-line-length
-  constructor(private videosService: VideosGridService, private engagementService: EngagementService, private authService: XchaneAuthenticationService, private dialog: MatDialog, private router: Router) {
+  constructor(private videosService: VideosGridService, private engagementService: EngagementService, private authService: XchaneAuthenticationService, private dialog: MatDialog, private router: Router, private data: DataService) {
     this.scoreBubbleIsOpen = false;
     this.canToggle = false;
     this.videosCount = Array(this.videosLimit).fill(0).map((x, i) => i);
     this.categoryVideosCount = 0;
     this.selectedCategories = ['Cosmetics']; // Set default category
+    this.data.getShoppableTour().subscribe(enabledShoppableTour => {
+      this.enabledShoppableTour = enabledShoppableTour.enabled;
+    });
   }
 
   ngOnInit(): void {
@@ -188,7 +188,7 @@ export class VideosGridComponent implements OnInit {
 
   handlePostQuizMessage = (event: any) => {
     if (event.data.action === 'postQuiz') {
-      this.popupDialogRef.close();
+      this.previewDialogRef.close();
 
       const isCorrect = event.data.isCorrect;
       let confirmDialog: any;
