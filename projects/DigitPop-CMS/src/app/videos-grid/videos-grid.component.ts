@@ -218,7 +218,6 @@ export class VideosGridComponent implements OnInit {
         video.watched = true;
         return video;
       });
-      console.log(this.videos);
 
       this.canToggle = true;
       this.scoreBubbleToggle(event.data.isUser);
@@ -237,7 +236,7 @@ export class VideosGridComponent implements OnInit {
           if (!isUser) {
             return this.openVisitorPopup();
           }
-          return this.refreshUser();
+          this.refreshUser();
         });
       }
     }
