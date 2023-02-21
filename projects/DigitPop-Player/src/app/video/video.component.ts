@@ -315,13 +315,15 @@ export class VideoComponent implements OnInit, AfterViewInit {
   }
 
   onEnded() {
-    this.startQuiz();
-    if (this.params.engagementId != null && this.params.campaignId) {
-      this.showQuizButton = true;
-      this.onShowProduct();
-    } else {
-      this.onShowProduct();
-    }
+    // this.startQuiz();
+    this.showQuizButton = true;
+    this.onShowProduct();
+    // if (this.params.engagementId != null && this.params.campaignId) {
+    //   this.showQuizButton = true;
+    //   this.onShowProduct();
+    // } else {
+    //   this.onShowProduct();
+    // }
   }
 
   startQuiz() {
