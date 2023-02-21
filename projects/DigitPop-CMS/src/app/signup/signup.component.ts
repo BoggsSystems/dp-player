@@ -40,7 +40,7 @@ export class SignupComponent implements OnInit {
   validRole: any;
 
   constructor(public dialogRef: MatDialogRef<SignupComponent>, fb: FormBuilder, private route: ActivatedRoute, private router: Router, private authService: XchaneAuthenticationService, private bizAuthService: AuthenticationService) {
-    this.validRole = Role.Business;
+    this.validRole = Role.Consumer;
     //  window['billsbyData'] = {
     //   email: "fake@eamil.net",
     //   fname: "fake"
@@ -81,21 +81,16 @@ export class SignupComponent implements OnInit {
 //  }
 
   onChange($event: any) {
-    if ($event.source.value == "1") {
-      this.signUpForm.controls['email'].enable();
+    if ($event.source.value === '1') {
       this.validRole = Role.Consumer;
     }
-    if ($event.source.value == "2") {
+    if ($event.source.value === '2') {
       this.validRole = Role.Business;
-      this.signUpForm.controls['email'].disable();
-      // this.signUpForm.controls['password'].disable();
-      // this.signUpForm.controls['confirm_password'].disable();
     }
-    console.log(this.validRole);
   }
 
   submit() {
-    if (this.fromQuiz) {
+    if (this.fromQuiz || this.validRole === Role.Consumer) {
       const xchaneUser = new XchaneUser();
       return this.handleXchaneSignUp(xchaneUser);
     }
@@ -133,7 +128,10 @@ export class SignupComponent implements OnInit {
         this.dialogRef.close();
         this.authService.storeUser(response.user);
         localStorage.setItem('currentRole', 'customer');
-        this.addPointsToUser(response.user._id);
+        if (this.fromQuiz) {
+          return this.addPointsToUser(response.user._id);
+        }
+        return this.refreshHomepage();
       }, error => {
         return observableThrowError(error);
       });
@@ -144,17 +142,20 @@ export class SignupComponent implements OnInit {
       .addPointsAfterSignUp(this.campaignId, xchaneUserId, this.projectId)
       .subscribe(response => {
         this.authService.storeUser(response);
-        const navigationExtras: NavigationExtras = {
-          state: {
-            loggedIn: true
-          },
-        };
-        return this.router.navigate(['/home'], navigationExtras);
+        return this.refreshHomepage();
       }, error => {
         return observableThrowError(error);
       });
   }
 
+  refreshHomepage = () => {
+    const navigationExtras: NavigationExtras = {
+      state: {
+        loggedIn: true
+      },
+    };
+    return this.router.navigate(['/home'], navigationExtras);
+  }
 
   // async callBillsby(): Promise<void> {
   //   let call = await this.homeComp.clicktrial();
@@ -163,7 +164,7 @@ export class SignupComponent implements OnInit {
   // }
   callBillsby() {
     // this.dialogRef.close();
-    //this.homeComp.clicktrial();
+    // this.homeComp.clicktrial();
   }
 
   // ngDoCheck(){

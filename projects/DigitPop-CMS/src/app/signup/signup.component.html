@@ -2,7 +2,15 @@
   <button [hidden]="hideCloseButton" [mat-dialog-close] cdkFocusInitial
           class="mat-dialog-close">&#10006;
   </button>
+
   <form (ngSubmit)="submit()" [formGroup]="signUpForm">
+    <mat-radio-group
+      aria-label="Select an option"
+      (change)="onChange($event)"
+      name="role">
+      <mat-radio-button value="1" class="check" checked>As a consumer</mat-radio-button>
+      <mat-radio-button value="2" class="check">As a business</mat-radio-button>
+    </mat-radio-group>
 
     <div class="form-group email">
       <mat-form-field>
