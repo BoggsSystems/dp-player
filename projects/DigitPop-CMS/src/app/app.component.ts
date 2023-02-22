@@ -153,7 +153,7 @@ export class AppComponent implements OnInit {
   }
 
   openSignup(): void {
-    const dialogRef = this.dialog.open(VisitorPopupComponent, {
+    const dialogRef = this.dialog.open(SignupComponent, {
       panelClass: 'dpop-modal'
     });
 

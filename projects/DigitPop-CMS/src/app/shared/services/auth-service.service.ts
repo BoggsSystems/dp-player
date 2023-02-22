@@ -1,26 +1,22 @@
-import { Injectable, Inject } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { map, catchError, shareReplay } from 'rxjs/operators';
-import { User } from '../models/user';
-import { XchaneUser } from '../models/xchane.user';
-import { environment } from 'projects/DigitPop-CMS/src/environments/environment';
-import { HTTP_CMS_AUTH } from '../../app.module';
-import { tap } from 'lodash';
+import {Inject, Injectable} from '@angular/core';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {BehaviorSubject, Observable} from 'rxjs';
+import {catchError, map} from 'rxjs/operators';
+import {User} from '../models/user';
+import {environment} from 'projects/DigitPop-CMS/src/environments/environment';
+import {HTTP_CMS_AUTH} from '../../app.module';
 
 const httpOptions = {
-  headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+  headers: new HttpHeaders({'Content-Type': 'application/json'}),
 };
 
-@Injectable({ providedIn: 'root' })
+@Injectable({providedIn: 'root'})
 export class AuthenticationService {
-  private currentUserSubject: BehaviorSubject<User>;
   public currentUser: Observable<User>;
+  private currentUserSubject: BehaviorSubject<User>;
 
   constructor(@Inject(HTTP_CMS_AUTH) private http: HttpClient) {
-    this.currentUserSubject = new BehaviorSubject<User>(
-      JSON.parse(localStorage.getItem('currentuser'))
-    );
+    this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('currentuser')));
     this.currentUser = this.currentUserSubject.asObservable();
   }
 
@@ -29,44 +25,30 @@ export class AuthenticationService {
   }
 
   welcome() {
-    return this.http.put<any>(
-      `${environment.apiUrl}/api/users/` +
-        this.currentUserValue._id +
-        '/welcome',
-      { id: this.currentUserValue._id }
-    );
+    return this.http.put<any>(`${environment.apiUrl}/api/users/` + this.currentUserValue._id + '/welcome', {id: this.currentUserValue._id});
   }
 
   projectWizardPopup() {
-    return this.http.put<any>(
-      `${environment.apiUrl}/api/users/` +
-        this.currentUserValue._id +
-        '/projectWizardPopup',
-      { id: this.currentUserValue._id }
-    );
+    // tslint:disable-next-line:max-line-length
+    return this.http.put<any>(`${environment.apiUrl}/api/users/` + this.currentUserValue._id + '/projectWizardPopup', {id: this.currentUserValue._id});
   }
 
   login(email: string, password: string) {
     return this.http
-      .post<any>(`${environment.apiUrl}/auth/local`, { email, password })
-      .pipe(
-        map((res) => {
-          if (res.token) {
-            res.user.token = res.token;
-            localStorage.setItem('currentuser', JSON.stringify(res.user));
-            // localStorage.setItem("currentuser",res.user.email);
-            // localStorage.setItem("currentRole",res.user.role);
-            this.currentUserSubject.next(res.user);
-          } else {
-            alert(res.message);
-          }
-          return res.user;
-        }),
-        catchError((err, caught) => {
-          console.log(err);
-          return err;
-        })
-      );
+      .post<any>(`${environment.apiUrl}/auth/local`, {email, password})
+      .pipe(map((res) => {
+        if (res.token) {
+          res.user.token = res.token;
+          localStorage.setItem('currentuser', JSON.stringify(res.user));
+          this.currentUserSubject.next(res.user);
+        } else {
+          alert(res.message);
+        }
+        return res.user;
+      }), catchError((err, caught) => {
+        console.log(err);
+        return err;
+      }));
   }
 
   storeUser(user: any) {
@@ -86,47 +68,28 @@ export class AuthenticationService {
   }
 
   getUsage(user: User, cycle: any) {
-    return this.http.get<any>(
-      `${environment.apiUrl}/api/users/` + user._id + '/' + cycle + '/usage'
-    );
+    return this.http.get<any>(`${environment.apiUrl}/api/users/` + user._id + '/' + cycle + '/usage');
   }
 
   createUser(user: User) {
-    var name = user.name;
-    var email = user.email;
-    var password = user.password;
-    var role = user.role;
-    let body = JSON.stringify(user);
-    // var sid = user.sid;
-    // var cid = user.cid;
-    // console.log(user);
+    const name = user.name;
+    const email = user.email;
+    const password = user.password;
+    const role = user.role;
+
     return this.http
       .post<any>(`${environment.apiUrl}/api/users/`, {
-        name,
-        email,
-        password,
-        role,
+        name, email, password, role,
       })
-      .pipe(
-        map((res) => {
-          console.log(res);
-          // login successful if there's a jwt token in the response
-          if (res.user && res.token) {
-            console.log('Successful signup');
-            // localStorage.setItem("currentuser", res.user.email);
-            // localStorage.setItem("currentRole",res.user.role);
-            res.user.token = res.token;
-            //store user details and jwt token in local storage to keep user logged in between page refreshes
-            localStorage.setItem('currentuser', JSON.stringify(res.user));
-            this.currentUserSubject.next(res.user);
-          }
+      .pipe(map((res) => {
+        if (res.user && res.token) {
+          res.user.token = res.token;
+          // store user details and jwt token in local storage to keep user logged in between page refreshes
+          localStorage.setItem('currentuser', JSON.stringify(res.user));
+          this.currentUserSubject.next(res.user);
+        }
 
-          return res;
-        })
-      );
-
-    // return this.http.post<any>(`${environment.apiUrl}/api/users/`, {
-    //   packet,
-    // });
+        return res;
+      }));
   }
 }

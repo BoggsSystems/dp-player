@@ -103,13 +103,17 @@ export class SignupComponent implements OnInit, OnDestroy {
     user.password = this.signUpForm.controls.password.value;
 
     this.bizAuthService.createUser(user).subscribe((res) => {
+      if (res.msg) {
+        return this.errorMessage = res.msg;
+      }
+
       if (res) {
         localStorage.setItem('currentRole', 'Business');
         this.dialogRef.close();
         this.router.navigate(['/cms/dashboard']);
       }
     }, (err) => {
-      console.log('Update error : ' + err.toString());
+      console.log(err);
     });
   }
 
