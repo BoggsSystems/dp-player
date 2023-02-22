@@ -15,6 +15,7 @@ import {
 import {XchaneUser} from './shared/models/xchane.user';
 import {XchaneAuthenticationService} from './shared/services/xchane-auth-service.service';
 import {DataService} from './xchane/services/data.service';
+import {VisitorPopupComponent} from './visitor-popup/visitor-popup.component';
 
 
 @Component({
@@ -76,6 +77,7 @@ export class AppComponent implements OnInit {
       localStorage.removeItem('trial');
     }
 
+    console.log(this.currentRole);
   }
 
   ngDoCheck() {
@@ -151,7 +153,7 @@ export class AppComponent implements OnInit {
   }
 
   openSignup(): void {
-    const dialogRef = this.dialog.open(SignupComponent, {
+    const dialogRef = this.dialog.open(VisitorPopupComponent, {
       panelClass: 'dpop-modal'
     });
 

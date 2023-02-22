@@ -104,6 +104,7 @@ mat-progress-bar .mat-progress-bar-buffer {
 }
 
 .dpop-modal .mat-dialog-container {
+  overflow: visible;
   background-color: red;
 	min-width: 300px;
 	position: relative;
@@ -141,13 +142,16 @@ mat-progress-bar .mat-progress-bar-buffer {
 .dpop-modal .form-group { position: relative; }
 
 .dpop-modal .form-group:not(:last-child) {
-	margin-top: 20px;
-	margin-bottom: 40px;
+	margin-bottom: 30px;
 }
 
 .dpop-modal .mat-radio-button {
-	padding-left: 50px;
 	display: block;
+}
+
+.dpop-modal .mat-radio-button label {
+  justify-content: center;
+  text-align: center;
 }
 
 .dpop-modal .mat-radio-button:not(:last-child) {

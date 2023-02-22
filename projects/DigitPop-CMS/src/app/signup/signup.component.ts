@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MatDialogRef} from '@angular/material/dialog';
 import {ActivatedRoute, NavigationExtras, Router} from '@angular/router';
@@ -26,7 +26,8 @@ declare const window: customWindow;
   templateUrl: './signup.component.html',
   styleUrls: ['./signup.component.scss'],
 })
-export class SignupComponent implements OnInit {
+
+export class SignupComponent implements OnInit, OnDestroy {
   @Input() hideCloseButton = false;
   @Input() fromQuiz = false;
   @Input() campaignId: string;
@@ -38,7 +39,9 @@ export class SignupComponent implements OnInit {
   isCheckedConsumer: boolean;
   isCheckedBusiness: boolean;
   validRole: any;
+  errorMessage: string;
 
+  // tslint:disable-next-line:max-line-length
   constructor(public dialogRef: MatDialogRef<SignupComponent>, fb: FormBuilder, private route: ActivatedRoute, private router: Router, private authService: XchaneAuthenticationService, private bizAuthService: AuthenticationService) {
     this.validRole = Role.Consumer;
     //  window['billsbyData'] = {
@@ -114,6 +117,7 @@ export class SignupComponent implements OnInit {
   }
 
   handleXchaneSignUp = (user: XchaneUser) => {
+    this.errorMessage = undefined;
     user.email = this.signUpForm.controls.email.value;
     user.password = this.signUpForm.controls.password.value;
     user.role = Role.Consumer;
@@ -125,6 +129,10 @@ export class SignupComponent implements OnInit {
     this.authService
       .createXchaneUser(user)
       .subscribe(response => {
+        if (response.msg) {
+          return this.errorMessage = response.msg;
+        }
+
         this.dialogRef.close();
         this.authService.storeUser(response.user);
         localStorage.setItem('currentRole', 'customer');
@@ -157,21 +165,6 @@ export class SignupComponent implements OnInit {
     return this.router.navigate(['/home'], navigationExtras);
   }
 
-  // async callBillsby(): Promise<void> {
-  //   let call = await this.homeComp.clicktrial();
-  //   this.dialogRef.close();
-
-  // }
-  callBillsby() {
-    // this.dialogRef.close();
-    // this.homeComp.clicktrial();
-  }
-
-  // ngDoCheck(){
-  //   window['billsbyData'] = {
-  //     email: "fake@eamil.net"
-  //   };
-  // }
   ngOnDestroy(): void {
     const frame = document.getElementById('checkout-billsby-iframe');
     if (frame != null) {

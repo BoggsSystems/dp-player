@@ -1,3 +1,46 @@
+.signup-modal {
+  //max-width: 300px;
+}
+
 form {
   padding: 10px;
+}
+
+.form-group:not(:last-child) {
+  width: 100%;
+  margin: 0;
+}
+
+.error-message {
+  top: 0;
+  left: 0;
+  width: 100%;
+  position: absolute;
+  padding: 10px;
+  text-align: center;
+  color: #fff;
+  background-color: #b51111;
+  border-radius: 5px;
+
+  &.show {
+    animation: slideUp 400ms ease-in-out forwards;
+  }
+
+  p {
+    margin: 0;
+    font-weight: bold;
+  }
+}
+
+@keyframes slideUp {
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateY(-105%);
+    opacity: 1;
+
+  }
 }

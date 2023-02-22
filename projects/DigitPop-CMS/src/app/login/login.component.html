@@ -1,58 +1,64 @@
-<div mat-dialog-content class="login-modal">
-  <button [hidden]="hideCloseButton" class="mat-dialog-close" [mat-dialog-close] cdkFocusInitial>&#10006;</button>
-  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+<div class="login-modal" mat-dialog-content>
+  <button [hidden]="hideCloseButton" [mat-dialog-close] cdkFocusInitial
+          class="mat-dialog-close">&#10006;
+  </button>
+  <form (ngSubmit)="onSubmit()" [formGroup]="loginForm">
 
     <div class="form-group">
-		<mat-radio-group
-          aria-label="Select an option"
-          (change)="onChange($event)"
-          name="role"
+      <mat-radio-group
+        (change)="onChange($event)"
+        *ngIf="!fromQuiz"
+        aria-label="Select an option"
+        name="role"
+      >
+        <mat-radio-button checked class="check" value="1"
+        >As a consumer
+        </mat-radio-button
         >
-          <mat-radio-button value="1" class="check" checked
-            >As a consumer</mat-radio-button
-          >
-          <mat-radio-button value="2" class="check"
-            >As a business</mat-radio-button
-          >
-        </mat-radio-group>
-    </div>
-
-	<div class="form-group">
-        <mat-form-field>
-          <mat-label>Email</mat-label>
-          <input
-            matInput
-            type="text"
-            formControlName="email"
-            class="form-control"
-            [ngClass]="{ 'is-invalid': submitted && f.email.errors }"
-          />
-          <div *ngIf="submitted && f.username.errors" class="invalid-feedback">
-            <div *ngIf="f.username.errors.required">Username is required</div>
-          </div>
-        </mat-form-field>
-		<mat-icon matPrefix aria-hidden="false" aria-label="Email">email</mat-icon>
+        <mat-radio-button class="check" value="2"
+        >As a business
+        </mat-radio-button
+        >
+      </mat-radio-group>
     </div>
 
     <div class="form-group">
-        <mat-form-field>
-          <mat-label>Password</mat-label>
-          <input
-            type="password"
-            matInput
-            formControlName="password"
-            class="form-control"
-            [ngClass]="{ 'is-invalid': submitted && f.password.errors }"
-          />
-          <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
-            <div *ngIf="f.password.errors.required">Password is required</div>
-          </div>
-        </mat-form-field>
-		<mat-icon matPrefix aria-hidden="false" aria-label="Lock">lock</mat-icon>
+      <mat-form-field>
+        <mat-label>Email</mat-label>
+        <input
+          [ngClass]="{ 'is-invalid': submitted && f.email.errors }"
+          class="form-control"
+          formControlName="email"
+          matInput
+          type="text"
+        />
+        <div *ngIf="submitted && f.username.errors" class="invalid-feedback">
+          <div *ngIf="f.username.errors.required">Username is required</div>
+        </div>
+      </mat-form-field>
+      <mat-icon aria-hidden="false" aria-label="Email" matPrefix>email
+      </mat-icon>
     </div>
 
     <div class="form-group">
-      <button mat-button [disabled]="loading" class="btn btn-primary">
+      <mat-form-field>
+        <mat-label>Password</mat-label>
+        <input
+          [ngClass]="{ 'is-invalid': submitted && f.password.errors }"
+          class="form-control"
+          formControlName="password"
+          matInput
+          type="password"
+        />
+        <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
+          <div *ngIf="f.password.errors.required">Password is required</div>
+        </div>
+      </mat-form-field>
+      <mat-icon aria-hidden="false" aria-label="Lock" matPrefix>lock</mat-icon>
+    </div>
+
+    <div class="form-group">
+      <button [disabled]="loading" class="btn btn-primary" mat-button>
         <span
           *ngIf="loading"
           class="spinner-border spinner-border-sm mr-1"

@@ -64,9 +64,8 @@ export class XchaneAuthenticationService {
           // store user details and jwt token in local storage to keep user logged in between page refreshes
           localStorage.setItem('XchaneCurrentUser', JSON.stringify(res.user));
           this.currentUserSubject.next(res.user);
-        } else if (res.msg) {
-          alert(res.msg);
         }
+
         return res;
 
         // login successful if there's a jwt token in the response

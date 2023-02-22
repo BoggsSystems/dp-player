@@ -53,7 +53,7 @@ export class AuthenticationService {
         map((res) => {
           if (res.token) {
             res.user.token = res.token;
-            localStorage.setItem('currentUser', JSON.stringify(res.user));
+            localStorage.setItem('currentuser', JSON.stringify(res.user));
             // localStorage.setItem("currentuser",res.user.email);
             // localStorage.setItem("currentRole",res.user.role);
             this.currentUserSubject.next(res.user);
@@ -81,7 +81,7 @@ export class AuthenticationService {
   }
 
   logout() {
-    localStorage.removeItem('currentUser');
+    localStorage.removeItem('currentuser');
     this.currentUserSubject.next(null);
   }
 
