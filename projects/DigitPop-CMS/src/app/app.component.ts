@@ -3,7 +3,7 @@ import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
 import {Observable} from 'rxjs';
 import {map, shareReplay} from 'rxjs/operators';
 import {MatDialog} from '@angular/material/dialog';
-import {NavigationExtras, Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {SpinnerService} from './shared/services/spinner.service';
 import {HomeComponent} from './home/home.component';
 import {LoginComponent} from './login/login.component';
@@ -13,9 +13,10 @@ import {
   ProjectWizardYoutubePopup
 } from './cms/project-wizard/popup/youtube-popup.component';
 import {XchaneUser} from './shared/models/xchane.user';
-import {XchaneAuthenticationService} from './shared/services/xchane-auth-service.service';
+import {
+  XchaneAuthenticationService
+} from './shared/services/xchane-auth-service.service';
 import {DataService} from './xchane/services/data.service';
-import {VisitorPopupComponent} from './visitor-popup/visitor-popup.component';
 
 
 @Component({
@@ -46,15 +47,41 @@ export class AppComponent implements OnInit {
   isEligible: boolean;
   sectionsKeys: any;
   enableShoppableTour = true;
+  disableNotification: boolean;
+  isVerified: boolean;
+  notificationMessage: string;
   @ViewChild(HomeComponent) child: HomeComponent;
 
   // tslint:disable-next-line:max-line-length
-  constructor(public spinnerService: SpinnerService, private breakpointObserver: BreakpointObserver, public dialog: MatDialog, private router: Router, private authService: XchaneAuthenticationService, private data: DataService) {
+  constructor(public spinnerService: SpinnerService, private breakpointObserver: BreakpointObserver, public dialog: MatDialog, private router: Router, private route: ActivatedRoute, private authService: XchaneAuthenticationService, private data: DataService) {
     router.events.subscribe(() => {
       this.getSections();
     });
+
     if (this.authService.currentUserValue) {
       this.enableShoppableTour = this.authService.currentUserValue.toured;
+      this.isVerified = this.authService.currentUserValue.verified;
+    }
+
+    this.disableNotification = this.isVerified;
+
+    if (this.route != null && this.route.queryParams != null) {
+      const x = this.route.queryParams;
+      x.subscribe(params => {
+        if (params.verified) {
+          this.notificationMessage = params.verified;
+          this.disableNotification = false;
+          this.router.navigate(['/home']);
+
+          setTimeout(() => {
+            this.disableNotification = true;
+          }, 4000);
+        }
+      });
+    }
+
+    if (!this.isVerified) {
+      this.notificationMessage = 'Please, check your email for verification.';
     }
   }
 
@@ -77,7 +104,6 @@ export class AppComponent implements OnInit {
       localStorage.removeItem('trial');
     }
 
-    console.log(this.currentRole);
   }
 
   ngDoCheck() {
@@ -142,7 +168,9 @@ export class AppComponent implements OnInit {
       });
   }
 
-  openLoginDialog(): void {
+  openLoginDialog()
+    :
+    void {
     const dialogRef = this.dialog.open(LoginComponent, {
       panelClass: 'dpop-modal'
     });
@@ -152,7 +180,9 @@ export class AppComponent implements OnInit {
     });
   }
 
-  openSignup(): void {
+  openSignup()
+    :
+    void {
     const dialogRef = this.dialog.open(SignupComponent, {
       panelClass: 'dpop-modal'
     });
@@ -171,7 +201,9 @@ export class AppComponent implements OnInit {
     });
   }
 
-  openDialog(): void {
+  openDialog()
+    :
+    void {
     console.log('WZZZAAA');
     this.router.navigate(['/xchane/landing']);
 
@@ -184,7 +216,9 @@ export class AppComponent implements OnInit {
     // });
   }
 
-  ngAfterContentInit(): void {
+  ngAfterContentInit()
+    :
+    void {
     // if (this.authenticationService.currentUserValue) {
     //   this.router.navigate(['/dashboard']);
     // } else {
@@ -192,7 +226,9 @@ export class AppComponent implements OnInit {
     // }
   }
 
-  openYoutubeDialog(): void {
+  openYoutubeDialog()
+    :
+    void {
     const dialogRef = this.dialog.open(ProjectWizardYoutubePopup, {
       width: '100%', height: '90%',
     });
@@ -235,21 +271,34 @@ export class AppComponent implements OnInit {
     return attributeExist;
   }
 
-  getSectionTitle(section: Element) {
+  getSectionTitle(section
+                    :
+                    Element
+  ) {
     const title = section.getAttribute('data-nav');
     return title;
   }
 
-  getSectionId(section: Element) {
+  getSectionId(section
+                 :
+                 Element
+  ) {
     const id = section.getAttribute('id') ?? '';
     return id;
   }
 
-  setSectionsKeys(sectionsObject: Object) {
+  setSectionsKeys(sectionsObject
+                    :
+                    Object
+  ) {
     this.sectionsKeys = Object.keys(sectionsObject);
   }
 
-  scrollToSection(sectionId: string): void {
+  scrollToSection(sectionId
+                    :
+                    string
+  ):
+    void {
     const targetSection = document.querySelector('#' + sectionId);
     targetSection.scrollIntoView({
       behavior: 'smooth', block: 'start', inline: 'nearest',

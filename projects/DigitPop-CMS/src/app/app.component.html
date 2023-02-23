@@ -1,4 +1,7 @@
 <mat-spinner class="spinner" [diameter]="50" *ngIf="spinnerService.visibility | async"></mat-spinner>
+<mat-toolbar *ngIf="!disableNotification" class="notification">
+  <p>{{notificationMessage}}</p>
+</mat-toolbar>
 <mat-toolbar color="secondary">
     <div id="main_logo">
         <svg viewBox="0 0 180 60">

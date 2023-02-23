@@ -192,10 +192,6 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       branding: true
     });
     window.addEventListener('message', this.receiveMessage.bind(this), false);
-
-    if (this.route != null && this.route.queryParams != null) {
-      const x = this.route.queryParams;
-    }
   }
 
   iOSVersion() {

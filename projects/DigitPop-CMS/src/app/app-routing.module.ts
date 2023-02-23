@@ -1,10 +1,10 @@
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-import { NameGuard } from './shared/services/campaign.service';
-import { RegisterComponent } from './register/register.component';
-import { HomeComponent } from './home/home.component';
-import { AuthGuard } from './shared/guards/auth-guard.service';
-import { LoginComponent } from './login/login.component';
+import {NgModule} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
+import {NameGuard} from './shared/services/campaign.service';
+import {RegisterComponent} from './register/register.component';
+import {HomeComponent} from './home/home.component';
+import {AuthGuard} from './shared/guards/auth-guard.service';
+import {LoginComponent} from './login/login.component';
 import {
   UserDashboardComponent
 } from './user-dashboard/user-dashboard.component';
@@ -18,6 +18,10 @@ const routes: Routes = [
   {
     path: 'dashboard',
     component: UserDashboardComponent
+  },
+  {
+    path: 'verify',
+    component: HomeComponent
   },
   {
     path: 'cms',
@@ -39,12 +43,14 @@ const routes: Routes = [
     path: 'register',
     component: RegisterComponent,
   },
-  { path: '**', redirectTo: '' },
+  {path: '**', redirectTo: ''},
 ];
 export const appRoutingModule = RouterModule.forRoot(routes);
+
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { useHash: true })],
+  imports: [RouterModule.forRoot(routes, {useHash: false})],
   exports: [RouterModule],
   providers: [NameGuard],
 })
-export class AppRoutingModule {}
+export class AppRoutingModule {
+}
