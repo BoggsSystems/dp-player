@@ -1,8 +1,8 @@
 <div class="container">
   <img
+    (click)="onShowProduct()"
     *ngIf="videoPlaying && enabledShoppableTour"
     [tooltip]="'Click on product for more details'"
-    (click)="onShowProduct()"
     alt=""
     class="shoppable-video-tutorial"
     src="/assets/images/shoppable-video-touch.svg"
@@ -22,18 +22,22 @@
     class="sound-status muted"
     src="/assets/images/muted_icon.svg"
   />
-  <video
-    #videoPlayer
-    (click)="onShowProduct()"
-    (ended)="onEnded()"
-    [hidden]="!showVideo"
-    [src]="ad?.media.secure_url"
-    class="play-ad-video"
-    crossorigin="anonymous"
-    playsinline
-    style="background-color: #202020"
-  >
-  </video>
+  <div (click)="onShowProduct()" class="video-player-overlay"></div>
+  <div class="video-player">
+    <span>
+      <video
+        #videoPlayer
+        (ended)="onEnded()"
+        [hidden]="!showVideo"
+        [src]="ad?.media.secure_url"
+        class="play-ad-video"
+        crossorigin="anonymous"
+        playsinline
+        style="background-color: #202020; pointer-events: none"
+      >
+      </video>
+    </span>
+  </div>
   <div [hidden]="!showCanvas">
     <canvas #canvas></canvas>
   </div>
@@ -52,13 +56,20 @@
           Resume
         </div>
 
+        <!--        <div (click)="startQuiz()"-->
+        <!--             *ngIf="showQuizButton"-->
+        <!--             class="button-quiz-grid button-base"-->
+        <!--             id="go-to-quiz"-->
+        <!--        >-->
+        <!--          <div></div>-->
+        <!--          Start Quiz-->
+        <!--        </div>-->
+
         <div (click)="startQuiz()"
-             *ngIf="showQuizButton"
-             class="button-quiz-grid button-base"
-             id="go-to-quiz"
-        >
-          <div></div>
-          Start Quiz
+             class="button-quiz-grid button-base start-quiz" id="go-to-quiz">
+          <span class="coin-shine"></span>
+          <img alt="coin icon" src="/assets/images/coin.svg"/>
+          <span>Earn Points</span>
         </div>
 
         <div

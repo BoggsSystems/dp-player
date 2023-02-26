@@ -34,7 +34,9 @@ export class LoginComponent implements OnInit {
   isCheckedConsumer: boolean;
   isCheckedBusiness: boolean;
   validRole: any;
+  keepMeSignedIn = false;
 
+  // tslint:disable-next-line:max-line-length
   constructor(public dialogRef: MatDialogRef<LoginComponent>, private formBuilder: FormBuilder, private route: ActivatedRoute, private router: Router, private authenticationService: AuthenticationService, private xchaneAuthenticationService: XchaneAuthenticationService, private billsbyService: BillsbyService) {
     if (this.authenticationService.currentUserValue) {
       this.router.navigate(['/']);
@@ -99,16 +101,26 @@ export class LoginComponent implements OnInit {
         .pipe(first())
         .subscribe((res) => {
           if (res) {
-            this.storeUser(res);
-            localStorage.setItem('currentRole', 'customer');
+            if (this.keepMeSignedIn) {
+              this.storeUser(res);
+              localStorage.setItem('currentRole', 'customer');
+            } else {
+              sessionStorage.setItem('currentRole', 'customer');
+            }
+
             this.dialogRef.close();
 
             if (!res.toured && this.toured) {
               this.xchaneAuthenticationService
                 .tour()
                 .subscribe(user => {
-                  localStorage.setItem('enabledShoppableTour', 'true');
-                  localStorage.setItem('XchaneCurrentUser', JSON.stringify(user));
+                  if (this.keepMeSignedIn) {
+                    localStorage.setItem('enabledShoppableTour', 'true');
+                    localStorage.setItem('XchaneCurrentUser', JSON.stringify(user));
+                  } else {
+                    sessionStorage.setItem('enabledShoppableTour', 'true');
+                    sessionStorage.setItem('XchaneCurrentUser', JSON.stringify(user));
+                  }
                 });
             }
 
@@ -174,7 +186,6 @@ export class LoginComponent implements OnInit {
 
   storeUser = (response: XchaneUser) => {
     const token = response.token ? response.token : null;
-    console.log(token);
   }
 
   addPointsToUser = (xchaneUserId: string) => {

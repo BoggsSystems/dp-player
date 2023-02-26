@@ -121,6 +121,8 @@
 }
 
 .video-player-nav {
+  position: relative;
+  z-index: 101;
   display: grid;
   grid-template-columns: repeat(48, 1fr);
   grid-template-rows: 75px;
@@ -552,6 +554,22 @@
   }
 }
 
+.video-player-overlay {
+  position: absolute;
+  z-index: 100;
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+}
+
+.video-player {
+  pointer-events: none;
+
+  span {
+    pointer-events: none;
+  }
+}
+
 .play-ad-video {
   z-index: 99;
   height: 100vh;
@@ -626,6 +644,72 @@
     line-height: 48px;
     color: white;
   }
+}
+
+.start-quiz {
+  width: 48px;
+  position: relative;
+  background: none;
+  border-radius: 50%;
+
+  &:before,
+  &:after {
+    z-index: 2;
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    margin: auto;
+    background-color: #fff6df;
+    border-radius: 50%;
+    transform: scale(0.5);
+    transform-origin: center center;
+    animation: pulse 3s linear infinite;
+  }
+
+  &:after {
+    opacity: 0;
+    animation-delay: 2s;
+  }
+}
+
+.start-quiz img {
+  z-index: 5;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+}
+
+.start-quiz:hover {
+  box-shadow: 0 0 5px #ffe985,
+  0 0 25px #ffe985,
+  0 0 50px #ffe985,
+  0 0 100px #ffe985;
+  background: #ffe985;
+}
+
+.coin-shine {
+  overflow: hidden;
+  position: absolute;
+  display: block;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+}
+
+.coin-shine:after {
+  content: "";
+  opacity: 0.25;
+  position: absolute;
+  display: block;
+  width: 7px;
+  height: 200%;
+  background-color: white;
+  border-radius: 1px;
+  transform: rotate(45deg) translateY(-30%);
+  animation: shine 3s linear infinite;
 }
 
 .container {
@@ -740,16 +824,28 @@
   height: 200px;
 }
 
-#go-to-quiz {
-  animation: quizScaleAnimation 5s ease-in-out infinite alternate;
-  -webkit-animation: quizScaleAnimation 5s ease-in-out infinite alternate;
-}
-
-@keyframes quizScaleAnimation {
+@keyframes pulse {
   0% {
-    transform: scale(1.0);
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.05;
+  }
+  70% {
+    opacity: 0.02;
   }
   100% {
-    transform: scale(1.5);
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+@keyframes shine {
+  0% {
+    transform: rotate(45deg) translateX(-700%) translateY(-30%);
+  }
+  100% {
+    transform: rotate(45deg) translateX(700%) translateY(-30%);
   }
 }

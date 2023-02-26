@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {BreakpointObserver} from '@angular/cdk/layout';
 import {first} from 'rxjs/operators';
 import {ActivatedRoute, NavigationExtras, Router} from '@angular/router';
@@ -24,12 +24,11 @@ import {
 } from '../confirm-dialog/confirm-dialog.component';
 import {Campaign} from '../../shared/models/campaign';
 import {OkDialogComponent} from '../ok-dialog/ok-dialog.component';
-import * as _ from 'lodash';
 import {
   NotificationDialogComponent
 } from "../notification-dialog/notification-dialog.component";
-import { Cache, RequestArguments } from '../../shared/helpers/cache';
-import { Cloudinary } from '../../shared/helpers/cloudinary';
+import {Cache, RequestArguments} from '../../shared/helpers/cache';
+import {Cloudinary} from '../../shared/helpers/cloudinary';
 
 interface TablesSettings {
   [key: string]: any;
@@ -63,7 +62,7 @@ interface SortSettings {
   ],
 })
 
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, AfterViewInit {
   projectsCols: string[] = [
     'thumbnail',
     'name',
@@ -173,6 +172,11 @@ export class DashboardComponent implements OnInit {
   ngOnInit() {
     this.getTablesSetting();
     this.welcome();
+    if (sessionStorage.getItem('sort-settings')) {
+      const settings = JSON.parse(sessionStorage.getItem('sort-settings'));
+      this.sortBy = settings.active;
+      this.sortDirection = settings.direction;
+    }
   }
 
   ngAfterViewInit() {
@@ -242,9 +246,18 @@ export class DashboardComponent implements OnInit {
 
       if (sessionStorage.getItem('sort-settings')) {
         const settings = JSON.parse(sessionStorage.getItem('sort-settings'));
-        this.populateProjects({page: this.projectsPage, pageSize: this.projectsPageSize, sortBy: settings.active, sortDirection: settings.direction});
+        // tslint:disable-next-line:max-line-length
+        this.populateProjects({
+          page: this.projectsPage,
+          pageSize: this.projectsPageSize,
+          sortBy: settings.active,
+          sortDirection: settings.direction
+        });
       } else {
-        this.populateProjects({page: this.projectsPage, pageSize: this.projectsPageSize});
+        this.populateProjects({
+          page: this.projectsPage,
+          pageSize: this.projectsPageSize
+        });
       }
       Object.assign(ProjectsTable, {
         page: this.projectsPage,
@@ -282,7 +295,12 @@ export class DashboardComponent implements OnInit {
     } else {
       sessionStorage.setItem('cached-results', JSON.stringify(sortedData));
     }
-    this.populateProjects({page: this.projectsPage, pageSize: this.projectsPageSize, sortBy, sortDirection: e.direction});
+    this.populateProjects({
+      page: this.projectsPage,
+      pageSize: this.projectsPageSize,
+      sortBy,
+      sortDirection: e.direction
+    });
   }
 
   getSortBase(tableValue: string) {

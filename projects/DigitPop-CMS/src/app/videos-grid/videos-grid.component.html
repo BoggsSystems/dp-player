@@ -1,10 +1,10 @@
 <div class="categories">
-  <mat-radio-group fxLayout="row" fxLayoutAlign="start start"
+  <mat-radio-group fxLayout="row wrap" fxLayoutAlign="start start"
                    fxLayoutGap="7px">
     <mat-radio-button
-      [checked]="category.name === selectedCategories[0] "
       (click)="setCategory(category.name)"
       *ngFor="let category of activeCategories"
+      [checked]="category.name === selectedCategories[0] "
       [value]="category._id ? category._id : ''">{{category.name}}</mat-radio-button>
   </mat-radio-group>
 </div>
@@ -12,7 +12,8 @@
 <div *ngIf="videosLoaded" [hidden]="!videosLoaded"
      [ngClass]="{'justify-start' : categoryVideosCount < 6}"
      class="videos-grid">
-  <div *ngFor="let video of videos" [class]="video.watched ? 'dim' : ''" class="video-element"
+  <div *ngFor="let video of videos" [class]="video.watched ? 'dim' : ''"
+       class="video-element"
        fxFlex="100%"
        fxLayout="column"
        fxLayoutGap="10px">

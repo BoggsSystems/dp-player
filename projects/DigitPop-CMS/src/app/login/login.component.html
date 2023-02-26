@@ -57,6 +57,13 @@
       <mat-icon aria-hidden="false" aria-label="Lock" matPrefix>lock</mat-icon>
     </div>
 
+    <mat-checkbox (change)="keepMeSignedIn = !keepMeSignedIn"
+                  [(ngModel)]="keepMeSignedIn"
+                  color="primary"
+                  class="keep-me-signed-in">Keep me
+      signed in
+    </mat-checkbox>
+
     <div class="form-group">
       <button [disabled]="loading" class="btn btn-primary" mat-button>
         <span

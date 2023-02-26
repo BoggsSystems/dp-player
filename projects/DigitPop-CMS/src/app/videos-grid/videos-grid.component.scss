@@ -23,7 +23,7 @@
 
 .categories {
   overflow: hidden;
-  padding: 10px 30px;
+  padding: 10px 30px 0;
 }
 
 mat-radio-group {
@@ -39,6 +39,7 @@ mat-radio-group {
   }
 
   mat-radio-button {
+    margin-bottom: 7px;
     overflow: unset;
     height: unset !important;
     line-height: normal;
