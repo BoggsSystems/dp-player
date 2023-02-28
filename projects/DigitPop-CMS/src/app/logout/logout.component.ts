@@ -31,7 +31,7 @@ export class LogoutComponent implements OnInit {
     localStorage.removeItem('expires_at');
     localStorage.removeItem('token');
 
-    this.router.navigate(['/']);
+    this.router.navigate(['/home']);
     this.dialogRef.close();
   }
 

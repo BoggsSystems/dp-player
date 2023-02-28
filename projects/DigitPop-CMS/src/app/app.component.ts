@@ -58,13 +58,6 @@ export class AppComponent implements OnInit {
       this.getSections();
     });
 
-    if (this.authService.currentUserValue) {
-      this.enableShoppableTour = this.authService.currentUserValue.toured;
-      this.isVerified = this.authService.currentUserValue.verified;
-    }
-
-    this.disableNotification = this.isVerified;
-
     if (this.route != null && this.route.queryParams != null) {
       const x = this.route.queryParams;
       x.subscribe(params => {
@@ -95,6 +88,13 @@ export class AppComponent implements OnInit {
     // };
 
     this.isTrial = false;
+
+    if (this.authService.currentUserValue) {
+      this.enableShoppableTour = this.authService.currentUserValue.toured;
+      this.isVerified = this.authService.currentUserValue.verified;
+    }
+
+    this.disableNotification = this.isVerified;
 
     if (localStorage.getItem('currentRole')) {
       localStorage.removeItem('currentRole');
