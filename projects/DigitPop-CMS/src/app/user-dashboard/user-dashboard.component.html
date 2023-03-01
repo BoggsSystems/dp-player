@@ -3,7 +3,7 @@
   <div class="container">
 
     <ul class="dashboard--tabs">
-      <li>
+      <li class="disabled">
         <img alt="" src="assets/img/dashboard-home.svg">
         <a href="#">Overview</a>
       </li>
@@ -11,11 +11,11 @@
         <img alt="" src="assets/img/dashboard-redemption.svg">
         <a class="active" href="#">Redemption</a>
       </li>
-      <li>
+      <li class="disabled">
         <img alt="" src="assets/img/dashboard-key.svg">
         <a href="#">Account</a>
       </li>
-      <li>
+      <li class="disabled">
         <img alt="" src="assets/img/dashboard-setting.svg">
         <a href="#">Settings</a>
       </li>
@@ -30,7 +30,8 @@
 
         <div
           fxLayout="row wrap" fxLayoutAlign="center center"
-          fxLayoutAlign.gt-sm="start start" style="column-gap: 25px; row-gap: 25px">
+          fxLayoutAlign.gt-sm="start start"
+          style="column-gap: 25px; row-gap: 25px">
           <div *ngFor="let stat of stats"
                [class]="stat.class" class="dashboard--content--analysis--card"
                fxLayout="column" fxLayoutAlign="center center"
@@ -50,7 +51,8 @@
 
         <div
           fxLayout="row wrap" fxLayoutAlign="center center"
-          fxLayoutAlign.gt-sm="start start" style="row-gap: 25px; column-gap: 20px;">
+          fxLayoutAlign.gt-sm="start start"
+          style="row-gap: 25px; column-gap: 20px;">
 
           <div
             *ngFor="let redemption of myRedemptions; let i = index"

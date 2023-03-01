@@ -90,3 +90,17 @@ video {
   margin: 0 auto;
   border-radius: 10px;
 }
+
+.project-details {
+  z-index: 101;
+  position: sticky;
+  top: 0;
+  padding: 40px 24px 10px;
+  font-weight: bold;
+  background-color: black;
+
+  .toggle-project-active {
+    color: lightgray;
+    text-transform: capitalize;
+  }
+}

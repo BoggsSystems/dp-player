@@ -24,6 +24,7 @@ import {DataService} from './xchane/services/data.service';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
+
 export class AppComponent implements OnInit {
   isHandset$: Observable<boolean> = this.breakpointObserver
     .observe(Breakpoints.Handset)
@@ -32,7 +33,6 @@ export class AppComponent implements OnInit {
   email: any;
   password: any;
   dialogRef: any;
-  // currentUser: User;
   showSpinner: boolean;
   currentUser: any;
   currentRole: any;
@@ -54,6 +54,7 @@ export class AppComponent implements OnInit {
 
   // tslint:disable-next-line:max-line-length
   constructor(public spinnerService: SpinnerService, private breakpointObserver: BreakpointObserver, public dialog: MatDialog, private router: Router, private route: ActivatedRoute, private authService: XchaneAuthenticationService, private data: DataService) {
+
     router.events.subscribe(() => {
       this.getSections();
     });
@@ -79,14 +80,6 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
-    // this.currentRole= localStorage.getItem("currentRole");
-    // if(this.currentRole=="admin"||this.currentRole=="Business"){
-    //   this.router.navigate(['/cms/dashboard']);
-    // };
-    // if(this.currentRole=="consumer"){
-    //   this.router.navigate(['/xchane/dashboard']);
-    // };
-
     this.isTrial = false;
 
     if (this.authService.currentUserValue) {
@@ -95,10 +88,6 @@ export class AppComponent implements OnInit {
     }
 
     this.disableNotification = this.isVerified;
-
-    if (localStorage.getItem('currentRole')) {
-      localStorage.removeItem('currentRole');
-    }
 
     if (localStorage.getItem('trial')) {
       localStorage.removeItem('trial');
@@ -113,8 +102,8 @@ export class AppComponent implements OnInit {
     this.isCampaignsWizard = false;
     this.isAccountPage = false;
     this.excludeCustomNav = false;
-    this.currentRole = localStorage.getItem('currentRole');
     this.isTrial = localStorage.getItem('trial');
+    this.currentRole = localStorage.getItem('currentRole') || sessionStorage.getItem('currentRole');
 
     if (localStorage.getItem('token')) {
       this.isLogin = true;
@@ -147,14 +136,6 @@ export class AppComponent implements OnInit {
     if (this.isProjectWizard || this.isCampaignsWizard || this.isAccountPage) {
       this.excludeCustomNav = true;
     }
-
-    // if(this.currentRole=="admin"||this.currentRole=="Business"){
-    //   this.router.navigate(['/cms/dashboard']);
-    // };
-    // if(this.currentRole=="consumer"){
-    //   this.router.navigate(['/xchane/dashboard']);
-    // };
-    // console.log(this.currentUser);
   }
 
   toured = () => {
@@ -168,9 +149,7 @@ export class AppComponent implements OnInit {
       });
   }
 
-  openLoginDialog()
-    :
-    void {
+  openLoginDialog(): void {
     const dialogRef = this.dialog.open(LoginComponent, {
       panelClass: 'dpop-modal'
     });
@@ -180,15 +159,13 @@ export class AppComponent implements OnInit {
     });
   }
 
-  openSignup()
-    :
-    void {
+  openSignup(): void {
     const dialogRef = this.dialog.open(SignupComponent, {
       panelClass: 'dpop-modal'
     });
 
     dialogRef.afterClosed().subscribe(() => {
-      console.log('The dialog was closed');
+
     });
   }
 
@@ -197,38 +174,14 @@ export class AppComponent implements OnInit {
       panelClass: 'dpop-modal'
     });
 
-    dialogRef.afterClosed().subscribe(() => {
+    dialogRef.afterClosed().subscribe((loggedOut: boolean) => {
+      if (loggedOut) {
+        this.disableNotification = true;
+      }
     });
   }
 
-  openDialog()
-    :
-    void {
-    console.log('WZZZAAA');
-    this.router.navigate(['/xchane/landing']);
-
-    // const dialogRef = this.dialog.open(LoginComponent, {
-    //   width: '250px',
-    // });
-
-    // dialogRef.afterClosed().subscribe(() => {
-    //   console.log('The dialog was closed');
-    // });
-  }
-
-  ngAfterContentInit()
-    :
-    void {
-    // if (this.authenticationService.currentUserValue) {
-    //   this.router.navigate(['/dashboard']);
-    // } else {
-    //   this.router.navigate(['/home']);
-    // }
-  }
-
-  openYoutubeDialog()
-    :
-    void {
+  openYoutubeDialog(): void {
     const dialogRef = this.dialog.open(ProjectWizardYoutubePopup, {
       width: '100%', height: '90%',
     });
@@ -271,34 +224,21 @@ export class AppComponent implements OnInit {
     return attributeExist;
   }
 
-  getSectionTitle(section
-                    :
-                    Element
-  ) {
+  getSectionTitle(section: Element) {
     const title = section.getAttribute('data-nav');
     return title;
   }
 
-  getSectionId(section
-                 :
-                 Element
-  ) {
+  getSectionId(section: Element) {
     const id = section.getAttribute('id') ?? '';
     return id;
   }
 
-  setSectionsKeys(sectionsObject
-                    :
-                    Object
-  ) {
+  setSectionsKeys(sectionsObject: Object) {
     this.sectionsKeys = Object.keys(sectionsObject);
   }
 
-  scrollToSection(sectionId
-                    :
-                    string
-  ):
-    void {
+  scrollToSection(sectionId: string): void {
     const targetSection = document.querySelector('#' + sectionId);
     targetSection.scrollIntoView({
       behavior: 'smooth', block: 'start', inline: 'nearest',

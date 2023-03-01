@@ -44,7 +44,8 @@ import {
 } from '../../shared/services/auth-service.service';
 import {ProjectWizardYoutubePopup} from './popup/youtube-popup.component';
 import {Clipboard} from '@angular/cdk/clipboard';
-import { Cache } from '../../shared/helpers/cache';
+import {Cache} from '../../shared/helpers/cache';
+import {MatSlideToggleChange} from '@angular/material/slide-toggle';
 
 
 @Component({
@@ -101,10 +102,7 @@ export class ProjectWizardComponent implements OnInit {
       nav.extras.state != null &&
       nav.extras.state.trial != null
     ) {
-
-      console.log("Trial : " + nav.extras.state.trial );
       this.isTrial = nav.extras.state.trial;
-
     }
   }
 
@@ -225,7 +223,6 @@ export class ProjectWizardComponent implements OnInit {
   ngOnInit() {
     this.wizardPopup();
     this.render();
-    this.updateProjectData();
   }
 
   render = () => {
@@ -252,7 +249,14 @@ export class ProjectWizardComponent implements OnInit {
 
     this.projectFormGroup.get('title').valueChanges.subscribe(() => {
       this.project.name = this.projectFormGroup.get('title').value;
-      this.updateProject();
+
+      if (!this.project._id) {
+        this.createNewProject();
+        // this.updateProjectData();
+      } else {
+        this.updateProject();
+      }
+
     });
 
     if (this.editFlag) {
@@ -326,13 +330,16 @@ export class ProjectWizardComponent implements OnInit {
           productFormGroup = this.addEventsProductItem(productFormGroup);
         }
       }
-    } else {
-      this.createNewProject();
     }
   }
 
   updateProjectData = () => {
     this.getProject(this.project._id);
+  }
+
+  setActive = (e: MatSlideToggleChange) => {
+    this.project.active = e.source.checked;
+    this.updateProject();
   }
 
   getProject = (id: any) => {
@@ -422,7 +429,24 @@ export class ProjectWizardComponent implements OnInit {
     this.projectService.addProject(this.project).subscribe(
       (res) => {
         this.project._id = res._id;
-        return Cache.invokeCache();
+        Cache.invokeCache();
+
+        const productGroup = new ProductGroup();
+        return this.productGroupService
+          .createProductGroup(this.project, productGroup)
+          .subscribe(
+            (pgRes) => {
+              productGroup._id = pgRes._id;
+              const formGroup = this.addProductGroupItem();
+              this.addEventsProductGroupItem(formGroup);
+              formGroup.get('_id').setValue(productGroup._id);
+
+              this.project.productGroupTimeLine.push(productGroup);
+            },
+            (err) => {
+              console.error(err);
+            }
+          );
       },
       (err) => {
         console.error(err);
@@ -441,7 +465,7 @@ export class ProjectWizardComponent implements OnInit {
       if (result === true) {
         (((this.projectFormGroup.get('productGroups') as FormArray).controls[
           i
-        ].get('products') as FormArray).controls[j].get(
+          ].get('products') as FormArray).controls[j].get(
           'images'
         ) as FormArray).removeAt(k);
 
@@ -464,11 +488,11 @@ export class ProjectWizardComponent implements OnInit {
       if (result === true) {
         ((this.projectFormGroup.get('productGroups') as FormArray).controls[
           i
-        ].get('products') as FormArray).removeAt(j);
+          ].get('products') as FormArray).removeAt(j);
 
         const deletedElement = this.project.productGroupTimeLine[
           i
-        ].products.splice(j, 1);
+          ].products.splice(j, 1);
         console.log('DELETED ELEMENT : ' + JSON.stringify(deletedElement));
         this.updateProductGroupDeleteProduct(
           this.project.productGroupTimeLine[i]
@@ -577,7 +601,7 @@ export class ProjectWizardComponent implements OnInit {
       .upload(
         ((this.getProductImageArray(i, j) as FormArray).controls[
           k
-        ] as FormGroup).controls['imageFile'].value.files[0]
+          ] as FormGroup).controls['imageFile'].value.files[0]
       )
       .pipe(
         map((event) => {
@@ -977,19 +1001,19 @@ export class ProjectWizardComponent implements OnInit {
   getProductControls(i: any) {
     return (this.projectFormGroup.get('productGroups') as FormArray).controls[
       i
-    ].get('products') as FormArray;
+      ].get('products') as FormArray;
   }
 
   getProductsFormGroup(productGroupIndex: any) {
     return (this.projectFormGroup.get('productGroups') as FormArray).controls[
       productGroupIndex
-    ].get('products') as FormGroup;
+      ].get('products') as FormGroup;
   }
 
   getProductsFromProductFormGroup(productGroupIndex: any) {
     return ((this.projectFormGroup.get('productGroups') as FormArray).controls[
       productGroupIndex
-    ].get('products') as FormGroup).controls;
+      ].get('products') as FormGroup).controls;
   }
 
   preview() {

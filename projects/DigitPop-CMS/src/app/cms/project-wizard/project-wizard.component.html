@@ -1,4 +1,15 @@
 <div class="container">
+  <div [style]="" class="project-details" fxLayout
+       fxLayoutAlign="space-between center">
+    <h3
+      style="margin: 0; font-weight: bold">{{project.name ? project.name : 'Untitled Project'}}</h3>
+    <div *ngIf="project.media" class="toggle-project-active">
+      Publish Project
+      <mat-slide-toggle (change)="setActive($event)"
+                        [(checked)]="project.active"
+                        [color]="'primary'"></mat-slide-toggle>
+    </div>
+  </div>
   <p *ngIf="isTrial">This is a preview of the video project wizard. You can
     create a sample shoppable video and view it in the preview step. To get all
     the functionality, sign up on the home page</p>
@@ -15,8 +26,9 @@
         >
           <mat-icon>help</mat-icon>
         </button>
-        <video autoplay
-               class="scrollanim-bounceIn-500" loop poster="../../assets/video/welcome-to-the-project-wizard.png">
+        <video class="scrollanim-bounceIn-500"
+               controls
+               poster="../../assets/video/welcome-to-the-project-wizard.png">
           <source src="../../assets/video/welcome-to-the-project-wizard.mp4"
                   type="video/mp4">
         </video>
@@ -156,33 +168,33 @@
       </form>
     </mat-step>
 
-    <mat-step [stepControl]="projectFormGroup">
-      <form [formGroup]="projectFormGroup">
-        <ng-template matStepLabel>Product Groups</ng-template>
-        <button
-          (click)="onProductGroupsHelp()"
-          aria-label="Open Product Group Help"
-          color="primary"
-          mat-icon-button
-          type="button"
-        >
-          <mat-icon>help</mat-icon>
-        </button>
-        <button (click)="addProductGroup()" mat-raised-button type="button">
-          Add Product Group
-        </button>
-        <div>
-          <button mat-button matStepperPrevious>Back</button>
-          <button
-            *ngIf="this.project.productGroupTimeLine.length > 0"
-            mat-button
-            matStepperNext
-          >
-            Next
-          </button>
-        </div>
-      </form>
-    </mat-step>
+    <!--    <mat-step [stepControl]="projectFormGroup">-->
+    <!--      <form [formGroup]="projectFormGroup">-->
+    <!--        <ng-template matStepLabel>Product Groups</ng-template>-->
+    <!--        <button-->
+    <!--          (click)="onProductGroupsHelp()"-->
+    <!--          aria-label="Open Product Group Help"-->
+    <!--          color="primary"-->
+    <!--          mat-icon-button-->
+    <!--          type="button"-->
+    <!--        >-->
+    <!--          <mat-icon>help</mat-icon>-->
+    <!--        </button>-->
+    <!--        <button (click)="addProductGroup()" mat-raised-button type="button">-->
+    <!--          Add Product Group-->
+    <!--        </button>-->
+    <!--        <div>-->
+    <!--          <button mat-button matStepperPrevious>Back</button>-->
+    <!--          <button-->
+    <!--            *ngIf="this.project.productGroupTimeLine.length > 0"-->
+    <!--            mat-button-->
+    <!--            matStepperNext-->
+    <!--          >-->
+    <!--            Next-->
+    <!--          </button>-->
+    <!--        </div>-->
+    <!--      </form>-->
+    <!--    </mat-step>-->
 
     <mat-step
       *ngFor="let productGroup of getProductGroupControls(); let i = index"
@@ -191,7 +203,7 @@
       <div [formGroup]="projectFormGroup">
         <div formArrayName="productGroups">
           <div [formGroupName]="i">
-            <ng-template matStepLabel>Product Group {{ i + 1 }} </ng-template>
+            <ng-template matStepLabel>Product Group</ng-template>
             <button
               (click)="onProductGroupHelp()"
               aria-label="Open Product Group Help"
@@ -509,7 +521,7 @@
       >
         <mat-icon>help</mat-icon>
       </button>
-      <video autoplay class="scrollanim-bounceIn-500" loop
+      <video class="scrollanim-bounceIn-500" controls
              poster="../../assets/video/how-to-get-views.png">
         <source src="../../assets/video/how-to-get-views.mp4" type="video/mp4">
       </video>
