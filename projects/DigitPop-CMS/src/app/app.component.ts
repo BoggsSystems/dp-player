@@ -122,6 +122,7 @@ export class AppComponent implements OnInit {
     }
     if (this.currentRole === 'Business') {
       this.isCMS = true;
+      this.disableNotification = true;
     }
     if (this.router.url.indexOf('project-wizard') > -1) {
       this.isProjectWizard = true;

@@ -42,60 +42,22 @@ interface SortSettings {
   selector: 'DigitPop-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
-  animations: [
-    trigger('detailExpand', [
-      state('collapsed', style({height: '0px', minHeight: '0'})),
-      state('expanded', style({height: '*'})),
-      transition(
-        'expanded <=> collapsed',
-        animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')
-      ),
-    ]),
-    trigger('pgDetailExpand', [
-      state('collapsed', style({height: '0px', minHeight: '0'})),
-      state('expanded', style({height: '*'})),
-      transition(
-        'expanded <=> collapsed',
-        animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')
-      ),
-    ]),
-  ],
+  animations: [trigger('detailExpand', [state('collapsed', style({
+    height: '0px',
+    minHeight: '0'
+  })), state('expanded', style({height: '*'})), transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),]), trigger('pgDetailExpand', [state('collapsed', style({
+    height: '0px',
+    minHeight: '0'
+  })), state('expanded', style({height: '*'})), transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),]),],
 })
 
 export class DashboardComponent implements OnInit, AfterViewInit {
-  projectsCols: string[] = [
-    'thumbnail',
-    'name',
-    'watchCount',
-    'pauseCount',
-    'clickCount',
-    'buyNowCount',
-    'active',
-    'createdAt',
-    'updatedAt',
-    'edit',
-  ];
+  projectsCols: string[] = ['thumbnail', 'name', 'watchCount', 'pauseCount', 'clickCount', 'buyNowCount', 'active', 'createdAt', 'updatedAt', 'edit',];
 
-  displayedColumns2: string[] = [
-    'name',
-    'project',
-    'completionCount',
-    'engagementCount',
-    'impressionCount',
-    'budgetAmount',
-    'active',
-    'createdAt',
-    'updatedAt',
-    'campaignEdit',
-  ];
+  displayedColumns2: string[] = ['name', 'project', 'completionCount', 'engagementCount', 'impressionCount', 'budgetAmount', 'active', 'createdAt', 'updatedAt', 'campaignEdit',];
 
   innerDisplayedColumns: string[] = ['title', 'pauseCount', 'clickCount'];
-  innerProductDisplayedColumns: string[] = [
-    'thumbnail',
-    'productName',
-    'productClickCount',
-    'clickBuyNowCount',
-  ];
+  innerProductDisplayedColumns: string[] = ['thumbnail', 'productName', 'productClickCount', 'clickBuyNowCount',];
   dataSource: any;
   campaignsDataSource: any;
   nestedDataSource: String[] = [];
@@ -120,25 +82,14 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   @ViewChild(MatSort, {static: true}) sort: MatSort;
   @ViewChild('campaignSorter') campaignSorter: MatSort;
 
-  constructor(
-    private route: ActivatedRoute,
-    private billsbyService: BillsbyService,
-    private campaignService: CampaignService,
-    private breakpointObserver: BreakpointObserver,
-    private projectService: ProjectService,
-    private productGroupService: ProductGroupService,
-    private authService: AuthenticationService,
-    private router: Router,
-    public dialog: MatDialog,
-  ) {
+  constructor(private route: ActivatedRoute, private billsbyService: BillsbyService, private campaignService: CampaignService, private breakpointObserver: BreakpointObserver, private projectService: ProjectService, private productGroupService: ProductGroupService, private authService: AuthenticationService, private router: Router, public dialog: MatDialog,) {
     this.height = 25;
     this.width = 150;
   }
 
   openWelcomeDialog(): void {
     const dialogRef = this.dialog.open(WelcomeComponent, {
-      width: '100%',
-      height: '90%',
+      width: '100%', height: '90%',
     });
 
     dialogRef.afterClosed().subscribe(() => {
@@ -158,14 +109,11 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     if (!this.authService.currentUserValue.welcomed) {
       this.openWelcomeDialog();
 
-      this.authService.welcome().subscribe(
-        (res) => {
-          this.authService.currentUserValue.welcomed = true;
-        },
-        (error) => {
-          this.error = error;
-        }
-      );
+      this.authService.welcome().subscribe((res) => {
+        this.authService.currentUserValue.welcomed = true;
+      }, (error) => {
+        this.error = error;
+      });
     }
   }
 
@@ -205,23 +153,19 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     } else {
       this.projectService
         .getMyProjects()
-        .subscribe(
-          (res: any) => {
-            Cloudinary.resizeThumbnail(res);
-            sessionStorage.setItem('my-projects', JSON.stringify(res));
-            this.renderProjects(res);
-            return this.populateProjects();
-          },
-          (error) => {
-            this.error = error;
-          }
-        );
+        .subscribe((res: any) => {
+          Cloudinary.resizeThumbnail(res);
+          sessionStorage.setItem('my-projects', JSON.stringify(res));
+          this.renderProjects(res);
+          return this.populateProjects();
+        }, (error) => {
+          this.error = error;
+        });
     }
   }
 
   async populateProjects(args: RequestArguments = {
-    page: 0,
-    pageSize: 5
+    page: 0, pageSize: 5
   }) {
     let projectsDetails;
     if (arguments.length && Object.keys(args).length) {
@@ -255,13 +199,11 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         });
       } else {
         this.populateProjects({
-          page: this.projectsPage,
-          pageSize: this.projectsPageSize
+          page: this.projectsPage, pageSize: this.projectsPageSize
         });
       }
       Object.assign(ProjectsTable, {
-        page: this.projectsPage,
-        pageSize: this.projectsPageSize
+        page: this.projectsPage, pageSize: this.projectsPageSize
       });
       sessionStorage.setItem('projectsTable', JSON.stringify(ProjectsTable));
     } else if (source === 'campaigns') {
@@ -276,8 +218,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       }
 
       Object.assign(CampaignsTable, {
-        page: this.campaignsPage,
-        pageSize: this.campaignsPageSize
+        page: this.campaignsPage, pageSize: this.campaignsPageSize
       });
       sessionStorage.setItem('campaignsTable', JSON.stringify(CampaignsTable));
     }
@@ -348,15 +289,12 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       this.campaignService
         .getMyCampaigns()
         .pipe(first())
-        .subscribe(
-          (campaigns: any) => {
-            sessionStorage.setItem('my-campaigns', JSON.stringify(campaigns));
-            this.renderCampaigns(campaigns);
-          },
-          (error) => {
-            this.error = error;
-          }
-        );
+        .subscribe((campaigns: any) => {
+          sessionStorage.setItem('my-campaigns', JSON.stringify(campaigns));
+          this.renderCampaigns(campaigns);
+        }, (error) => {
+          this.error = error;
+        });
     }
   }
 
@@ -393,13 +331,16 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
   projectsHelp() {
     const dialogRef = this.dialog.open(ProjectsHelpComponent, {
-      width: '100%',
-      height: '90%',
+      width: '100%', height: '90%',
     });
   }
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
+
+    if (!filterValue) {
+      return this.getProjects();
+    }
 
     const data: any = filterValue.trim().toLowerCase();
     const cachedProjects: any = JSON.parse(sessionStorage.getItem('cachedResults'));
@@ -410,8 +351,22 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
     this.isFiltered = true;
     this.filterValue = filterValue;
-    sessionStorage.setItem('cached-results', JSON.stringify(this.dataSource.filteredData));
-    // this.populateProjects();
+    return sessionStorage.setItem('cached-results', JSON.stringify(this.dataSource.filteredData));
+  }
+
+  populateFilteredData = () => {
+    const filterResults = this.dataSource.filteredData;
+    const populatedResults: Project[] = [];
+
+    filterResults.forEach((result: Project, index: number) => {
+      this.projectService
+        .getProject(result._id)
+        .subscribe((project: Project) => {
+          populatedResults.push(project);
+          sessionStorage.setItem('cached-results', JSON.stringify(populatedResults));
+          this.dataSource.filteredData = populatedResults;
+        });
+    });
   }
 
   applyCampaignsFilter(event: Event) {
@@ -431,46 +386,42 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     this.router.navigate(['/cms/campaign-wizard']);
   }
 
-  onEdit(project: Project) {
+  onEdit = async (project: Project) => {
     const navigationExtras: NavigationExtras = {
       state: {project},
     };
-    this.router.navigate(['/cms/project-wizard'], navigationExtras);
+
+    return this.router.navigate(['/cms/project-wizard'], navigationExtras);
   }
 
   deleteProject(project: Project) {
     const confirmDialog = this.dialog.open(ConfirmDialogComponent, {
       data: {
         title: 'Delete Project',
-        message:
-          `Are you sure you want to delete this project?`,
+        message: `Are you sure you want to delete this project?`,
       },
     });
 
     confirmDialog.afterClosed().subscribe((result) => {
       if (result === true) {
-        this.projectService.deleteProject(project).subscribe(
-          (res) => {
-            sessionStorage.removeItem('my-projects');
-            const deletedDialog = this.dialog.open(NotificationDialogComponent, {
-              data: {
-                message:
-                  `Project deleted successfully.`,
-              },
-            });
-            deletedDialog.afterOpened().subscribe(_ => {
-              setTimeout(() => {
-                deletedDialog.close();
-              }, 3000);
-            });
+        this.projectService.deleteProject(project).subscribe((res) => {
+          sessionStorage.removeItem('my-projects');
+          const deletedDialog = this.dialog.open(NotificationDialogComponent, {
+            data: {
+              message: `Project deleted successfully.`,
+            },
+          });
+          deletedDialog.afterOpened().subscribe(_ => {
+            setTimeout(() => {
+              deletedDialog.close();
+            }, 3000);
+          });
 
-            this.getProjects();
-          },
-          (error) => {
-            console.error(error);
-            return;
-          }
-        );
+          this.getProjects();
+        }, (error) => {
+          console.error(error);
+          return;
+        });
       } else {
         return;
       }
@@ -487,86 +438,72 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
   updateCampaignFunc(element: Campaign, e: any) {
     // Retrieve the campaign
-    this.campaignService.getCampaign(element).subscribe(
-      (res) => {
-        const campaign = res as Campaign;
+    this.campaignService.getCampaign(element).subscribe((res) => {
+      const campaign = res as Campaign;
 
-        if (!campaign.project.active) {
-          campaign.active = false;
-          e.source.checked = false;
+      if (!campaign.project.active) {
+        campaign.active = false;
+        e.source.checked = false;
 
-          const confirmDialog = this.dialog.open(OkDialogComponent, {
-            data: {
-              title: 'Project Inactive',
-              message:
-                'The project for this campaign is inactive.  Activate the project before activiating the campaign.',
-            },
-          });
-
-          return;
-        }
-
-        const confirmDialog = this.dialog.open(ConfirmDialogComponent, {
+        const confirmDialog = this.dialog.open(OkDialogComponent, {
           data: {
-            title: 'Change Status',
-            message:
-              'Are you sure you want to change the status of the campaign?',
+            title: 'Project Inactive',
+            message: 'The project for this campaign is inactive.  Activate the project before activiating the campaign.',
           },
         });
 
-        confirmDialog.afterClosed().subscribe((result) => {
-          if (result === true) {
-            console.log('Element project : ' + element.project);
-
-            element.active = !element.active;
-            this.campaignService.updateCampaign(element).subscribe(
-              (res) => {
-                console.log(res);
-              },
-              (error) => {
-                console.log(error);
-              }
-            );
-          } else {
-            e.source.checked = element.active;
-            console.log(
-              'toggle should not change if I click the cancel button'
-            );
-          }
-        });
-      },
-      (error) => {
-        console.error(error);
         return;
       }
-    );
+
+      const confirmDialog = this.dialog.open(ConfirmDialogComponent, {
+        data: {
+          title: 'Change Status',
+          message: 'Are you sure you want to change the status of the campaign?',
+        },
+      });
+
+      confirmDialog.afterClosed().subscribe((result) => {
+        if (result === true) {
+          console.log('Element project : ' + element.project);
+
+          element.active = !element.active;
+          this.campaignService.updateCampaign(element).subscribe((res) => {
+            console.log(res);
+          }, (error) => {
+            console.log(error);
+          });
+        } else {
+          e.source.checked = element.active;
+          console.log('toggle should not change if I click the cancel button');
+        }
+      });
+    }, (error) => {
+      console.error(error);
+      return;
+    });
   }
 
   updateFunc(element: Project, e: any) {
     if (element.active) {
-      this.projectService.getCampaignsForProject(element).subscribe(
-        (res) => {
-          if (Object.keys(res).length > 0) {
-            e.source.checked = true;
+      this.projectService.getCampaignsForProject(element).subscribe((res) => {
+        if (Object.keys(res).length > 0) {
+          e.source.checked = true;
 
-            const confirmDialog = this.dialog.open(OkDialogComponent, {
-              data: {
-                title: 'Active Campaigns',
-                message:
-                  'There is at least one active campaign using this project. Deactivate the campaign(s) before deactivating this project.',
-              },
-            });
+          const confirmDialog = this.dialog.open(OkDialogComponent, {
+            data: {
+              title: 'Active Campaigns',
+              message: 'There is at least one active campaign using this project. Deactivate the campaign(s) before deactivating this project.',
+            },
+          });
 
-            return;
-          } else {
-            this.updateProjectSubFunc(element, e);
-          }
-        },
-        (error) => {
-          console.error(error);
           return;
+        } else {
+          this.updateProjectSubFunc(element, e);
         }
-      );
+      }, (error) => {
+        console.error(error);
+        return;
+      });
     } else {
       this.updateProjectSubFunc(element, e);
     }
@@ -583,14 +520,11 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     confirmDialog.afterClosed().subscribe((result) => {
       if (result === true) {
         element.active = !element.active;
-        this.projectService.updateProject(element).subscribe(
-          (res) => {
-            console.log(res);
-          },
-          (error) => {
-            console.log(error);
-          }
-        );
+        this.projectService.updateProject(element).subscribe((res) => {
+          console.log(res);
+        }, (error) => {
+          console.log(error);
+        });
       } else {
         e.source.checked = element.active;
         console.log('toggle should not change if I click the cancel button');

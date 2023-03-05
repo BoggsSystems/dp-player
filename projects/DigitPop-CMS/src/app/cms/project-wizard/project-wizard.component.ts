@@ -20,8 +20,7 @@ import {
   ProductGroup
 } from 'projects/DigitPop-Player/src/app/models/productGroup';
 import {
-  Product,
-  ProductImage,
+  Product, ProductImage,
 } from 'projects/DigitPop-Player/src/app/models/product';
 import {
   ConfirmDialogComponent
@@ -70,38 +69,27 @@ export class ProjectWizardComponent implements OnInit {
   copyClipboardText = 'Copy to clipboard';
   error = '';
 
-  constructor(
-    private videoService: VideoService,
-    private imageService: ImageService,
-    private projectService: ProjectService,
-    private productGroupService: ProductGroupService,
-    private dialog: MatDialog,
-    private productService: ProductService,
-    private router: Router,
-    private authService: AuthenticationService,
-    private clipboard: Clipboard,
-  ) {
+  constructor(private videoService: VideoService, private imageService: ImageService, private projectService: ProjectService, private productGroupService: ProductGroupService, private dialog: MatDialog, private productService: ProductService, private router: Router, private authService: AuthenticationService, private clipboard: Clipboard,) {
     // Logic to determine if we're editing an existing project or creating a new one
     var nav = this.router.getCurrentNavigation();
 
-    if (
-      nav != null &&
-      nav.extras != null &&
-      nav.extras.state != null &&
-      nav.extras.state.project != null
-    ) {
+    if (nav != null && nav.extras != null && nav.extras.state != null && nav.extras.state.project != null) {
       this.project = this.router.getCurrentNavigation().extras.state.project;
       this.editFlag = true;
+
+      this.projectService
+        .getProject(this.project._id)
+        .subscribe(project => {
+          if (JSON.stringify(project) !== JSON.stringify(this.project)) {
+            this.project = project;
+            this.ngOnInit();
+          }
+        });
     } else {
       this.project = new Project();
     }
 
-    if (
-      nav != null &&
-      nav.extras != null &&
-      nav.extras.state != null &&
-      nav.extras.state.trial != null
-    ) {
+    if (nav != null && nav.extras != null && nav.extras.state != null && nav.extras.state.trial != null) {
       this.isTrial = nav.extras.state.trial;
     }
   }
@@ -112,8 +100,7 @@ export class ProjectWizardComponent implements OnInit {
 
   onTitleHelp(): void {
     const dialogRef = this.dialog.open(TitleHelpComponent, {
-      width: '100%',
-      height: '90%',
+      width: '100%', height: '90%',
     });
 
     dialogRef.afterClosed().subscribe(() => {
@@ -123,8 +110,7 @@ export class ProjectWizardComponent implements OnInit {
 
   onVideoHelp(): void {
     const dialogRef = this.dialog.open(VideoHelpComponent, {
-      width: '100%',
-      height: '90%',
+      width: '100%', height: '90%',
     });
 
     dialogRef.afterClosed().subscribe(() => {
@@ -134,8 +120,7 @@ export class ProjectWizardComponent implements OnInit {
 
   onProductHelp(): void {
     const dialogRef = this.dialog.open(ProductHelpComponent, {
-      width: '100%',
-      height: '90%',
+      width: '100%', height: '90%',
     });
 
     dialogRef.afterClosed().subscribe(() => {
@@ -145,8 +130,7 @@ export class ProjectWizardComponent implements OnInit {
 
   onProductGroupHelp(): void {
     const dialogRef = this.dialog.open(ProductGroupHelpComponent, {
-      width: '100%',
-      height: '90%',
+      width: '100%', height: '90%',
     });
 
     dialogRef.afterClosed().subscribe(() => {
@@ -156,8 +140,7 @@ export class ProjectWizardComponent implements OnInit {
 
   onProductGroupsHelp(): void {
     const dialogRef = this.dialog.open(ProductGroupsHelpComponent, {
-      width: '100%',
-      height: '90%',
+      width: '100%', height: '90%',
     });
 
     dialogRef.afterClosed().subscribe(() => {
@@ -167,8 +150,7 @@ export class ProjectWizardComponent implements OnInit {
 
   onThumbnailHelp(): void {
     const dialogRef = this.dialog.open(ThumbnailHelpComponent, {
-      width: '100%',
-      height: '90%',
+      width: '100%', height: '90%',
     });
 
     dialogRef.afterClosed().subscribe(() => {
@@ -178,8 +160,7 @@ export class ProjectWizardComponent implements OnInit {
 
   onPreviewHelp(): void {
     const dialogRef = this.dialog.open(PreviewHelpComponent, {
-      width: '100%',
-      height: '90%',
+      width: '100%', height: '90%',
     });
 
     dialogRef.afterClosed().subscribe(() => {
@@ -189,8 +170,7 @@ export class ProjectWizardComponent implements OnInit {
 
   openHelpDialog(): void {
     const dialogRef = this.dialog.open(ProjectWizardHelpComponent, {
-      width: '100%',
-      height: '90%',
+      width: '100%', height: '90%',
     });
 
     dialogRef.afterClosed().subscribe(() => {
@@ -200,8 +180,7 @@ export class ProjectWizardComponent implements OnInit {
 
   openYoutubeDialog(): void {
     const dialogRef = this.dialog.open(ProjectWizardYoutubePopup, {
-      width: '100%',
-      height: '90%',
+      width: '100%', height: '90%',
     });
   }
 
@@ -209,20 +188,17 @@ export class ProjectWizardComponent implements OnInit {
     if (!this.authService.currentUserValue.projectWizardPopup) {
       this.openYoutubeDialog();
 
-      this.authService.projectWizardPopup().subscribe(
-        (res) => {
-          this.authService.currentUserValue.projectWizardPopup = true;
-        },
-        (error) => {
-          this.error = error;
-        }
-      );
+      this.authService.projectWizardPopup().subscribe((res) => {
+        this.authService.currentUserValue.projectWizardPopup = true;
+      }, (error) => {
+        this.error = error;
+      });
     }
   }
 
   ngOnInit() {
     this.wizardPopup();
-    this.render();
+    return this.render();
   }
 
   render = () => {
@@ -233,16 +209,9 @@ export class ProjectWizardComponent implements OnInit {
       }),
       category: new FormControl('', Validators.required),
       description: new FormControl('', {
-        validators: Validators.required,
-        updateOn: 'blur',
+        validators: Validators.required, updateOn: 'blur',
       }),
-      video: new FormControl(
-        '',
-        Validators.compose([
-          FileValidatorUtil.fileMinSize(1),
-          FileValidatorUtil.fileExtensions(this.allowedExtensions),
-        ])
-      ),
+      video: new FormControl('', Validators.compose([FileValidatorUtil.fileMinSize(1), FileValidatorUtil.fileExtensions(this.allowedExtensions),])),
       thumbnail: new FormControl(''),
       productGroups: new FormArray([], Validators.required),
     });
@@ -316,10 +285,7 @@ export class ProjectWizardComponent implements OnInit {
 
           for (const image of product.images) {
             const fg = new FormGroup({
-              imageFile: new FormControl('', [
-                FileValidatorUtil.fileMinSize(1),
-                FileValidatorUtil.fileExtensions(this.allowedExtensions),
-              ]),
+              imageFile: new FormControl('', [FileValidatorUtil.fileMinSize(1), FileValidatorUtil.fileExtensions(this.allowedExtensions),]),
               imageResult: new FormControl('', Validators.required),
             });
 
@@ -343,115 +309,88 @@ export class ProjectWizardComponent implements OnInit {
   }
 
   getProject = (id: any) => {
-    this.projectService.getProject(id).subscribe(
-      (res) => {
-        if (!_.isEqual(res, this.project)) {
-          this.project = res;
-          return this.render();
-        }
-        return;
-      },
-      (err) => {
-        console.error(err.toString());
+    this.projectService.getProject(id).subscribe((res) => {
+      if (!_.isEqual(res, this.project)) {
+        this.project = res;
+        return this.render();
       }
-    );
+      return;
+    }, (err) => {
+      console.error(err.toString());
+    });
   }
 
   updateProjectProductGroups() {
-    this.projectService.updateProjectProductGroups(this.project).subscribe(
-      (res) => {
-        Cache.invokeCache();
-        return res;
-      },
-      (err) => {
-        console.error(err.toString());
-      }
-    );
+    this.projectService.updateProjectProductGroups(this.project).subscribe((res) => {
+      Cache.invokeCache();
+      return res;
+    }, (err) => {
+      console.error(err.toString());
+    });
   }
 
   updateProject() {
-    this.projectService.updateProject(this.project).subscribe(
-      (res) => {
-        Cache.invokeCache();
-        return res;
-      },
-      (err) => {
-        console.error(err.toString());
-      }
-    );
+    this.projectService.updateProject(this.project).subscribe((res) => {
+      Cache.invokeCache();
+      return res;
+    }, (err) => {
+      console.error(err.toString());
+    });
   }
 
   updateProductGroupDeleteProduct(pg: ProductGroup) {
-    this.productGroupService.updateProductGroupDeleteProduct(pg).subscribe(
-      (res) => {
-        return Cache.invokeCache();
-      },
-      (err) => {
-        console.error(err);
-      }
-    );
+    this.productGroupService.updateProductGroupDeleteProduct(pg).subscribe((res) => {
+      return Cache.invokeCache();
+    }, (err) => {
+      console.error(err);
+    });
   }
 
   updateProductGroup(pg: ProductGroup) {
-    this.productGroupService.updateProductGroup(pg).subscribe(
-      (res) => {
-        return Cache.invokeCache();
-      },
-      (err) => {
-        console.error(err);
-      }
-    );
+    this.productGroupService.updateProductGroup(pg).subscribe((res) => {
+      return Cache.invokeCache();
+    }, (err) => {
+      console.error(err);
+    });
   }
 
   updateProduct(product: Product) {
-    this.productService.updateProduct(product).subscribe(
-      (res) => {
-        return Cache.invokeCache();
-      },
-      (err) => {
-        console.log('Update error : ' + err.toString());
-      }
-    );
+    this.productService.updateProduct(product).subscribe((res) => {
+      return Cache.invokeCache();
+    }, (err) => {
+      console.log('Update error : ' + err.toString());
+    });
   }
 
   updateProductImages(product: Product) {
-    this.productService.updateProductImages(product).subscribe(
-      (res) => {
-        return Cache.invokeCache();
-      },
-      (err) => {
-        console.error(err);
-      }
-    );
+    this.productService.updateProductImages(product).subscribe((res) => {
+      return Cache.invokeCache();
+    }, (err) => {
+      console.error(err);
+    });
   }
 
   createNewProject() {
-    this.projectService.addProject(this.project).subscribe(
-      (res) => {
-        this.project._id = res._id;
-        Cache.invokeCache();
+    this.projectService.addProject(this.project).subscribe((res) => {
+      this.project._id = res._id;
+      Cache.invokeCache();
 
-        const productGroup = new ProductGroup();
-        return this.productGroupService
-          .createProductGroup(this.project, productGroup)
-          .subscribe(
-            (pgRes) => {
-              productGroup._id = pgRes._id;
-              const formGroup = this.addProductGroupItem();
-              this.addEventsProductGroupItem(formGroup);
-              formGroup.get('_id').setValue(productGroup._id);
+      const productGroup = new ProductGroup();
+      return this.productGroupService
+        .createProductGroup(this.project, productGroup)
+        .subscribe((pgRes) => {
+          productGroup._id = pgRes._id;
+          const formGroup = this.addProductGroupItem();
+          this.addEventsProductGroupItem(formGroup);
+          formGroup.get('_id').setValue(productGroup._id);
 
-              this.project.productGroupTimeLine.push(productGroup);
-            },
-            (err) => {
-              console.error(err);
-            }
-          );
-      },
-      (err) => {
-        console.error(err);
-      }
-    );
+          this.project.productGroupTimeLine.push(productGroup);
+        }, (err) => {
+          console.error(err);
+        });
+    }, (err) => {
+      console.error(err);
+    });
   }
 
   onDeleteProductImage(i: any, j: any, k: any) {
@@ -463,16 +402,10 @@ export class ProjectWizardComponent implements OnInit {
     });
     confirmDialog.afterClosed().subscribe((result) => {
       if (result === true) {
-        (((this.projectFormGroup.get('productGroups') as FormArray).controls[
-          i
-          ].get('products') as FormArray).controls[j].get(
-          'images'
-        ) as FormArray).removeAt(k);
+        (((this.projectFormGroup.get('productGroups') as FormArray).controls[i].get('products') as FormArray).controls[j].get('images') as FormArray).removeAt(k);
 
         this.project.productGroupTimeLine[i].products[j].images.splice(k, 1);
-        this.updateProductImages(
-          this.project.productGroupTimeLine[i].products[j]
-        );
+        this.updateProductImages(this.project.productGroupTimeLine[i].products[j]);
       }
     });
   }
@@ -486,17 +419,11 @@ export class ProjectWizardComponent implements OnInit {
     });
     confirmDialog.afterClosed().subscribe((result) => {
       if (result === true) {
-        ((this.projectFormGroup.get('productGroups') as FormArray).controls[
-          i
-          ].get('products') as FormArray).removeAt(j);
+        ((this.projectFormGroup.get('productGroups') as FormArray).controls[i].get('products') as FormArray).removeAt(j);
 
-        const deletedElement = this.project.productGroupTimeLine[
-          i
-          ].products.splice(j, 1);
+        const deletedElement = this.project.productGroupTimeLine[i].products.splice(j, 1);
         console.log('DELETED ELEMENT : ' + JSON.stringify(deletedElement));
-        this.updateProductGroupDeleteProduct(
-          this.project.productGroupTimeLine[i]
-        );
+        this.updateProductGroupDeleteProduct(this.project.productGroupTimeLine[i]);
         this.getProject(this.project._id);
       }
     });
@@ -511,20 +438,16 @@ export class ProjectWizardComponent implements OnInit {
     });
     confirmDialog.afterClosed().subscribe((result) => {
       if (result === true) {
-        this.productGroupService.deleteProductGroup(pg).subscribe(
-          (res) => {
-            (this.projectFormGroup.controls
-              .productGroups as FormArray).removeAt(i);
-            this.project.productGroupTimeLine.splice(i, 1);
-            this.updateProjectProductGroups();
+        this.productGroupService.deleteProductGroup(pg).subscribe((res) => {
+          (this.projectFormGroup.controls.productGroups as FormArray).removeAt(i);
+          this.project.productGroupTimeLine.splice(i, 1);
+          this.updateProjectProductGroups();
 
-            Cache.invokeCache();
-            return res;
-          },
-          (err) => {
-            console.error(err);
-          }
-        );
+          Cache.invokeCache();
+          return res;
+        }, (err) => {
+          console.error(err);
+        });
       }
     });
   }
@@ -532,111 +455,82 @@ export class ProjectWizardComponent implements OnInit {
   onSubmit() {
     this.videoService
       .upload(this.projectFormGroup.value.video.files[0])
-      .pipe(
-        map((event) => {
-          switch (event.type) {
-            case HttpEventType.UploadProgress:
-              if (Math.round((100 * event.loaded) / event.total) == 100) {
-                this.uploadComplete = true;
-              }
-              return (this.uploadStatus = Math.round(
-                (100 * event.loaded) / event.total
-              ));
+      .pipe(map((event) => {
+        switch (event.type) {
+          case HttpEventType.UploadProgress:
+            if (Math.round((100 * event.loaded) / event.total) == 100) {
+              this.uploadComplete = true;
+            }
+            return (this.uploadStatus = Math.round((100 * event.loaded) / event.total));
 
-            case HttpEventType.Response:
-              this.project.media = event.body;
-              this.updateProject();
-              return true;
+          case HttpEventType.Response:
+            this.project.media = event.body;
+            this.updateProject();
+            return true;
 
-            default:
-              return `Unhandled event: ${event.type}`;
-          }
-        })
-      )
-      .subscribe(
-        (res) => {
-          return Cache.invokeCache();
-        },
-        (err) => {
-          console.error(err);
+          default:
+            return `Unhandled event: ${event.type}`;
         }
-      );
+      }))
+      .subscribe((res) => {
+        return Cache.invokeCache();
+      }, (err) => {
+        console.error(err);
+      });
   }
 
   onSubmitThumbnail() {
     this.imageService
       .upload(this.projectFormGroup.value.thumbnail.files[0])
-      .pipe(
-        map((event) => {
-          switch (event.type) {
-            case HttpEventType.UploadProgress:
-              if (Math.round((100 * event.loaded) / event.total) == 100) {
-                this.imageUploadComplete = true;
-              }
-              return (this.uploadStatus = Math.round(
-                (100 * event.loaded) / event.total
-              ));
+      .pipe(map((event) => {
+        switch (event.type) {
+          case HttpEventType.UploadProgress:
+            if (Math.round((100 * event.loaded) / event.total) == 100) {
+              this.imageUploadComplete = true;
+            }
+            return (this.uploadStatus = Math.round((100 * event.loaded) / event.total));
 
-            case HttpEventType.Response:
-              this.project.thumbnail = event.body;
-              this.updateProject();
-              return true;
-            default:
-              return `Unhandled event: ${event.type}`;
-          }
-        })
-      )
-      .subscribe(
-        (res) => {
-          return Cache.invokeCache();
-        },
-        (err) => {
-          console.error(err);
+          case HttpEventType.Response:
+            this.project.thumbnail = event.body;
+            this.updateProject();
+            return true;
+          default:
+            return `Unhandled event: ${event.type}`;
         }
-      );
+      }))
+      .subscribe((res) => {
+        return Cache.invokeCache();
+      }, (err) => {
+        console.error(err);
+      });
   }
 
   onSubmitProductImage(i: any, j: any, k: any) {
     this.imageService
-      .upload(
-        ((this.getProductImageArray(i, j) as FormArray).controls[
-          k
-          ] as FormGroup).controls['imageFile'].value.files[0]
-      )
-      .pipe(
-        map((event) => {
-          switch (event.type) {
-            case HttpEventType.UploadProgress:
-              if (Math.round((100 * event.loaded) / event.total) == 100) {
-                this.imageUploadComplete = true;
-              }
-              return (this.uploadStatus = Math.round(
-                (100 * event.loaded) / event.total
-              ));
+      .upload(((this.getProductImageArray(i, j) as FormArray).controls[k] as FormGroup).controls['imageFile'].value.files[0])
+      .pipe(map((event) => {
+        switch (event.type) {
+          case HttpEventType.UploadProgress:
+            if (Math.round((100 * event.loaded) / event.total) == 100) {
+              this.imageUploadComplete = true;
+            }
+            return (this.uploadStatus = Math.round((100 * event.loaded) / event.total));
 
-            case HttpEventType.Response:
-              this.project.productGroupTimeLine[i].products[j].images.push(
-                new ProductImage(event.body)
-              );
+          case HttpEventType.Response:
+            this.project.productGroupTimeLine[i].products[j].images.push(new ProductImage(event.body));
 
-              this.updateProductImages(
-                this.project.productGroupTimeLine[i].products[j]
-              );
+            this.updateProductImages(this.project.productGroupTimeLine[i].products[j]);
 
-              return true;
-            default:
-              return `Unhandled event: ${event.type}`;
-          }
-        })
-      )
-      .subscribe(
-        (res) => {
-          return Cache.invokeCache();
-        },
-        (err) => {
-          console.error(err);
+            return true;
+          default:
+            return `Unhandled event: ${event.type}`;
         }
-      );
+      }))
+      .subscribe((res) => {
+        return Cache.invokeCache();
+      }, (err) => {
+        console.error(err);
+      });
   }
 
   addProductGroupItem(): FormGroup {
@@ -644,20 +538,16 @@ export class ProjectWizardComponent implements OnInit {
       id: new FormControl('', Validators.required),
       _id: new FormControl(''),
       title: new FormControl('', {
-        validators: Validators.required,
-        updateOn: 'blur',
+        validators: Validators.required, updateOn: 'blur',
       }),
       description: new FormControl('', {
-        validators: Validators.required,
-        updateOn: 'blur',
+        validators: Validators.required, updateOn: 'blur',
       }),
       subtitle: new FormControl('', {
-        validators: Validators.required,
-        updateOn: 'blur',
+        validators: Validators.required, updateOn: 'blur',
       }),
       time: new FormControl('', {
-        validators: Validators.required,
-        updateOn: 'blur',
+        validators: Validators.required, updateOn: 'blur',
       }),
       thumbnail: new FormControl('', Validators.required),
       products: new FormArray([]),
@@ -720,35 +610,28 @@ export class ProjectWizardComponent implements OnInit {
 
       this.imageService
         .upload(selectedValue.files[0])
-        .pipe(
-          map((event) => {
-            switch (event.type) {
-              case HttpEventType.UploadProgress:
-                if (Math.round((100 * event.loaded) / event.total) == 100) {
-                  // How can we replace this boolean with a bool specific to the pg???
-                  // this.imageUploadComplete = true;
-                }
-                return (this.uploadStatus = Math.round(
-                  (100 * event.loaded) / event.total
-                ));
+        .pipe(map((event) => {
+          switch (event.type) {
+            case HttpEventType.UploadProgress:
+              if (Math.round((100 * event.loaded) / event.total) == 100) {
+                // How can we replace this boolean with a bool specific to the pg???
+                // this.imageUploadComplete = true;
+              }
+              return (this.uploadStatus = Math.round((100 * event.loaded) / event.total));
 
-              case HttpEventType.Response:
-                pg.thumbnail = event.body;
-                this.updateProductGroup(pg);
-                return true;
-              default:
-                return `Unhandled event: ${event.type}`;
-            }
-          })
-        )
-        .subscribe(
-          (res) => {
-            return Cache.invokeCache();
-          },
-          (err) => {
-            console.error(err);
+            case HttpEventType.Response:
+              pg.thumbnail = event.body;
+              this.updateProductGroup(pg);
+              return true;
+            default:
+              return `Unhandled event: ${event.type}`;
           }
-        );
+        }))
+        .subscribe((res) => {
+          return Cache.invokeCache();
+        }, (err) => {
+          console.error(err);
+        });
     });
 
     return formgroup;
@@ -759,19 +642,16 @@ export class ProjectWizardComponent implements OnInit {
 
     this.productGroupService
       .createProductGroup(this.project, productGroup)
-      .subscribe(
-        (res) => {
-          productGroup._id = res._id;
-          const formGroup = this.addProductGroupItem();
-          this.addEventsProductGroupItem(formGroup);
-          formGroup.get('_id').setValue(productGroup._id);
+      .subscribe((res) => {
+        productGroup._id = res._id;
+        const formGroup = this.addProductGroupItem();
+        this.addEventsProductGroupItem(formGroup);
+        formGroup.get('_id').setValue(productGroup._id);
 
-          this.project.productGroupTimeLine.push(productGroup);
-        },
-        (err) => {
-          console.error(err);
-        }
-      );
+        this.project.productGroupTimeLine.push(productGroup);
+      }, (err) => {
+        console.error(err);
+      });
   }
 
   addProduct(i: any) {
@@ -780,23 +660,18 @@ export class ProjectWizardComponent implements OnInit {
 
     this.productService
       .createProduct(this.project, productGroup, product)
-      .subscribe(
-        (res) => {
-          product._id = res._id;
+      .subscribe((res) => {
+        product._id = res._id;
 
-          let formGroup = this.addProductItem(
-            this.project.productGroupTimeLine[i]
-          );
-          formGroup = this.addEventsProductItem(formGroup);
-          formGroup.get('_id').setValue(product._id);
+        let formGroup = this.addProductItem(this.project.productGroupTimeLine[i]);
+        formGroup = this.addEventsProductItem(formGroup);
+        formGroup.get('_id').setValue(product._id);
 
-          this.project.productGroupTimeLine[i].products.push(product);
-          Cache.invokeCache();
-        },
-        (err) => {
-          console.error(err);
-        }
-      );
+        this.project.productGroupTimeLine[i].products.push(product);
+        Cache.invokeCache();
+      }, (err) => {
+        console.error(err);
+      });
   }
 
   addProductImage(i: any, j: any) {
@@ -814,52 +689,31 @@ export class ProjectWizardComponent implements OnInit {
       this.project.productGroupTimeLine.push(new ProductGroup(new Product()));
     }
 
-    (this.getProductImageArray(i, j) as FormArray).push(
-      new FormGroup({
-        imageFile: new FormControl('', [
-          FileValidatorUtil.fileMinSize(1),
-          FileValidatorUtil.fileExtensions(this.allowedExtensions),
-        ]),
-        imageResult: new FormControl('', Validators.required),
-      })
-    );
+    (this.getProductImageArray(i, j) as FormArray).push(new FormGroup({
+      imageFile: new FormControl('', [FileValidatorUtil.fileMinSize(1), FileValidatorUtil.fileExtensions(this.allowedExtensions),]),
+      imageResult: new FormControl('', Validators.required),
+    }));
   }
 
   addProductItem(productGroup: any) {
     var formgroup = new FormGroup({
-      _id: new FormControl(''),
-      name: new FormControl('', {
+      _id: new FormControl(''), name: new FormControl('', {
         updateOn: 'blur',
-      }),
-      description: new FormControl('', {
-        validators: Validators.required,
-        updateOn: 'blur',
-      }),
-      subtitle: new FormControl('', {
-        validators: Validators.required,
-        updateOn: 'blur',
-      }),
-      price: new FormControl('', {
-        validators: Validators.required,
-        updateOn: 'blur',
-      }),
-      makeThisYourLookURL: new FormControl('', {
-        validators: Validators.required,
-        updateOn: 'blur',
-      }),
-      images: new FormArray([]),
+      }), description: new FormControl('', {
+        validators: Validators.required, updateOn: 'blur',
+      }), subtitle: new FormControl('', {
+        validators: Validators.required, updateOn: 'blur',
+      }), price: new FormControl('', {
+        validators: Validators.required, updateOn: 'blur',
+      }), makeThisYourLookURL: new FormControl('', {
+        validators: Validators.required, updateOn: 'blur',
+      }), images: new FormArray([]),
     });
 
     var pg;
 
-    for (
-      let counter = 0;
-      counter <
-      (this.projectFormGroup.get('productGroups') as FormArray).controls.length;
-      counter++
-    ) {
-      var item = (this.projectFormGroup.get('productGroups') as FormArray)
-        .controls[counter];
+    for (let counter = 0; counter < (this.projectFormGroup.get('productGroups') as FormArray).controls.length; counter++) {
+      var item = (this.projectFormGroup.get('productGroups') as FormArray).controls[counter];
 
       if (item.value._id == productGroup._id) {
         pg = item;
@@ -969,9 +823,7 @@ export class ProjectWizardComponent implements OnInit {
           });
 
           if (product != null) {
-            product.makeThisYourLookURL = formgroup.get(
-              'makeThisYourLookURL'
-            ).value;
+            product.makeThisYourLookURL = formgroup.get('makeThisYourLookURL').value;
             this.updateProduct(product);
           }
         }
@@ -999,21 +851,15 @@ export class ProjectWizardComponent implements OnInit {
   }
 
   getProductControls(i: any) {
-    return (this.projectFormGroup.get('productGroups') as FormArray).controls[
-      i
-      ].get('products') as FormArray;
+    return (this.projectFormGroup.get('productGroups') as FormArray).controls[i].get('products') as FormArray;
   }
 
   getProductsFormGroup(productGroupIndex: any) {
-    return (this.projectFormGroup.get('productGroups') as FormArray).controls[
-      productGroupIndex
-      ].get('products') as FormGroup;
+    return (this.projectFormGroup.get('productGroups') as FormArray).controls[productGroupIndex].get('products') as FormGroup;
   }
 
   getProductsFromProductFormGroup(productGroupIndex: any) {
-    return ((this.projectFormGroup.get('productGroups') as FormArray).controls[
-      productGroupIndex
-      ].get('products') as FormGroup).controls;
+    return ((this.projectFormGroup.get('productGroups') as FormArray).controls[productGroupIndex].get('products') as FormGroup).controls;
   }
 
   preview() {

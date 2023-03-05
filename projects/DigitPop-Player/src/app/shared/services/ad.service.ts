@@ -7,21 +7,22 @@ export class AdService {
   constructor(private httpClient: HttpClient) {
   }
 
-  getAd = (videoId: any) => {
-    return this.httpClient.get(
-      `${environment.apiUrl}/api/projects/` + videoId + '/true/true'
-    );
+  getAd = (videoId: any, isConsumer: boolean) => {
+    return this.httpClient.get(`${environment.apiUrl}/api/projects/${videoId}/true/${isConsumer}`);
   }
 
   createView = (adId: any, cycle: any) => {
     return this.httpClient.post<any>(`${environment.apiUrl}/api/views/`, {
-      id: adId,
-      cycle,
+      id: adId, cycle,
     });
   }
 
   updateStats = (projectId: string, action: string, productId = '') => {
-    return this.httpClient.post<any>(`${environment.apiUrl}/api/projects/updateStats`, {projectId, action, productId});
+    return this.httpClient.post<any>(`${environment.apiUrl}/api/projects/updateStats`, {
+      projectId,
+      action,
+      productId
+    });
   }
 
   // increaseProjectViewCount(videoId: any) {

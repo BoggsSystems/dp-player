@@ -5,6 +5,7 @@ import {MatDialog} from '@angular/material/dialog';
 import {EngagementService} from '../shared/services/engagement.service';
 import {CampaignService} from '../shared/services/campaign.service';
 import {CrossDomainMessaging} from '../shared/helpers/cd-messaging';
+import {environment} from '../../environments/environment';
 
 @Component({
   selector: 'app-quiz',
@@ -125,15 +126,15 @@ export class QuizComponent implements OnInit, AfterViewInit {
         const targetWindow = window.parent;
         // TODO: Replace localhost with production urls
         if (!this.detectIos) {
-          // return targetWindow.postMessage(res, this.messagingOrigin);
-          return targetWindow.postMessage(res, 'http://localhost:4200');
+          return targetWindow.postMessage(res, this.messagingOrigin);
+          // return targetWindow.postMessage(res, 'http://localhost:4200');
         }
         if (this.isIOS && this.iOSVersion <= 14) {
-          // return targetWindow.postMessage(res, environment.iOSFallbackUrl);
-          return targetWindow.postMessage(res, 'http://localhost:4200');
+          return targetWindow.postMessage(res, environment.iOSFallbackUrl);
+          // return targetWindow.postMessage(res, 'http://localhost:4200');
         }
-        // return targetWindow.postMessage(res, environment.homeUrl);
-        return targetWindow.postMessage(res, 'http://localhost:4200');
+        return targetWindow.postMessage(res, environment.homeUrl);
+        // return targetWindow.postMessage(res, 'http://localhost:4200');
       }, (err: any) => {
         console.error(err);
       });

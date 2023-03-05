@@ -1,15 +1,8 @@
 import {
-  AfterViewInit,
-  Component,
-  ElementRef, EventEmitter,
-  OnInit,
-  ViewChild,
+  AfterViewInit, Component, ElementRef, EventEmitter, OnInit, ViewChild,
 } from '@angular/core';
 import {
-  ActivatedRoute,
-  NavigationExtras,
-  Params,
-  Router,
+  ActivatedRoute, NavigationExtras, Params, Router,
 } from '@angular/router';
 import {Project} from '../models/project';
 import {MatDialog} from '@angular/material/dialog';
@@ -105,7 +98,7 @@ export class VideoComponent implements OnInit, AfterViewInit {
     });
 
     if (this.adId != null) {
-      this.adService.getAd(this.adId).subscribe((adService) => {
+      this.adService.getAd(this.adId, this.params.userId !== 'undefined').subscribe((adService) => {
         this.ad = adService as Project;
 
         if (this.ad.active || this.preview) {
@@ -284,9 +277,11 @@ export class VideoComponent implements OnInit, AfterViewInit {
   }
 
   onShowProduct() {
-    this.adService
-      .updateStats(this.adId, 'paused')
-      .subscribe();
+    if (this.userId !== 'undefined') {
+      this.adService
+        .updateStats(this.adId, 'paused')
+        .subscribe();
+    }
     this.videoPlaying = false;
     this.showSoundIcon = false;
     this.videoPlayer.nativeElement.pause();
