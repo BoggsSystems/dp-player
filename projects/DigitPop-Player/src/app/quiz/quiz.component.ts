@@ -57,7 +57,7 @@ export class QuizComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     const targetWindow = window.parent;
     addEventListener('message', this.initCommunications.bind(this), false);
-    return targetWindow.postMessage({received: true}, `http://production-digit-cms.herokuapp.com/`);
+    return targetWindow.postMessage({received: true}, `http://digitpop.com/`);
   }
 
   initCommunications(event: any) {
