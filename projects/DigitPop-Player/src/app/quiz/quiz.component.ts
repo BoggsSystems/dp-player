@@ -55,6 +55,7 @@ export class QuizComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
+    console.log("In ngOnInit, homeUrl is : " + environment.homeUrl)
     const targetWindow = window.parent;
     addEventListener('message', this.initCommunications.bind(this), false);
     return targetWindow.postMessage({received: true}, environment.homeUrl);
