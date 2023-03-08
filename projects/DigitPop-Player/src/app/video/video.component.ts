@@ -174,6 +174,9 @@ export class VideoComponent implements OnInit, AfterViewInit {
   }
 
   onStartVideo() {
+
+    console.log("In onStartVideo");
+
     const targetWindow = window.parent;
     targetWindow.postMessage('start', environment.homeUrl);
     if (!this.preview && this.subscription != null) {
