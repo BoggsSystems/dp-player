@@ -61,10 +61,12 @@ export class QuizComponent implements OnInit, AfterViewInit {
     addEventListener('message', this.initCommunications.bind(this), false);
 
     if (!this.isIOS) {
+      console.log("In ngOnInit, !this.isIOS so sending message to : " + environment.homeUrl);
       return targetWindow.postMessage({received: true}, environment.homeUrl);
       // return targetWindow.postMessage(res, 'http://localhost:4200');
     }
     else {
+      console.log("In ngOnInit, this.isIOS == true so sending message to : " + environment.iOSFallbackUrl);
       return targetWindow.postMessage({received: true}, environment.iOSFallbackUrl);
       // return targetWindow.postMessage(res, 'http://localhost:4200');
     }
