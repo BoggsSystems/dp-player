@@ -194,7 +194,10 @@ export class VideoComponent implements OnInit, AfterViewInit {
     if (!this.videoMuted && false) { // Remove false to mute by default
       this.toggleVideoMute();
     }
+
+    console.log("In onStartVideo, calling play");
     this.videoPlayer.nativeElement.play();
+    console.log("In onStartVideo, play called");
     this.videoPlaying = true;
   }
 
