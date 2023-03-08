@@ -60,16 +60,7 @@ export class QuizComponent implements OnInit, AfterViewInit {
     const targetWindow = window.parent;
     addEventListener('message', this.initCommunications.bind(this), false);
 
-    if (!this.isIOS) {
-      console.log("In ngOnInit, !this.isIOS so sending message to : " + environment.homeUrl);
-      return targetWindow.postMessage({received: true}, environment.homeUrl);
-      // return targetWindow.postMessage(res, 'http://localhost:4200');
-    }
-    else {
-      console.log("In ngOnInit, this.isIOS == true so sending message to : " + environment.iOSFallbackUrl);
-      return targetWindow.postMessage({received: true}, environment.iOSFallbackUrl);
-      // return targetWindow.postMessage(res, 'http://localhost:4200');
-    }
+
   }
 
   initCommunications(event: any) {
@@ -79,12 +70,32 @@ export class QuizComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
+    console.log("In ngAfterViewInit, this.detectIos is : " + this.detectIos);
+
     if (this.detectIos) {
       this.isIOS = CrossDomainMessaging.isIOS();
+      console.log("In ngAfterViewInit, this.isIOS is : " + this.isIOS);
+
       if (this.isIOS) {
         this.isSafari = CrossDomainMessaging.isSafari();
         this.iOSVersion = CrossDomainMessaging.getVersion();
+
+        console.log("In ngAfterViewInit, this.isSafari is : " + this.isSafari);
+        console.log("In ngAfterViewInit, this.iOSVersion is : " + this.iOSVersion);
       }
+    }
+
+    const targetWindow = window.parent;
+
+    if (!this.isIOS) {
+      console.log("In ngAfterViewInit, !this.isIOS so sending message to : " + environment.homeUrl);
+      return targetWindow.postMessage({received: true}, environment.homeUrl);
+      // return targetWindow.postMessage(res, 'http://localhost:4200');
+    }
+    else {
+      console.log("In ngAfterViewInit, this.isIOS == true so sending message to : " + environment.iOSFallbackUrl);
+      return targetWindow.postMessage({received: true}, environment.iOSFallbackUrl);
+      // return targetWindow.postMessage(res, 'http://localhost:4200');
     }
   }
 
