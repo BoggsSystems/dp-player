@@ -135,7 +135,7 @@ export class VideoComponent implements OnInit, AfterViewInit {
       // TODO: change targetOrigin url for staging/live deployment
       window.parent.postMessage({
         init: true, action: 'getCampaignId'
-      }, environment.homeUrl);
+      }, environment.iOSFallbackUrl);
 
       addEventListener('message', (event) => {
         if (event.data.campaignId) {
