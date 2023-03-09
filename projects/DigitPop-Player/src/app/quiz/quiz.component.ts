@@ -152,7 +152,7 @@ export class QuizComponent implements OnInit, AfterViewInit {
           return targetWindow.postMessage(res, this.messagingOrigin);
           // return targetWindow.postMessage(res, 'http://localhost:4200');
         }
-        if (this.isIOS && this.iOSVersion <= 14) {
+        if (this.isIOS) {
           return targetWindow.postMessage(res, environment.iOSFallbackUrl);
           // return targetWindow.postMessage(res, 'http://localhost:4200');
         }
