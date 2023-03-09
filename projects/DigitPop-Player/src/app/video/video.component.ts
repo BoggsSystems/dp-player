@@ -51,7 +51,7 @@ export class VideoComponent implements OnInit, AfterViewInit {
   videoType: VideoType;
   showVideo = true;
   videoMuted = false;
-  showSoundIcon = false;
+  showSoundIcon = true;
   adReady = false;
   showThumbnail = false;
   showCanvas = false;
@@ -350,7 +350,7 @@ export class VideoComponent implements OnInit, AfterViewInit {
   onResumeVideo() {
     this.showCanvas = false;
     this.showVideo = true;
-    // this.showSoundIcon = true;
+    this.showSoundIcon = true;
     this.videoPlayer.nativeElement.play();
     this.videoPlaying = true;
   }
