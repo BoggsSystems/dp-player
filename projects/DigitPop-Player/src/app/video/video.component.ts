@@ -21,6 +21,7 @@ import {EngagementService} from '../shared/services/engagement.service';
 import {BillsbyService} from '../shared/services/billsby.service';
 import {ProductGroup} from '../models/productGroup';
 import {Product} from '../models/product';
+import {CrossDomainMessaging} from '../shared/helpers/cd-messaging';
 
 enum VideoType {
   Regular = 1, Cpcc,
@@ -63,6 +64,7 @@ export class VideoComponent implements OnInit, AfterViewInit {
   videoPlaying = false;
   enabledShoppableTour = true;
   creatingEngagment = false;
+  isIOS = false;
   @ViewChild('videoPlayer') videoPlayer: ElementRef;
   @ViewChild('canvas') canvas: ElementRef;
 
@@ -174,8 +176,13 @@ export class VideoComponent implements OnInit, AfterViewInit {
   }
 
   onStartVideo() {
+    this.isIOS = CrossDomainMessaging.isIOS();
     const targetWindow = window.parent;
-    targetWindow.postMessage('start', environment.homeUrl);
+    if (this.isIOS) {
+      targetWindow.postMessage('start', environment.iOSFallbackUrl);
+    } else {
+      targetWindow.postMessage('start', environment.homeUrl);
+    }
     if (!this.preview && this.subscription != null) {
       this.adService.createView(this.adId, this.subscription.cycleId).subscribe((res) => {
         console.log(res);
