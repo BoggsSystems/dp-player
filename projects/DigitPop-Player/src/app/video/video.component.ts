@@ -188,7 +188,7 @@ export class VideoComponent implements OnInit, AfterViewInit {
     this.setSize();
     this.showVideo = true;
 
-    if (!this.videoMuted && false) { // Remove false to mute by default
+    if (!this.videoMuted) { // Remove false to mute by default
       this.toggleVideoMute();
     }
 
