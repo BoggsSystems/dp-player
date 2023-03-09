@@ -135,7 +135,7 @@ export class VideoComponent implements OnInit, AfterViewInit {
       // TODO: change targetOrigin url for staging/live deployment
       window.parent.postMessage({
         init: true, action: 'getCampaignId'
-      }, 'https://digitpop.com');
+      }, environment.homeUrl);
 
       addEventListener('message', (event) => {
         if (event.data.campaignId) {
@@ -174,9 +174,6 @@ export class VideoComponent implements OnInit, AfterViewInit {
   }
 
   onStartVideo() {
-
-    console.log("In onStartVideo");
-
     const targetWindow = window.parent;
     targetWindow.postMessage('start', environment.homeUrl);
     if (!this.preview && this.subscription != null) {
