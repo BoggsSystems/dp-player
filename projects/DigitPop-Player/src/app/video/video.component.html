@@ -17,7 +17,7 @@
   />
   <img
     (click)="toggleVideoMute()"
-    [hidden]="!showSoundIcon"
+    [hidden]="!showSoundIcon || !isIOS"
     [src]="videoMuted ? '/assets/images/muted_icon.svg' :'/assets/images/speaker_icon.svg'"
     class="sound-status muted"
     src="/assets/images/muted_icon.svg"
