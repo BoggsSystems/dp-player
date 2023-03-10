@@ -78,6 +78,7 @@ export class VideoComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
+    this.isIOS = CrossDomainMessaging.isIOS();
     this.handleTutorial();
     this.videoType = VideoType.Regular;
 
