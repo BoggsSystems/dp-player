@@ -30,7 +30,7 @@
         (ended)="onEnded()"
         [hidden]="!showVideo"
         [src]="ad?.media.secure_url"
-        [style]="isIOS ? 'opacity: 0.5;' : ''"
+        [style]="isIOS && !videoPlaying ? 'opacity: 0.5; object-fit: cover;' : ''"
         class="play-ad-video"
         crossorigin="anonymous"
         playsinline
