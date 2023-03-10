@@ -199,9 +199,7 @@ export class VideoComponent implements OnInit, AfterViewInit {
       this.toggleVideoMute();
     }
 
-    console.log("In onStartVideo, calling play");
     this.videoPlayer.nativeElement.play();
-    console.log("In onStartVideo, play called");
     this.videoPlaying = true;
   }
 
@@ -395,6 +393,7 @@ export class VideoComponent implements OnInit, AfterViewInit {
 
     if (isIOS != null) {
       ctx.globalAlpha = 0.2;
+      ctx.filter = 'blur(20px) brightness(50%)';
     } else {
       ctx.filter = 'blur(20px) brightness(50%)';
     }
