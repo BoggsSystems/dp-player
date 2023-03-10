@@ -393,7 +393,6 @@ export class VideoComponent implements OnInit, AfterViewInit {
 
     if (isIOS != null) {
       ctx.globalAlpha = 0.2;
-      ctx.filter = 'blur(20px) brightness(50%)';
     } else {
       ctx.filter = 'blur(20px) brightness(50%)';
     }
