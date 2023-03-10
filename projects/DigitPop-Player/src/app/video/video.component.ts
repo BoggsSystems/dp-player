@@ -70,6 +70,7 @@ export class VideoComponent implements OnInit, AfterViewInit {
 
   // tslint:disable-next-line:max-line-length
   constructor(private router: Router, public dialog: MatDialog, private route: ActivatedRoute, private authService: XchaneAuthenticationService, private adService: AdService, private userService: UserService, private engagementService: EngagementService, private billsByService: BillsbyService) {
+    this.isIOS = CrossDomainMessaging.isIOS();
     this.isUser = false;
     if (localStorage.getItem('enabledShoppableTour')) {
       this.enabledShoppableTour = localStorage.getItem('enabledShoppableTour') === 'true';
@@ -78,7 +79,6 @@ export class VideoComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.isIOS = CrossDomainMessaging.isIOS();
     this.handleTutorial();
     this.videoType = VideoType.Regular;
 
