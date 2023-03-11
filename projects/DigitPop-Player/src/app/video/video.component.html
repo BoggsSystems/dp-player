@@ -30,7 +30,7 @@
         (ended)="onEnded()"
         [hidden]="!showVideo"
         [src]="ad?.media.secure_url"
-        [style]="isIOS && !videoPlaying ? 'opacity: 0.5; object-fit: cover;' : ''"
+        [style]="(isIOS || isSafari) && !videoPlaying ? 'opacity: 0.5; object-fit: cover;' : ''"
         class="play-ad-video"
         crossorigin="anonymous"
         playsinline
@@ -45,7 +45,7 @@
 
   <div
     [hidden]="!showCanvas"
-    [style]="isIOS ? '-webkit-backdrop-filter: blur(20px);' : ''"
+    [style]="isIOS || isSafari ? '-webkit-backdrop-filter: blur(20px);' : ''"
     class="main-product-grid"
   >
     <div class="nav">

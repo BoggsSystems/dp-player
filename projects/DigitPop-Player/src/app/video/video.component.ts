@@ -65,11 +65,13 @@ export class VideoComponent implements OnInit, AfterViewInit {
   enabledShoppableTour = true;
   creatingEngagment = false;
   isIOS = false;
+  isSafari = false;
   @ViewChild('videoPlayer') videoPlayer: ElementRef;
   @ViewChild('canvas') canvas: ElementRef;
 
   // tslint:disable-next-line:max-line-length
   constructor(private router: Router, public dialog: MatDialog, private route: ActivatedRoute, private authService: XchaneAuthenticationService, private adService: AdService, private userService: UserService, private engagementService: EngagementService, private billsByService: BillsbyService) {
+    this.isSafari = CrossDomainMessaging.isSafari();
     this.isIOS = CrossDomainMessaging.isIOS();
     this.isUser = false;
     if (localStorage.getItem('enabledShoppableTour')) {
