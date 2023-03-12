@@ -34,6 +34,7 @@ enum VideoType {
 })
 
 export class VideoComponent implements OnInit, AfterViewInit {
+  onPremise = false;
   isUser: boolean;
   userId: string;
   adId: any;
@@ -64,6 +65,7 @@ export class VideoComponent implements OnInit, AfterViewInit {
   videoPlaying = false;
   enabledShoppableTour = true;
   creatingEngagment = false;
+  isPreview = false;
   isIOS = false;
   isSafari = false;
   @ViewChild('videoPlayer') videoPlayer: ElementRef;
@@ -137,12 +139,13 @@ export class VideoComponent implements OnInit, AfterViewInit {
     }
 
     if (!this.isUser || !this.engagementId) {
-      // TODO: change targetOrigin url for staging/live deployment
       window.parent.postMessage({
         init: true, action: 'getCampaignId'
       }, environment.iOSFallbackUrl);
 
       addEventListener('message', (event) => {
+        this.onPremise = event.data.onPremise ?? event.data.onPremise;
+        this.isPreview = event.data.isPreview ?? event.data.isPreview;
         if (event.data.campaignId) {
           this.campaignId = event.data.campaignId;
           this.categoryId = event.data.categoryId;
