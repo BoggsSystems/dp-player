@@ -1,4 +1,10 @@
-import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
+import {
+  AfterViewChecked,
+  AfterViewInit,
+  Component,
+  OnDestroy,
+  OnInit
+} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Campaign} from '../models/campaign';
 import {MatDialog} from '@angular/material/dialog';
@@ -6,14 +12,16 @@ import {EngagementService} from '../shared/services/engagement.service';
 import {CampaignService} from '../shared/services/campaign.service';
 import {CrossDomainMessaging} from '../shared/helpers/cd-messaging';
 import {environment} from '../../environments/environment';
+import {WebsocketService} from '../shared/services/websocket.service';
 
 @Component({
   selector: 'app-quiz',
   templateUrl: './quiz.component.html',
   styleUrls: ['./quiz.component.scss'],
+  providers: [WebsocketService]
 })
 
-export class QuizComponent implements OnInit, AfterViewInit {
+export class QuizComponent implements OnInit, AfterViewInit, AfterViewChecked {
   campaign: Campaign;
   answers: any[];
   campaignId: any;
@@ -27,7 +35,7 @@ export class QuizComponent implements OnInit, AfterViewInit {
   isUser: boolean;
 
   // tslint:disable-next-line:max-line-length
-  constructor(private route: ActivatedRoute, private campaignService: CampaignService, public dialog: MatDialog, private engagementService: EngagementService, private router: Router) {
+  constructor(private route: ActivatedRoute, private campaignService: CampaignService, public dialog: MatDialog, private engagementService: EngagementService, private router: Router, private webSocket: WebsocketService) {
     const nav = this.router.getCurrentNavigation();
     const checkNav = nav != null && nav.extras != null && nav.extras.state != null;
 
@@ -59,8 +67,6 @@ export class QuizComponent implements OnInit, AfterViewInit {
     console.log("In ngOnInit, iOSFallbackUrl is : " + environment.iOSFallbackUrl);
     const targetWindow = window.parent;
     addEventListener('message', this.initCommunications.bind(this), false);
-
-
   }
 
   initCommunications(event: any) {
@@ -97,6 +103,12 @@ export class QuizComponent implements OnInit, AfterViewInit {
       return targetWindow.postMessage({received: true}, environment.iOSFallbackUrl);
       // return targetWindow.postMessage(res, 'http://localhost:4200');
     }
+  }
+
+  ngAfterViewChecked() {
+    this.webSocket.messages.subscribe(message => {
+      console.log(message + 'kk');
+    });
   }
 
   getCampaign(campaignId: string) {
