@@ -5,7 +5,7 @@ import {map} from 'rxjs/operators';
 import {XchaneAuthenticationService} from './xchane-auth-service.service';
 import {environment} from '../../../environments/environment';
 
-const WS = 'https://production-digitpop-server.herokuapp.com/';
+const WS = 'wss://production-digitpop-server.herokuapp.com/';
 
 export interface Message {
   trigger: string;
