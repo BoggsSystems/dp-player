@@ -20,7 +20,6 @@ export class WebsocketService {
 
   constructor(private auth: XchaneAuthenticationService) {
     this.messages = (this.connect(WS).pipe(map((response: MessageEvent): Message => {
-      console.log(response.data);
       return JSON.parse(response.data);
     })) as BehaviorSubject<Message>);
   }

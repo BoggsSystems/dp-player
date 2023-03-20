@@ -107,7 +107,7 @@ export class QuizComponent implements OnInit, AfterViewInit, AfterViewChecked {
 
   ngAfterViewChecked() {
     this.webSocket.messages.subscribe(message => {
-      console.log(message + 'kk');
+      console.log(message);
     });
   }
 
