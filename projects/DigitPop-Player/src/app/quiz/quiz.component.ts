@@ -113,7 +113,7 @@ export class QuizComponent implements OnInit, AfterViewInit, AfterViewChecked {
     }
 
     this.ws.messages.subscribe(message => {
-      console.log(message);
+
     });
   }
 
