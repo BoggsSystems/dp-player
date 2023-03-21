@@ -44,6 +44,7 @@ export class QuizComponent implements OnInit, AfterViewInit, AfterViewChecked {
     }
 
     const navState = nav.extras.state;
+    console.log(navState.userId);
     if (!navState.isUser && navState.campaignId) {
       this.campaignId = navState.campaignId;
       this.getCampaign(this.campaignId);
