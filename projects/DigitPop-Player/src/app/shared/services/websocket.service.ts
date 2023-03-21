@@ -2,8 +2,6 @@ import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable, Observer, Subject} from 'rxjs';
 import {AnonymousSubject} from 'rxjs/internal/Subject';
 import {map} from 'rxjs/operators';
-import {XchaneAuthenticationService} from './xchane-auth-service.service';
-import {environment} from '../../../environments/environment';
 
 const WS = 'wss://production-digitpop-server.herokuapp.com/';
 
@@ -18,8 +16,9 @@ export class WebsocketService {
   private userId = '';
   private subject: AnonymousSubject<MessageEvent>;
 
-  constructor(private auth: XchaneAuthenticationService) {
-    this.messages = (this.connect(WS).pipe(map((response: MessageEvent): Message => {
+  constructor(userId: string) {
+    this.userId = userId;
+    this.messages = (this.connect(WS + userId).pipe(map((response: MessageEvent): Message => {
       return JSON.parse(response.data);
     })) as BehaviorSubject<Message>);
   }
