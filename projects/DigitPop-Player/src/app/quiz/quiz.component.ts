@@ -36,6 +36,7 @@ export class QuizComponent implements OnInit, AfterViewInit, AfterViewChecked {
 
   // tslint:disable-next-line:max-line-length
   constructor(private route: ActivatedRoute, private campaignService: CampaignService, public dialog: MatDialog, private engagementService: EngagementService, private router: Router) {
+
     const nav = this.router.getCurrentNavigation();
     const checkNav = nav != null && nav.extras != null && nav.extras.state != null;
 
@@ -44,7 +45,9 @@ export class QuizComponent implements OnInit, AfterViewInit, AfterViewChecked {
     }
 
     const navState = nav.extras.state;
-    this.ws = new WebsocketService(navState.userId);
+    if (navState.userId) {
+      this.ws = new WebsocketService(navState.userId);
+    }
 
     if (!navState.isUser && navState.campaignId) {
       this.campaignId = navState.campaignId;
@@ -96,17 +99,19 @@ export class QuizComponent implements OnInit, AfterViewInit, AfterViewChecked {
     const targetWindow = window.parent;
 
     if (!this.isIOS) {
-      console.log("In ngAfterViewInit, !this.isIOS so sending message to : " + environment.homeUrl);
       return targetWindow.postMessage({received: true}, environment.homeUrl);
       // return targetWindow.postMessage(res, 'http://localhost:4200');
     } else {
-      console.log("In ngAfterViewInit, this.isIOS == true so sending message to : " + environment.iOSFallbackUrl);
       return targetWindow.postMessage({received: true}, environment.iOSFallbackUrl);
       // return targetWindow.postMessage(res, 'http://localhost:4200');
     }
   }
 
   ngAfterViewChecked() {
+    if (!this.ws) {
+      return;
+    }
+
     this.ws.messages.subscribe(message => {
       console.log(message);
     });
