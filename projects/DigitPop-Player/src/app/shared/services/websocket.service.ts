@@ -3,7 +3,7 @@ import { BehaviorSubject, Observable, Observer, Subject } from 'rxjs';
 import { AnonymousSubject } from 'rxjs/internal/Subject';
 import { map } from 'rxjs/operators';
 
-const WS = 'wss://production-digitpop-server.herokuapp.com';
+const WS = 'wss://localhost:9000';
 
 export interface Message {
   trigger: string;
@@ -32,7 +32,7 @@ export class WebsocketService {
   }
 
   private create(url: string, userId: string): AnonymousSubject<MessageEvent> {
-    const ws = new WebSocket(url, `sub-protocols=${userId}`);
+    const ws = new WebSocket(url, [userId]);
 
     const observable = new Observable((obs: Observer<MessageEvent>) => {
       ws.onmessage = obs.next.bind(obs);
