@@ -1,7 +1,7 @@
-import {Injectable} from '@angular/core';
-import {BehaviorSubject, Observable, Observer, Subject} from 'rxjs';
-import {AnonymousSubject} from 'rxjs/internal/Subject';
-import {map} from 'rxjs/operators';
+import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable, Observer, Subject } from 'rxjs';
+import { AnonymousSubject } from 'rxjs/internal/Subject';
+import { map } from 'rxjs/operators';
 
 const WS = 'wss://production-digitpop-server.herokuapp.com';
 
@@ -18,21 +18,21 @@ export class WebsocketService {
 
   constructor(userId: string) {
     this.userId = userId;
-    this.messages = (this.connect(WS + '/' + userId).pipe(map((response: MessageEvent): Message => {
+    this.messages = this.connect(WS, this.userId).pipe(map((response: MessageEvent): Message => {
       console.log(JSON.parse(response.data));
       return JSON.parse(response.data);
-    })) as BehaviorSubject<Message>);
+    })) as BehaviorSubject<Message>;
   }
 
-  public connect(url: string): AnonymousSubject<MessageEvent> {
+  private connect(url: string, userId: string): AnonymousSubject<MessageEvent> {
     if (!this.subject) {
-      this.subject = this.create(url);
+      this.subject = this.create(url, userId);
     }
     return this.subject;
   }
 
-  private create(url: string): AnonymousSubject<MessageEvent> {
-    const ws = new WebSocket(url);
+  private create(url: string, userId: string): AnonymousSubject<MessageEvent> {
+    const ws = new WebSocket(url, `sub-protocols=${userId}`);
 
     const observable = new Observable((obs: Observer<MessageEvent>) => {
       ws.onmessage = obs.next.bind(obs);
@@ -42,7 +42,7 @@ export class WebsocketService {
     });
 
     const observer: any = {
-      error: null, complete: null, // tslint:disable-next-line:ban-types
+      error: null, complete: null,
       next: (data: Object) => {
         if (ws.readyState === WebSocket.OPEN) {
           ws.send(JSON.stringify(data));
