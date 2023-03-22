@@ -3,7 +3,7 @@ import {BehaviorSubject, Observable, Observer, Subject} from 'rxjs';
 import {AnonymousSubject} from 'rxjs/internal/Subject';
 import {map} from 'rxjs/operators';
 
-const WS = 'wss://production-digitpop-server.herokuapp.com/';
+const WS = 'wss://production-digitpop-server.herokuapp.com';
 
 export interface Message {
   trigger: string;
@@ -18,7 +18,8 @@ export class WebsocketService {
 
   constructor(userId: string) {
     this.userId = userId;
-    this.messages = (this.connect(WS + userId).pipe(map((response: MessageEvent): Message => {
+    this.messages = (this.connect(WS + '/' + userId).pipe(map((response: MessageEvent): Message => {
+      console.log(JSON.parse(response.data));
       return JSON.parse(response.data);
     })) as BehaviorSubject<Message>);
   }
