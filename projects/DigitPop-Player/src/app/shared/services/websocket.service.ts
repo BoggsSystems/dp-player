@@ -22,7 +22,7 @@ export class WebsocketService {
   }
 
   private connect(url: string, userId: string): Observable<Message> {
-    const ws = new WebSocket(url, [userId + '-second']);
+    const ws = new WebSocket(url + '/' + userId, [userId + '-second']);
 
     const observable = new Observable<Message>((obs: Observer<Message>) => {
       ws.onmessage = (event) => obs.next(JSON.parse(event.data));
