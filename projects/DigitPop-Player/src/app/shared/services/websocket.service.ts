@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, Observer, Subject } from 'rxjs';
 import { AnonymousSubject } from 'rxjs/internal/Subject';
-import { map } from 'rxjs/operators';
+import {map, share} from 'rxjs/operators';
 
 const WS = 'wss://production-digitpop-server.herokuapp.com';
 
@@ -18,27 +18,21 @@ export class WebsocketService {
 
   constructor(userId: string) {
     this.userId = userId;
-    this.messages = this.connect(WS, this.userId).pipe(map((response: MessageEvent): Message => {
-      console.log(JSON.parse(response.data));
-      return JSON.parse(response.data);
-    })) as BehaviorSubject<Message>;
+    this.connect(WS, this.userId).subscribe();
   }
 
-  private connect(url: string, userId: string): AnonymousSubject<MessageEvent> {
-    if (!this.subject) {
-      this.subject = this.create(url, userId);
-    }
-    return this.subject;
-  }
-
-  private create(url: string, userId: string): AnonymousSubject<MessageEvent> {
+  private connect(url: string, userId: string): Observable<Message> {
     const ws = new WebSocket(url, [userId]);
 
-    const observable = new Observable((obs: Observer<MessageEvent>) => {
-      ws.onmessage = obs.next.bind(obs);
-      ws.onerror = obs.error.bind(obs);
-      ws.onclose = obs.complete.bind(obs);
-      return ws.close.bind(ws);
+    const observable = new Observable<Message>((obs: Observer<Message>) => {
+      ws.onmessage = (event) => obs.next(JSON.parse(event.data));
+      ws.onerror = (event) => obs.error(event);
+      ws.onclose = (event) => obs.complete();
+      return () => {
+        if (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING) {
+          ws.close();
+        }
+      }
     });
 
     const observer: any = {
@@ -50,6 +44,6 @@ export class WebsocketService {
       }
     };
 
-    return new AnonymousSubject<MessageEvent>(observer, observable);
+    return Subject.create(observer, observable).pipe(share());
   }
 }
