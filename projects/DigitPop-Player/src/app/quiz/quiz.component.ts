@@ -46,6 +46,7 @@ export class QuizComponent implements OnInit, AfterViewInit, AfterViewChecked {
 
     const navState = nav.extras.state;
     if (navState.userId) {
+      console.log('created ws connection');
       this.ws = new WebsocketService(navState.userId);
     }
 
@@ -103,10 +104,6 @@ export class QuizComponent implements OnInit, AfterViewInit, AfterViewChecked {
     if (!this.ws) {
       return;
     }
-
-    this.ws.messages.subscribe(message => {
-
-    });
   }
 
   getCampaign(campaignId: string) {
