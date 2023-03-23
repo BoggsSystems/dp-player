@@ -144,6 +144,7 @@ export class VideoComponent implements OnInit, AfterViewInit {
       }, environment.iOSFallbackUrl);
 
       addEventListener('message', (event) => {
+        console.log('test message');
         this.onPremise = event.data.onPremise ?? event.data.onPremise;
         this.isPreview = event.data.isPreview ?? event.data.isPreview;
         if (event.data.campaignId) {
