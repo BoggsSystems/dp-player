@@ -68,8 +68,6 @@ export class QuizComponent implements OnInit, AfterViewInit, AfterViewChecked {
   }
 
   ngOnInit(): void {
-    console.log("In ngOnInit, homeUrl is : " + environment.homeUrl);
-    console.log("In ngOnInit, iOSFallbackUrl is : " + environment.iOSFallbackUrl);
     const targetWindow = window.parent;
     addEventListener('message', this.initCommunications.bind(this), false);
   }
@@ -81,18 +79,12 @@ export class QuizComponent implements OnInit, AfterViewInit, AfterViewChecked {
   }
 
   ngAfterViewInit() {
-    console.log("In ngAfterViewInit, this.detectIos is : " + this.detectIos);
-
     if (this.detectIos) {
       this.isIOS = CrossDomainMessaging.isIOS();
-      console.log("In ngAfterViewInit, this.isIOS is : " + this.isIOS);
 
       if (this.isIOS) {
         this.isSafari = CrossDomainMessaging.isSafari();
         this.iOSVersion = CrossDomainMessaging.getVersion();
-
-        console.log("In ngAfterViewInit, this.isSafari is : " + this.isSafari);
-        console.log("In ngAfterViewInit, this.iOSVersion is : " + this.iOSVersion);
       }
     }
 

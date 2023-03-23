@@ -18,7 +18,7 @@ export class WebsocketService {
 
   constructor(userId: string) {
     this.userId = userId;
-    this.messages = this.connect(WS, this.userId).pipe(map((response: MessageEvent): Message => {
+    this.messages = this.connect(WS + '/' + this.userId, this.userId).pipe(map((response: MessageEvent): Message => {
       console.log(JSON.parse(response.data));
       return JSON.parse(response.data);
     })) as BehaviorSubject<Message>;
