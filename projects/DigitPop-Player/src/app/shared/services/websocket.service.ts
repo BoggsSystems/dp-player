@@ -22,7 +22,7 @@ export class WebsocketService {
   }
 
   private connect(url: string, userId: string): Observable<Message> {
-    const ws = new WebSocket(url, [userId]);
+    const ws = new WebSocket(url, [userId + '-second']);
 
     const observable = new Observable<Message>((obs: Observer<Message>) => {
       ws.onmessage = (event) => obs.next(JSON.parse(event.data));
@@ -32,18 +32,10 @@ export class WebsocketService {
         if (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING) {
           ws.close();
         }
-      }
-    });
+      };
+    }).pipe(share());
 
-    const observer: any = {
-      error: null, complete: null,
-      next: (data: Object) => {
-        if (ws.readyState === WebSocket.OPEN) {
-          ws.send(JSON.stringify(data));
-        }
-      }
-    };
-
-    return Subject.create(observer, observable).pipe(share());
+    return observable;
   }
+
 }
