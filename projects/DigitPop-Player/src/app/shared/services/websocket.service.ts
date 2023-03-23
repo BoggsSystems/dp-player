@@ -3,7 +3,7 @@ import { BehaviorSubject, Observable, Observer, Subject } from 'rxjs';
 import { AnonymousSubject } from 'rxjs/internal/Subject';
 import { map } from 'rxjs/operators';
 
-const WS = 'wss://localhost:9000';
+const WS = 'wss://production-digitpop-server.herokuapp.com';
 
 export interface Message {
   trigger: string;
