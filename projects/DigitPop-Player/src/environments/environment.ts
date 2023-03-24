@@ -8,5 +8,5 @@ export const environment = {
   billsbyKey: 'digitpop_f1efba4792104a3ab66c1cb59f43993a',
   homeUrl: 'https://digitpop.com',
   iOSFallbackUrl: 'http://digitpop.com',
-  websocketURL: 'ws://localhost:9000'
+  websocketURL: 'wss://production-digitpop-server.herokuapp.com'
 };
