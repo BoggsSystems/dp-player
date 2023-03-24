@@ -18,9 +18,9 @@ export class EngagementService {
     }, httpOptions);
   }
 
-  verificationAnswer(answer: any, engagementId: any, campaignId: any, isUser: boolean = true) {
+  verificationAnswer(answer: any, engagementId: any, campaignId: any, isUser: boolean = true, uuid: string = '') {
     return this.http.post<any>(`${environment.apiUrl}/api/engagements/answer`, {
-      answer, engagementId, campaignId, isUser
+      answer, engagementId, campaignId, isUser, uuid
     }, httpOptions);
   }
 

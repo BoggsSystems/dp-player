@@ -33,6 +33,7 @@ export class QuizComponent implements OnInit, AfterViewInit, AfterViewChecked {
   detectIos = true;
   isUser: boolean;
   ws: WebsocketService;
+  uuid: string;
 
   // tslint:disable-next-line:max-line-length
   constructor(private route: ActivatedRoute, private campaignService: CampaignService, public dialog: MatDialog, private engagementService: EngagementService, private router: Router) {
@@ -58,6 +59,10 @@ export class QuizComponent implements OnInit, AfterViewInit, AfterViewChecked {
       this.engagementId = navState.engagementId;
       this.campaignId = nav.extras.state.campaignId;
       this.getCampaign(this.campaignId);
+    }
+
+    if (navState.uuid) {
+      this.uuid = navState.uuid;
     }
 
     this.isUser = navState.isUser;
@@ -148,7 +153,7 @@ export class QuizComponent implements OnInit, AfterViewInit, AfterViewChecked {
 
   onAnswer(answer: any) {
     return this.engagementService
-      .verificationAnswer(answer, this.engagementId, this.campaignId, this.isUser)
+      .verificationAnswer(answer, this.engagementId, this.campaignId, this.isUser, this.uuid)
       .subscribe((res: any) => {
         res = {action: 'postQuiz', isUser: this.isUser, isCorrect: res};
 
