@@ -339,7 +339,6 @@ export class VideoComponent implements OnInit, AfterViewInit {
   }
 
   startQuiz() {
-    console.log(this.uuid);
     this.showQuizButton = false;
     const navigationExtras: NavigationExtras = this.isUser ? {
       state: {
