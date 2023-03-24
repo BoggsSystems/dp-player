@@ -90,13 +90,19 @@ export class VideoComponent implements OnInit, AfterViewInit {
     this.innerWidth = window.innerWidth;
     this.innerHeight = window.innerHeight;
 
+    try {
+      window.self !== window.top;
+    } catch (e) {
+      this.onPremise = true;
+
+    }
+
     this.route.params.subscribe((params) => {
       this.params = params;
       this.adId = params.id;
       this.isUser = params.userId.length !== 8;
       this.userId = this.isUser ? params.userId : '';
       this.uuid = !this.isUser ? params.userId : '';
-      this.onPremise = this.isUser || Boolean(this.uuid);
 
       if (params.engagementId != null && params.campaignId) {
         this.campaignId = params.campaignId;
