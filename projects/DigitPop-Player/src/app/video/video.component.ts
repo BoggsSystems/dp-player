@@ -96,6 +96,7 @@ export class VideoComponent implements OnInit, AfterViewInit {
       this.isUser = params.userId.length !== 8;
       this.userId = this.isUser ? params.userId : '';
       this.uuid = !this.isUser ? params.userId : '';
+      this.onPremise = this.isUser || Boolean(this.uuid);
 
       if (params.engagementId != null && params.campaignId) {
         this.campaignId = params.campaignId;
@@ -146,8 +147,6 @@ export class VideoComponent implements OnInit, AfterViewInit {
       }, environment.iOSFallbackUrl);
 
       addEventListener('message', (event) => {
-        console.log(event.data.onPremise);
-        this.onPremise = event.data.onPremise ?? event.data.onPremise;
         this.isPreview = event.data.isPreview ?? event.data.isPreview;
         if (event.data.campaignId) {
           this.campaignId = event.data.campaignId;
