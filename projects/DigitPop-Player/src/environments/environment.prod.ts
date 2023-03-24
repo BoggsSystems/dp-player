@@ -7,5 +7,6 @@ export const environment = {
   billsbyUrl: 'https://public.billsby.com/api/v1/rest/core/digitpop',
   billsbyKey: 'digitpop_f1efba4792104a3ab66c1cb59f43993a',
   homeUrl: 'https://www.digitpop.com',
-  iOSFallbackUrl: 'http://digitpop.com'
+  iOSFallbackUrl: 'http://digitpop.com',
+  websocketURL: 'wss://production-digitpop-server.herokuapp.com'
 };
