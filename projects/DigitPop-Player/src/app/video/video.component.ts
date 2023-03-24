@@ -90,11 +90,8 @@ export class VideoComponent implements OnInit, AfterViewInit {
     this.innerWidth = window.innerWidth;
     this.innerHeight = window.innerHeight;
 
-    try {
-      window.self !== window.top;
-    } catch (e) {
+    if ( window.self !== window.parent ) {
       this.onPremise = true;
-
     }
 
     this.route.params.subscribe((params) => {
