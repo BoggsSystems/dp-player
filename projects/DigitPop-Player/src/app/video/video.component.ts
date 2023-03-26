@@ -404,12 +404,7 @@ export class VideoComponent implements OnInit, AfterViewInit {
     const ctx = this.canvas.nativeElement.getContext('2d');
     const isIOS = window.navigator.userAgent.match(/iPhone/i) || window.navigator.userAgent.match(/iPad/i) || window.navigator.userAgent.match(/Macintosh/i);
 
-    if (isIOS != null) {
-      ctx.globalAlpha = 0.2;
-    } else {
-      ctx.filter = 'blur(20px) brightness(50%)';
-    }
-
+    // tslint:disable-next-line:max-line-length
     ctx.drawImage(this.videoPlayer.nativeElement, vot, (vw - this.canvas.nativeElement.height * ratio) / 2, this.canvas.nativeElement.height * ratio, this.canvas.nativeElement.height);
   }
 
