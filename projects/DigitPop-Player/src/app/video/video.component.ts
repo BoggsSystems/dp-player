@@ -402,7 +402,6 @@ export class VideoComponent implements OnInit, AfterViewInit {
     this.canvas.nativeElement.style.setProperty('top', vot + 'px');
 
     const ctx = this.canvas.nativeElement.getContext('2d');
-    const isIOS = window.navigator.userAgent.match(/iPhone/i) || window.navigator.userAgent.match(/iPad/i) || window.navigator.userAgent.match(/Macintosh/i);
 
     // tslint:disable-next-line:max-line-length
     ctx.drawImage(this.videoPlayer.nativeElement, vot, (vw - this.canvas.nativeElement.height * ratio) / 2, this.canvas.nativeElement.height * ratio, this.canvas.nativeElement.height);
