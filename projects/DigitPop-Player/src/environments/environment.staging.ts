@@ -7,5 +7,5 @@ export const environment = {
   billsbyUrl: 'https://public.billsby.com/api/v1/rest/core/stagingdigitpop',
   billsbyKey: 'stagingdigitpop_e63c7ed880354970adf026d1a9c80e97',
   homeUrl: 'https://digitpop.com',
-  iOSFallbackUrl: 'http://digitpop.com'
+  iOSFallbackUrl: 'https://digitpop.com'
 };
