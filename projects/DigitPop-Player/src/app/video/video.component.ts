@@ -74,9 +74,6 @@ export class VideoComponent implements OnInit, AfterViewInit {
     this.isSafari = CrossDomainMessaging.isSafari();
     this.isIOS = CrossDomainMessaging.isIOS();
     this.isUser = false;
-    if (localStorage.getItem('enabledShoppableTour')) {
-      this.enabledShoppableTour = localStorage.getItem('enabledShoppableTour') === 'true';
-    }
   }
 
   ngOnInit(): void {
@@ -156,10 +153,6 @@ export class VideoComponent implements OnInit, AfterViewInit {
               .subscribe(res => {
                 this.engagementId = res._id;
               });
-          }
-          if (event.data.toured) {
-            this.enabledShoppableTour = event.data.toured;
-            localStorage.setItem('enabledShoppableTour', 'true');
           }
         }
       });
