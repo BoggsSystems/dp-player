@@ -12,9 +12,6 @@ import {
 import {MainHelpComponent} from '../help/main-help/main-help.component';
 import {environment} from '../../environments/environment';
 import {SubscriptionDetails, SubscriptionInfo} from '../models/subscription';
-import {
-  XchaneAuthenticationService
-} from '../shared/services/xchane-auth-service.service';
 import {AdService} from '../shared/services/ad.service';
 import {UserService} from '../shared/services/user.service';
 import {EngagementService} from '../shared/services/engagement.service';
@@ -73,18 +70,16 @@ export class VideoComponent implements OnInit, AfterViewInit {
   @ViewChild('canvas') canvas: ElementRef;
 
   // tslint:disable-next-line:max-line-length
-  constructor(private router: Router, public dialog: MatDialog, private route: ActivatedRoute, private authService: XchaneAuthenticationService, private adService: AdService, private userService: UserService, private engagementService: EngagementService, private billsByService: BillsbyService) {
+  constructor(private router: Router, public dialog: MatDialog, private route: ActivatedRoute, private adService: AdService, private userService: UserService, private engagementService: EngagementService, private billsByService: BillsbyService) {
     this.isSafari = CrossDomainMessaging.isSafari();
     this.isIOS = CrossDomainMessaging.isIOS();
     this.isUser = false;
     if (localStorage.getItem('enabledShoppableTour')) {
       this.enabledShoppableTour = localStorage.getItem('enabledShoppableTour') === 'true';
     }
-    this.handleTutorial();
   }
 
   ngOnInit(): void {
-    this.handleTutorial();
     this.videoType = VideoType.Regular;
 
     this.innerWidth = window.innerWidth;
@@ -452,9 +447,5 @@ export class VideoComponent implements OnInit, AfterViewInit {
   onSeekAndPlay() {
     this.videoPlayer.nativeElement.currentTime = this.currentProductGroup.time;
     this.onResumeVideo();
-  }
-
-  handleTutorial = () => {
-    const user = this.authService.currentUserValue;
   }
 }
