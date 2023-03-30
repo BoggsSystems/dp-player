@@ -145,6 +145,7 @@ export class VideoComponent implements OnInit, AfterViewInit {
       addEventListener('message', (event) => {
         this.isPreview = event.data.isPreview ?? event.data.isPreview;
         if (event.data.campaignId) {
+          console.log(event.data);
           console.log(this.campaignId);
           this.campaignId = event.data.campaignId;
           this.categoryId = event.data.categoryId;
