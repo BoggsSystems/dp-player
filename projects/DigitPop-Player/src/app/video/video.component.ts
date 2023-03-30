@@ -154,6 +154,7 @@ export class VideoComponent implements OnInit, AfterViewInit {
               .subscribe(res => {
                 console.log('inside!');
                 this.engagementId = res._id;
+                console.log(this.engagementId);
               });
           }
         }
