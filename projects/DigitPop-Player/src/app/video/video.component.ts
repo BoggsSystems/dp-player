@@ -149,7 +149,7 @@ export class VideoComponent implements OnInit, AfterViewInit {
           if (this.isUser && !this.engagementId && !this.creatingEngagment) {
             this.creatingEngagment = true;
             this.engagementService
-              .createEngagement(this.userId, this.campaignId, this.adId)
+              .createEngagement(this.userId, this.adId)
               .subscribe(res => {
                 this.campaignId = res.campaign;
                 this.engagementId = res._id;
