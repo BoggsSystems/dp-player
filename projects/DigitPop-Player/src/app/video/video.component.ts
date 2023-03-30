@@ -346,7 +346,7 @@ export class VideoComponent implements OnInit, AfterViewInit {
         uuid: this.uuid
       },
     } : {
-      state: {isUser: false, campaignId: this.campaignId},
+      state: {isUser: false, campaignId: this.campaignId, uuid: this.uuid},
     };
 
     console.log(navigationExtras);
