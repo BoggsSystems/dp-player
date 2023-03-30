@@ -149,13 +149,14 @@ export class VideoComponent implements OnInit, AfterViewInit {
       });
     }
 
-    if (this.isUser && !this.engagementId && !this.creatingEngagment) {
+    if (this.isUser && !this.creatingEngagment) {
       this.creatingEngagment = true;
       this.engagementService
         .createEngagement(this.userId, this.adId)
         .subscribe(res => {
           this.engagementId = res._id;
           this.campaignId = res.campaign;
+          this.creatingEngagment = false;
         });
     }
   }
@@ -343,7 +344,6 @@ export class VideoComponent implements OnInit, AfterViewInit {
       state: {isUser: false, campaignId: this.campaignId},
     };
 
-    console.log(navigationExtras);
     return this.router.navigate(['/quiz'], navigationExtras);
 
   }
