@@ -12,14 +12,13 @@ export class EngagementService {
   constructor(private http: HttpClient) {
   }
 
-  createEngagement(userId: string, campaignId: string, projectId: string) {
+  createEngagement(userId: string, projectId: string) {
     return this.http.post<any>(`${environment.apiUrl}/api/engagement/`, {
-      userId, campaignId, projectId
+      userId, projectId
     }, httpOptions);
   }
 
   verificationAnswer(answer: any, engagementId: any, campaignId: any, isUser: boolean = true, uuid: string = '') {
-    console.log(engagementId, campaignId);
     return this.http.post<any>(`${environment.apiUrl}/api/engagements/answer`, {
       answer, engagementId, campaignId, isUser, uuid
     }, httpOptions);
