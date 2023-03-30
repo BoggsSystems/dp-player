@@ -149,16 +149,12 @@ export class VideoComponent implements OnInit, AfterViewInit {
       });
     }
 
-    if (this.isUser && !this.creatingEngagment) {
-      this.creatingEngagment = true;
-      this.engagementService
+    this.engagementService
         .createEngagement(this.userId, this.adId)
         .subscribe(res => {
           this.engagementId = res._id;
           this.campaignId = res.campaign;
-          this.creatingEngagment = false;
         });
-    }
   }
 
   help() {
