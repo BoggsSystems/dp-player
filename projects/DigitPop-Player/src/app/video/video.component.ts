@@ -343,6 +343,7 @@ export class VideoComponent implements OnInit, AfterViewInit {
       state: {isUser: false, campaignId: this.campaignId},
     };
 
+    console.log(navigationExtras);
     return this.router.navigate(['/quiz'], navigationExtras);
 
   }
