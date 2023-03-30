@@ -59,6 +59,7 @@ export class QuizComponent implements OnInit, AfterViewInit, AfterViewChecked {
       this.engagementId = navState.engagementId;
       this.campaignId = nav.extras.state.campaignId;
       this.getCampaign(this.campaignId);
+      console.log(this.engagementId);
     }
 
     if (navState.uuid) {
