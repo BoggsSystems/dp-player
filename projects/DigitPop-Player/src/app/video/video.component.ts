@@ -146,18 +146,14 @@ export class VideoComponent implements OnInit, AfterViewInit {
         this.isPreview = event.data.isPreview ?? event.data.isPreview;
         if (event.data.campaignId) {
           console.log(event.data);
-          console.log(this.campaignId);
           this.campaignId = event.data.campaignId;
           this.categoryId = event.data.categoryId;
-          console.log(this.campaignId);
           if (this.isUser && !this.engagementId && !this.creatingEngagment) {
             this.creatingEngagment = true;
             this.engagementService
               .createEngagement(this.userId, this.campaignId, this.adId)
               .subscribe(res => {
-                console.log('inside!');
                 this.engagementId = res._id;
-                console.log(this.engagementId);
               });
           }
         }

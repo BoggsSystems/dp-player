@@ -59,7 +59,6 @@ export class QuizComponent implements OnInit, AfterViewInit, AfterViewChecked {
       this.engagementId = navState.engagementId;
       this.campaignId = nav.extras.state.campaignId;
       this.getCampaign(this.campaignId);
-      console.log(this.engagementId);
     }
 
     if (navState.uuid) {
@@ -156,7 +155,6 @@ export class QuizComponent implements OnInit, AfterViewInit, AfterViewChecked {
     return this.engagementService
       .verificationAnswer(answer, this.engagementId, this.campaignId, this.isUser, this.uuid)
       .subscribe((res: any) => {
-        console.log(res);
         res = {action: 'postQuiz', isUser: this.isUser, isCorrect: res};
 
         const targetWindow = window.parent;

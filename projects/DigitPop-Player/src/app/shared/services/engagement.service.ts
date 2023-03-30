@@ -13,7 +13,6 @@ export class EngagementService {
   }
 
   createEngagement(userId: string, campaignId: string, projectId: string) {
-    console.log(userId, campaignId, projectId);
     return this.http.post<any>(`${environment.apiUrl}/api/engagement/`, {
       userId, campaignId, projectId
     }, httpOptions);
