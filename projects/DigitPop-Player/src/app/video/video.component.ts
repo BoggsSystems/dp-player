@@ -137,6 +137,7 @@ export class VideoComponent implements OnInit, AfterViewInit {
     }
 
     if (!this.isUser || !this.engagementId) {
+      console.log(this.engagementId);
       window.parent.postMessage({
         init: true, action: 'getCampaignId'
       }, environment.iOSFallbackUrl);
@@ -151,6 +152,7 @@ export class VideoComponent implements OnInit, AfterViewInit {
             this.engagementService
               .createEngagement(this.userId, this.campaignId, this.adId)
               .subscribe(res => {
+                console.log('inside!');
                 this.engagementId = res._id;
               });
           }
