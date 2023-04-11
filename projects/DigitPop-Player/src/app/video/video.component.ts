@@ -88,6 +88,7 @@ export class VideoComponent implements OnInit, AfterViewInit {
 
     this.route.params.subscribe((params) => {
       this.params = params;
+      this.isPreview = params.preview;
       this.adId = params.id;
       this.isUser = params.userId.length !== 8;
       this.userId = this.isUser ? params.userId : '';
@@ -270,6 +271,7 @@ export class VideoComponent implements OnInit, AfterViewInit {
   }
 
   onBuyNow() {
+    if (this.isPreview) { return; }
     this.adService
       .updateStats(this.adId, 'clickedBuy', this.currentProduct._id)
       .subscribe();
@@ -281,6 +283,7 @@ export class VideoComponent implements OnInit, AfterViewInit {
   }
 
   onProductClick(product: Product) {
+    if (this.isPreview) { return; }
     this.currentProduct = product;
     this.selectedImage = product.images[0];
     this.viewState = 'Product';
@@ -291,7 +294,7 @@ export class VideoComponent implements OnInit, AfterViewInit {
   }
 
   onShowProduct() {
-    if (this.userId !== 'undefined') {
+    if (this.userId !== 'undefined' && !this.isPreview) {
       this.adService
         .updateStats(this.adId, 'paused')
         .subscribe();
