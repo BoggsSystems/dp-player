@@ -271,11 +271,11 @@ export class VideoComponent implements OnInit, AfterViewInit {
   }
 
   onBuyNow() {
+    window.open(this.currentProduct.makeThisYourLookURL, '_blank');
     if (this.isPreview) { return; }
     this.adService
       .updateStats(this.adId, 'clickedBuy', this.currentProduct._id)
       .subscribe();
-    window.open(this.currentProduct.makeThisYourLookURL, '_blank');
   }
 
   onClickThumbnail(thumbnail: any) {
@@ -283,14 +283,13 @@ export class VideoComponent implements OnInit, AfterViewInit {
   }
 
   onProductClick(product: Product) {
-    if (this.isPreview) { return; }
     this.currentProduct = product;
     this.selectedImage = product.images[0];
     this.viewState = 'Product';
+    if (this.isPreview) { return; }
     this.adService
       .updateStats(this.adId, 'clickedProduct', this.currentProduct._id)
       .subscribe();
-
   }
 
   onShowProduct() {
