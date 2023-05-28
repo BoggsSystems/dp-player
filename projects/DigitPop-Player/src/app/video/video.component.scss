@@ -580,8 +580,18 @@
 }
 
 .button-quiz-grid {
+  grid-column: 38/39;
+  grid-row: 1/2;
+}
+
+.button-sound-grid {
+  position: relative;
   grid-column: 39/40;
   grid-row: 1/2;
+}
+
+.button-sound-grid > div {
+  background: none;
 }
 
 .button-locate-grid {
@@ -745,14 +755,18 @@
 }
 
 .sound-status {
-  opacity: 0.65;
-  cursor: pointer;
-  z-index: 105;
   position: absolute;
-  top: 30px;
-  right: 30px;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, 50%);
+  opacity: 1;
+  cursor: pointer;
   width: 25px;
   height: 25px;
+}
+
+.sound-status.muted {
+  opacity: 0.65;
 }
 
 .canvas {

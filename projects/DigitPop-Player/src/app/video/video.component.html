@@ -4,9 +4,14 @@
     src="/assets/images/shoppable-video-touch.svg" tooltipPosition="above" />
   <img (click)="onStartVideo()" [alt]="ad?.name" [hidden]="!showThumbnail || autoplay" [src]="ad?.thumbnail.secure_url"
     class="video-thumbnail" />
-  <img (click)="toggleVideoMute()" [hidden]="!showSoundIcon || !isIOS"
-    [src]="videoMuted ? '/assets/images/muted_icon.svg' :'/assets/images/speaker_icon.svg'" class="sound-status muted"
-    src="/assets/images/muted_icon.svg" />
+
+  <nav style="position: absolute; z-index: 101; top: 30px; right: 30px;" [hidden]="showCanvas">
+    <button (click)="toggleVideoMute()" *ngIf="!showSoundIcon || !isIOS" style="background-color: rgba(0, 0, 0, 0.25); border-radius: 50%; height: 48px; width: 48px; border: 2px solid white; cursor: pointer;">
+      <img [src]="videoMuted ? '/assets/images/muted_icon.svg' :'/assets/images/speaker_icon.svg'" class="sound-status"
+        [ngClass]="videoMuted ? 'muted' : ''" src="/assets/images/muted_icon.svg" />
+    </button>
+  </nav>
+
   <div (click)="onShowProduct()" class="video-player-overlay"></div>
   <div class="video-player">
     <span>
@@ -35,6 +40,16 @@
           <span class="coin-shine"></span>
           <img alt="coin icon" src="/assets/images/coin.svg" />
           <span>Earn Points</span>
+        </button>
+
+        <button (click)="toggleVideoMute()" *ngIf="!showSoundIcon || !isIOS"
+          class="button-sound-grid button-base">
+          <div></div>
+          <img
+            [src]="videoMuted ? '/assets/images/muted_icon.svg' :'/assets/images/speaker_icon.svg'" class="sound-status"
+            [ngClass]="videoMuted ? 'muted' : ''"
+            src="/assets/images/muted_icon.svg" />
+          Toggle Sound
         </button>
 
         <button (click)="onSeekAndPlay()" *ngIf="viewState == 'ProductGroup'"

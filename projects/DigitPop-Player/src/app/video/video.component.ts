@@ -45,7 +45,7 @@ export class VideoComponent implements OnInit, AfterViewInit {
   subscription: any;
   videoType: VideoType;
   showVideo = true;
-  videoMuted = true;
+  videoMuted = false;
   showSoundIcon = true;
   adReady = false;
   showThumbnail = true;
@@ -179,6 +179,9 @@ export class VideoComponent implements OnInit, AfterViewInit {
     const playPromise = this.videoPlayer.nativeElement.play();
     if (playPromise !== undefined && playPromise.catch) {
       playPromise.catch((error: any) => {
+        console.log('cccc');
+        this.videoMuted = true;
+        this.videoPlayer.nativeElement.play();
         console.log('Play promise error:', error);
       });
     }
@@ -305,7 +308,7 @@ export class VideoComponent implements OnInit, AfterViewInit {
         .subscribe();
     }
     this.videoPlaying = false;
-    this.showSoundIcon = false;
+    this.showSoundIcon = true;
     this.videoPlayer.nativeElement.pause();
     this.pgIndex = this.getProductGroupFromTime(this.videoPlayer.nativeElement.currentTime);
 
