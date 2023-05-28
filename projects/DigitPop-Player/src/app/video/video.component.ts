@@ -1,5 +1,5 @@
 import {
-  AfterViewInit, Component, ElementRef, EventEmitter, OnInit, ViewChild,
+  AfterViewInit, Component, ElementRef, EventEmitter, OnInit, ViewChild, Renderer2
 } from '@angular/core';
 import {
   ActivatedRoute, NavigationExtras, Params, Router,
@@ -48,10 +48,10 @@ export class VideoComponent implements OnInit, AfterViewInit {
   subscription: any;
   videoType: VideoType;
   showVideo = true;
-  videoMuted = false;
+  videoMuted = true;
   showSoundIcon = true;
   adReady = false;
-  showThumbnail = false;
+  showThumbnail = true;
   showCanvas = false;
   showQuizButton = false;
   disablePrevious = true;
@@ -66,11 +66,12 @@ export class VideoComponent implements OnInit, AfterViewInit {
   isIOS = false;
   isSafari = false;
   uuid: string;
-  @ViewChild('videoPlayer') videoPlayer: ElementRef;
+  autoplay = true;
+  @ViewChild('videoPlayer', { static: false }) videoPlayer: ElementRef;
   @ViewChild('canvas') canvas: ElementRef;
 
   // tslint:disable-next-line:max-line-length
-  constructor(private router: Router, public dialog: MatDialog, private route: ActivatedRoute, private adService: AdService, private userService: UserService, private engagementService: EngagementService, private billsByService: BillsbyService) {
+  constructor(private router: Router, public dialog: MatDialog, private route: ActivatedRoute, private adService: AdService, private userService: UserService, private engagementService: EngagementService, private billsByService: BillsbyService, private renderer: Renderer2) {
     this.isSafari = CrossDomainMessaging.isSafari();
     this.isIOS = CrossDomainMessaging.isIOS();
     this.isUser = false;
@@ -90,7 +91,7 @@ export class VideoComponent implements OnInit, AfterViewInit {
       this.params = params;
       this.isPreview = params.preview;
       this.adId = params.id;
-      this.isUser = params.userId.length !== 8;
+      this.isUser = params.userId && params.userId.length !== 8;
       this.userId = this.isUser ? params.userId : '';
       this.uuid = !this.isUser ? params.userId : '';
 
@@ -178,11 +179,20 @@ export class VideoComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
+    const playPromise = this.videoPlayer.nativeElement.play();
+    if (playPromise !== undefined && playPromise.catch) {
+      playPromise.catch((error: any) => {
+        console.log('Play promise error:', error);
+      });
+    }
+
     this.videoPlayer.nativeElement.height = this.innerHeight;
     this.videoPlayer.nativeElement.width = this.innerWidth;
   }
 
   onStartVideo() {
+    this.autoplay = true;
+    this.showThumbnail = false;
     this.isIOS = CrossDomainMessaging.isIOS();
     const targetWindow = window.parent;
     if (this.isIOS) {
@@ -198,7 +208,6 @@ export class VideoComponent implements OnInit, AfterViewInit {
       });
     }
 
-    this.showThumbnail = false;
     this.setSize();
     this.showVideo = true;
 
@@ -357,6 +366,7 @@ export class VideoComponent implements OnInit, AfterViewInit {
   }
 
   onResumeVideo() {
+    this.showThumbnail = false;
     this.showCanvas = false;
     this.showVideo = true;
     this.showSoundIcon = true;
