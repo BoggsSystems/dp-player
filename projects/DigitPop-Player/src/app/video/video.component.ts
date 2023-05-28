@@ -1,24 +1,21 @@
-import {
-  AfterViewInit, Component, ElementRef, EventEmitter, OnInit, ViewChild, Renderer2
-} from '@angular/core';
-import {
-  ActivatedRoute, NavigationExtras, Params, Router,
-} from '@angular/router';
-import {Project} from '../models/project';
-import {MatDialog} from '@angular/material/dialog';
-import {
-  ImageCarouselComponent
-} from '../image-carousel/image-carousel.component';
-import {MainHelpComponent} from '../help/main-help/main-help.component';
-import {environment} from '../../environments/environment';
-import {SubscriptionDetails, SubscriptionInfo} from '../models/subscription';
-import {AdService} from '../shared/services/ad.service';
-import {UserService} from '../shared/services/user.service';
-import {EngagementService} from '../shared/services/engagement.service';
-import {BillsbyService} from '../shared/services/billsby.service';
-import {ProductGroup} from '../models/productGroup';
-import {Product} from '../models/product';
-import {CrossDomainMessaging} from '../shared/helpers/cd-messaging';
+import { AfterViewInit, Component, ElementRef, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { ActivatedRoute, NavigationExtras, Params, Router } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
+import { environment } from '../../environments/environment';
+
+import { AdService } from '../shared/services/ad.service';
+import { BillsbyService } from '../shared/services/billsby.service';
+import { CrossDomainMessaging } from '../shared/helpers/cd-messaging';
+import { EngagementService } from '../shared/services/engagement.service';
+import { UserService } from '../shared/services/user.service';
+
+import { ImageCarouselComponent } from '../image-carousel/image-carousel.component';
+import { MainHelpComponent } from '../help/main-help/main-help.component';
+
+import { Project } from '../models/project';
+import { Product } from '../models/product';
+import { ProductGroup } from '../models/productGroup';
+import { SubscriptionDetails, SubscriptionInfo } from '../models/subscription';
 
 enum VideoType {
   Regular = 1, Cpcc,
