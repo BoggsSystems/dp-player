@@ -63,7 +63,7 @@ export class CampaignService {
 
 
 import { CanLoad, Route } from '@angular/router';
-import { environment } from 'projects/DigitPop-CMS/src/environments/environment';
+import { environment } from 'projects/DigitPop-Player/src/environments/environment';
 
 @Injectable({providedIn: 'root'})
 export class NameGuard implements CanLoad {

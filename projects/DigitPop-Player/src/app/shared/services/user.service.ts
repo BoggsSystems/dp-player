@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { Icon } from '../../models/icon';
-import { environment } from 'projects/DigitPop-CMS/src/environments/environment';
+import { environment } from 'projects/DigitPop-Player/src/environments/environment';
 
 
 @Injectable({ providedIn: 'root' })
