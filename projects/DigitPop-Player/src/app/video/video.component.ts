@@ -32,6 +32,7 @@ export class VideoComponent implements OnInit, AfterViewInit {
   isUser: boolean;
   userId: string;
   adId: any;
+  adPrivate: boolean;
   engagementId: any;
   campaignId: any;
   categoryId: string;
@@ -46,7 +47,7 @@ export class VideoComponent implements OnInit, AfterViewInit {
   videoType: VideoType;
   showVideo = true;
   videoMuted = false;
-  showSoundIcon = true;
+  showSoundIcon = false;
   adReady = false;
   showThumbnail = true;
   showCanvas = false;
@@ -64,6 +65,7 @@ export class VideoComponent implements OnInit, AfterViewInit {
   isSafari = false;
   uuid: string;
   autoplay = true;
+  errorMessage: string;
   @ViewChild('videoPlayer', { static: false }) videoPlayer: ElementRef;
   @ViewChild('canvas') canvas: ElementRef;
 
@@ -102,8 +104,16 @@ export class VideoComponent implements OnInit, AfterViewInit {
     });
 
     if (this.adId != null) {
-      this.adService.getAd(this.adId, this.params.userId !== 'undefined').subscribe((adService) => {
-        this.ad = adService as Project;
+      this.adService.getAd(this.adId, this.params.userId !== 'undefined').subscribe((res: any) => {
+        if ('success' in res && !res.success) {
+          return this.errorMessage = res.message ? res.message : 'Video does\'t exist or private';
+        };
+
+        this.showSoundIcon = true;
+        this.postMessage();
+        this.createCampaign();
+
+        this.ad = res as Project;
 
         if (this.ad.active || this.preview) {
           this.adReady = true;
@@ -134,7 +144,9 @@ export class VideoComponent implements OnInit, AfterViewInit {
         console.error(`Error retrieving ad: ${err.toString()}`);
       });
     }
+  }
 
+  postMessage() {
     if (!this.isUser || !this.engagementId) {
       window.parent.postMessage({
         init: true, action: 'getCampaignId'
@@ -147,14 +159,15 @@ export class VideoComponent implements OnInit, AfterViewInit {
         }
       });
     }
+  }
 
+  createCampaign() {
     if (!this.creatingEngagment) {
       this.creatingEngagment = true;
       this.engagementService
         .createEngagement(this.userId, this.adId)
         .subscribe(res => {
           if (!this.isUser) {
-            console.log(res);
             this.campaignId = res._id;
           } else {
             this.campaignId = res.campaign;
@@ -179,7 +192,6 @@ export class VideoComponent implements OnInit, AfterViewInit {
     const playPromise = this.videoPlayer.nativeElement.play();
     if (playPromise !== undefined && playPromise.catch) {
       playPromise.catch((error: any) => {
-        console.log('cccc');
         this.videoMuted = true;
         this.videoPlayer.nativeElement.play();
         console.log('Play promise error:', error);

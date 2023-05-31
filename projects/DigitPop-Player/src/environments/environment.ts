@@ -1,6 +1,6 @@
 export const environment = {
   production: false,
-  apiUrl: 'https://production-digitpop-server.herokuapp.com',
+  apiUrl: 'http://localhost:9000',
   cloudinaryUrl: 'https://api.cloudinary.com/v1_1/',
   CLOUDINARY_CLOUD_NAME: 'boggssystems',
   CLOUDINARY_UPLOAD_PRESET: 'yspatu75',
@@ -8,5 +8,5 @@ export const environment = {
   billsbyKey: 'digitpop_f1efba4792104a3ab66c1cb59f43993a',
   homeUrl: 'https://digitpop.com',
   iOSFallbackUrl: 'https://digitpop.com',
-  websocketURL: 'wss://production-digitpop-server.herokuapp.com'
+  websocketURL: 'wss://localhost:9000'
 };
