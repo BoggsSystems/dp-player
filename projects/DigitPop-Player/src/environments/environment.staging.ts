@@ -1,6 +1,6 @@
 export const environment = {
   production: false,
-  apiUrl: 'https://dp-staging-server.herokuapp.com/',
+  apiUrl: 'https://dp-staging-server.herokuapp.com',
   cloudinaryUrl: 'https://api.cloudinary.com/v1_1/',
   CLOUDINARY_CLOUD_NAME: 'boggssystems',
   CLOUDINARY_UPLOAD_PRESET: 'yspatu75',
