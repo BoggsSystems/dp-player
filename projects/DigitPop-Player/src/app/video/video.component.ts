@@ -77,14 +77,15 @@ export class VideoComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
+    if (window.self !== window.parent) {
+      this.onPremise = false;
+      console.log("Component is running inside an iframe");
+    }
+
     this.videoType = VideoType.Regular;
 
     this.innerWidth = window.innerWidth;
     this.innerHeight = window.innerHeight;
-
-    if ( window.self !== window.parent ) {
-      this.onPremise = true;
-    }
 
     this.route.params.subscribe((params) => {
       this.params = params;
