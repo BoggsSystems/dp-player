@@ -1,12 +1,10 @@
 import { AfterViewInit, Component, ElementRef, OnInit, Renderer2, ViewChild } from '@angular/core';
-import { ActivatedRoute, NavigationExtras, Params, Router } from '@angular/router';
+import { ActivatedRoute, Params } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
-import { environment } from '../../environments/environment';
 
 import { AdService } from '../shared/services/ad.service';
 import { BillsbyService } from '../shared/services/billsby.service';
 import { CrossDomainMessaging } from '../shared/helpers/cd-messaging';
-import { EngagementService } from '../shared/services/engagement.service';
 import { UserService } from '../shared/services/user.service';
 
 import { ImageCarouselComponent } from '../image-carousel/image-carousel.component';
@@ -33,7 +31,6 @@ export class VideoComponent implements OnInit, AfterViewInit {
   userId: string;
   adId: any;
   adPrivate: boolean;
-  engagementId: any;
   campaignId: any;
   categoryId: string;
   ad: Project;
@@ -47,11 +44,10 @@ export class VideoComponent implements OnInit, AfterViewInit {
   videoType: VideoType;
   showVideo = true;
   videoMuted = false;
-  showSoundIcon = false;
+  showSoundIcon = true;
   adReady = false;
   showThumbnail = true;
   showCanvas = false;
-  showQuizButton = false;
   disablePrevious = true;
   disableNext = true;
   preview = false;
@@ -59,7 +55,6 @@ export class VideoComponent implements OnInit, AfterViewInit {
   pgIndex: any;
   videoPlaying = false;
   enabledShoppableTour = true;
-  creatingEngagment = false;
   isPreview = false;
   isIOS = false;
   isSafari = false;
@@ -70,114 +65,87 @@ export class VideoComponent implements OnInit, AfterViewInit {
   @ViewChild('canvas') canvas: ElementRef;
 
   // tslint:disable-next-line:max-line-length
-  constructor(private router: Router, public dialog: MatDialog, private route: ActivatedRoute, private adService: AdService, private userService: UserService, private engagementService: EngagementService, private billsByService: BillsbyService, private renderer: Renderer2) {
+  constructor(public dialog: MatDialog, private adService: AdService, private userService: UserService, private billsByService: BillsbyService, private route: ActivatedRoute) {
     this.isSafari = CrossDomainMessaging.isSafari();
     this.isIOS = CrossDomainMessaging.isIOS();
     this.isUser = false;
   }
 
   ngOnInit(): void {
-    if (window.self !== window.parent) {
-      this.onPremise = false;
-      console.log("Component is running inside an iframe");
-    }
-
     this.videoType = VideoType.Regular;
 
     this.innerWidth = window.innerWidth;
     this.innerHeight = window.innerHeight;
 
     this.route.params.subscribe((params) => {
-      this.params = params;
-      this.isPreview = params.preview;
       this.adId = params.id;
-      this.isUser = params.userId && params.userId.length !== 8;
-      this.userId = this.isUser ? params.userId : '';
-      this.uuid = !this.isUser ? params.userId : '';
-
-      if (params.engagementId != null && params.campaignId) {
-        this.campaignId = params.campaignId;
-        this.videoType = VideoType.Cpcc;
-      }
-      if (params.preview != null) {
-        this.preview = params.preview;
-      }
     });
 
+
     if (this.adId != null) {
-      this.adService.getAd(this.adId, this.params.userId !== 'undefined').subscribe((res: any) => {
+      this.getAd(this.adId);
+    }
+  }
+
+  private getAd = (adId: string): void => {
+    this.adService.getAd(adId).subscribe(
+      (res: any) => {
         if ('success' in res && !res.success) {
-          return this.errorMessage = res.message ? res.message : 'Video does\'t exist or private';
-        };
+          this.errorMessage = res.message ? res.message : 'Video does\'t exist or private';
+          return;
+        }
 
         this.showSoundIcon = true;
-        this.postMessage();
-        this.createCampaign();
 
         this.ad = res as Project;
 
         if (this.ad.active || this.preview) {
           this.adReady = true;
           this.userService.setTitle(this.ad.name);
-
-          this.userService.getUserSubscription(this.ad.createdBy).subscribe((userSubscription) => {
-            const result = userSubscription as SubscriptionInfo;
-            this.onStartVideo();
-
-            this.billsByService
-              .getSubscriptionDetails(result.sid)
-              .subscribe((res) => {
-                this.subscription = res as SubscriptionDetails;
-
-                this.userService.getUserIcon(this.ad.createdBy).subscribe((res) => {
-                  this.userService.setUserIcon(res);
-                }, (err) => {
-                  console.error(`Error retrieving user icon: ${err.toString()}`);
-                });
-              }, (err) => {
-                console.error(`Error retrieving subscription details: ${err.toString()}`);
-              });
-          }, (err) => {
-            console.error(`Error retrieving subscription info: ${err.toString()}`);
-          });
+          this.getUserSubscription(this.ad.createdBy);
         }
-      }, (err) => {
+      },
+      (err) => {
         console.error(`Error retrieving ad: ${err.toString()}`);
-      });
-    }
-  }
+      }
+    );
+  };
 
-  postMessage() {
-    if (!this.isUser || !this.engagementId) {
-      window.parent.postMessage({
-        init: true, action: 'getCampaignId'
-      }, environment.iOSFallbackUrl);
+  private getUserSubscription = (createdBy: string): void => {
+    this.userService.getUserSubscription(createdBy).subscribe(
+      (userSubscription) => {
+        const result = userSubscription as SubscriptionInfo;
+        this.onStartVideo();
+        this.getSubscriptionDetails(result.sid);
+      },
+      (err) => {
+        console.error(`Error retrieving subscription info: ${err.toString()}`);
+      }
+    );
+  };
 
-      addEventListener('message', (event) => {
-        this.isPreview = event.data.isPreview ?? event.data.isPreview;
-        if (event.data.campaignId) {
-          this.categoryId = event.data.categoryId;
-        }
-      });
-    }
-  }
+  private getSubscriptionDetails = (sid: string): void => {
+    this.billsByService.getSubscriptionDetails(sid).subscribe(
+      (res) => {
+        this.subscription = res as SubscriptionDetails;
+        this.getUserIcon(this.ad.createdBy);
+      },
+      (err) => {
+        console.error(`Error retrieving subscription details: ${err.toString()}`);
+      }
+    );
+  };
 
-  createCampaign() {
-    if (!this.creatingEngagment) {
-      this.creatingEngagment = true;
-      this.engagementService
-        .createEngagement(this.userId, this.adId)
-        .subscribe(res => {
-          if (!this.isUser) {
-            this.campaignId = res._id;
-          } else {
-            this.campaignId = res.campaign;
-            this.engagementId = res._id;
-          }
-          this.creatingEngagment = false;
-        });
-    }
-  }
+  private getUserIcon = (createdBy: string): void => {
+    this.userService.getUserIcon(createdBy).subscribe(
+      (res) => {
+        this.userService.setUserIcon(res);
+      },
+      (err) => {
+        console.error(`Error retrieving user icon: ${err.toString()}`);
+      }
+    );
+  };
 
   help() {
     const dialogRef = this.dialog.open(MainHelpComponent, {
@@ -206,13 +174,7 @@ export class VideoComponent implements OnInit, AfterViewInit {
   onStartVideo() {
     this.autoplay = true;
     this.showThumbnail = false;
-    this.isIOS = CrossDomainMessaging.isIOS();
-    const targetWindow = window.parent;
-    if (this.isIOS) {
-      targetWindow.postMessage('start', environment.iOSFallbackUrl);
-    } else {
-      targetWindow.postMessage('start', environment.homeUrl);
-    }
+
     if (!this.preview && this.subscription != null) {
       this.adService.createView(this.adId, this.subscription.cycleId).subscribe((res) => {
         console.log(res);
@@ -224,7 +186,7 @@ export class VideoComponent implements OnInit, AfterViewInit {
     this.setSize();
     this.showVideo = true;
 
-    if (!this.videoMuted && this.isIOS) { // Remove false to mute by default
+    if (!this.videoMuted && this.isIOS) {
       this.toggleVideoMute();
     }
 
@@ -279,13 +241,8 @@ export class VideoComponent implements OnInit, AfterViewInit {
   }
 
   onExit() {
-    const targetWindow = window.parent;
     this.showThumbnail = true;
     this.showCanvas = false;
-
-    // TODO: Change the URL
-    targetWindow.postMessage('exit', environment.homeUrl);
-    // targetWindow.postMessage('exit', `${environment.homeUrl}`);
   }
 
   onBackToGroup() {
@@ -348,34 +305,7 @@ export class VideoComponent implements OnInit, AfterViewInit {
   }
 
   onEnded() {
-    // this.startQuiz();
-    this.showQuizButton = true;
     this.onShowProduct();
-    // if (this.params.engagementId != null && this.params.campaignId) {
-    //   this.showQuizButton = true;
-    //   this.onShowProduct();
-    // } else {
-    //   this.onShowProduct();
-    // }
-  }
-
-  startQuiz() {
-    this.showQuizButton = false;
-    const navigationExtras: NavigationExtras = this.isUser ? {
-      state: {
-        userId: this.userId,
-        isUser: true,
-        campaignId: this.campaignId,
-        engagementId: this.engagementId,
-        uuid: this.uuid
-      },
-    } : {
-      state: {isUser: false, campaignId: this.campaignId, uuid: this.uuid},
-    };
-
-    console.log(navigationExtras);
-    return this.router.navigate(['/quiz'], navigationExtras);
-
   }
 
   onResumeVideo() {
