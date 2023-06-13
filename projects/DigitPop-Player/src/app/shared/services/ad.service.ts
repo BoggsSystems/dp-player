@@ -12,8 +12,8 @@ export class AdService {
   constructor(private httpClient: HttpClient) {
   }
 
-  getAd = (videoId: any) => {
-    return this.httpClient.get(`${environment.apiUrl}/api/projects/${videoId}/true/false`);
+  getAd = (videoId: any, isPreview: boolean) => {
+    return this.httpClient.get(`${environment.apiUrl}/api/projects/${videoId}/true/${isPreview}`);
   }
 
   onPremGetAd = (requestBody: AdRequest) => {

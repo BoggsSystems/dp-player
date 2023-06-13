@@ -78,6 +78,7 @@ export class VideoComponent implements OnInit, AfterViewInit {
     this.innerHeight = window.innerHeight;
 
     this.route.params.subscribe((params) => {
+      this.preview = params.preview ? params.preview : false;
       this.adId = params.id;
     });
 
@@ -88,7 +89,7 @@ export class VideoComponent implements OnInit, AfterViewInit {
   }
 
   private getAd = (adId: string): void => {
-    this.adService.getAd(adId).subscribe(
+    this.adService.getAd(adId, this.preview).subscribe(
       (res: any) => {
         if ('success' in res && !res.success) {
           this.errorMessage = res.message ? res.message : 'Video does\'t exist or private';
