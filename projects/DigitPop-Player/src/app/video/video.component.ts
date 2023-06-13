@@ -78,7 +78,7 @@ export class VideoComponent implements OnInit, AfterViewInit {
     this.innerHeight = window.innerHeight;
 
     this.route.params.subscribe((params) => {
-      this.preview = params.preview ? params.preview : false;
+      this.preview = this.isPreview = params.preview ? params.preview : false;
       this.adId = params.id;
     });
 
